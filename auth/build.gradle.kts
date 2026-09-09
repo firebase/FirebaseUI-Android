@@ -68,8 +68,8 @@ android {
         warningsAsErrors = true
         abortOnError = true
 
-        // Pre-existing debt only: 168 localization findings (CPRN-432) and 12 Compose
-        // correctness findings (CPRN-436). Every entry is suppressed; new ones still fail.
+        // Pre-existing debt only: 168 localization findings (CPRN-432). Every entry is
+        // suppressed; new ones still fail.
         baseline = file("lint-baseline.xml")
     }
 

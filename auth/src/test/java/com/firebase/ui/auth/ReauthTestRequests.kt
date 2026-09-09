@@ -78,7 +78,7 @@ internal class ReauthScopeProbe {
 
     /** Call from inside a content slot. */
     @Composable
-    fun capture() {
+    fun Capture() {
         scope = LocalAuthFlowScope.current
     }
 

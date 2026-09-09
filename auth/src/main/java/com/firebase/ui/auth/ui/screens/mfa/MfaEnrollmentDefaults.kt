@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -361,6 +362,15 @@ private fun EnrolledFactorItem(
     enabled: Boolean,
     stringProvider: AuthUIStringProvider
 ) {
+    // LocalLocale is the Activity's configured locale. Locale.getDefault() and
+    // intl.Locale.current both read the process global, which disagrees with it when the host
+    // installs a per-context locale override — rendering the date in a different language from
+    // every stringResource around it.
+    val locale = LocalLocale.current
+    val enrollmentDateFormat = remember(locale) {
+        java.text.SimpleDateFormat("MMM dd, yyyy", locale.platformLocale)
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -394,10 +404,9 @@ private fun EnrolledFactorItem(
                 )
                 Text(
                     text = stringProvider.enrolledOnDateLabel(
-                        java.text.SimpleDateFormat(
-                            "MMM dd, yyyy",
-                            java.util.Locale.getDefault()
-                        ).format(java.util.Date(factorInfo.enrollmentTimestamp * 1000))
+                        enrollmentDateFormat.format(
+                            java.util.Date(factorInfo.enrollmentTimestamp * 1000)
+                        )
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

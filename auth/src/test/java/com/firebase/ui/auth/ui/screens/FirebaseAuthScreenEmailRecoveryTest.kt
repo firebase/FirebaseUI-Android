@@ -555,7 +555,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 // One provider, so the sheet opens at the email step and the picker never composes.
-                emailContent = { probe.capture() },
+                emailContent = { probe.Capture() },
             )
         }
         composeTestRule.waitForIdle()

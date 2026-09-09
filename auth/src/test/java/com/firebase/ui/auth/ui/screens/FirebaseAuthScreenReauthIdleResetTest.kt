@@ -125,7 +125,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     capturedError = state.error
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
@@ -193,7 +193,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
             )

@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -113,7 +114,8 @@ fun AuthTextField(
     visibilityToggleModifier: Modifier = Modifier,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
-    val localContext = LocalContext.current
+    // semantics {} is not a composable scope, so the description is resolved out here.
+    val readOnlyStateDescription = stringResource(R.string.fui_text_field_read_only)
 
     // Automatically set the correct keyboard type based on validator or field type
     val resolvedKeyboardOptions = remember(validator, isSecureTextField, keyboardOptions) {
@@ -138,7 +140,7 @@ fun AuthTextField(
             .then(
                 if (readOnly) {
                     Modifier.semantics {
-                        stateDescription = localContext.getString(R.string.fui_text_field_read_only)
+                        stateDescription = readOnlyStateDescription
                     }
                 } else {
                     Modifier
