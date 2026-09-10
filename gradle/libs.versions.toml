@@ -8,7 +8,7 @@ firebase-bom = "34.17.0"
 play-services-auth = "21.6.0"
 facebook = "18.3.0"
 
-compose-bom = "2026.06.01"
+compose-bom = "2026.08.00"
 activity-compose = "1.13.0"
 navigation3 = "1.1.7"
 # Pinned to the kotlinx-serialization-core that navigation3-runtime 1.1.7 declares in both its api
