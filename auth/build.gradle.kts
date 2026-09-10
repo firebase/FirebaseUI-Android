@@ -68,8 +68,11 @@ android {
         warningsAsErrors = true
         abortOnError = true
 
-        // Pre-existing debt only: 168 localization findings (CPRN-432). Every entry is
-        // suppressed; new ones still fail.
+        // Pre-existing debt only: 43 MissingTranslation findings (CPRN-432). Every entry
+        // is suppressed; new ones still fail. They are strings the Compose rewrite added to
+        // values/strings.xml and never sent for translation, real UI copy in 50 languages,
+        // so they clear when translations land, not by editing anything here. Delete this
+        // file once they do.
         baseline = file("lint-baseline.xml")
     }
 

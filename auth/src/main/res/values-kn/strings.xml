@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಮರುಕಳುಹಿಸಿ</string>
     <string name="fui_secret_key_label">ರಹಸ್ಯ ಕೀ</string>
     <string name="fui_sign_out_action">ಸೈನ್ ಔಟ್</string>
-    <string name="fui_signed_in_as">ಹೀಗೆ ಸೈನ್ ಇನ್ ಆಗಿದ್ದೀರಿ</string>
+    <string name="fui_signed_in_as">%1$s ಆಗಿ ಸೈನ್ ಇನ್ ಆಗಿದ್ದೀರಿ</string>
     <string name="fui_skip_action">ಸ್ಕಿಪ್ ಮಾಡಿ</string>
     <string name="fui_use_different_method_action">ವಿಭಿನ್ನ ವಿಧಾನವನ್ನು ಬಳಸಿ</string>
     <string name="fui_verification_code_label">ಪರಿಶೀಲನೆ ಕೋಡ್</string>

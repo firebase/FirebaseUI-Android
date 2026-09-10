@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Wyślij ponownie e-mail weryfikacyjny</string>
     <string name="fui_secret_key_label">Tajny klucz</string>
     <string name="fui_sign_out_action">Wyloguj się</string>
-    <string name="fui_signed_in_as">Zalogowano jako</string>
+    <string name="fui_signed_in_as">Zalogowano jako %1$s</string>
     <string name="fui_skip_action">Pomiń</string>
     <string name="fui_use_different_method_action">Użyj innej metody</string>
     <string name="fui_verification_code_label">Kod weryfikacyjny</string>

@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Verificatie-e-mail opnieuw verzenden</string>
     <string name="fui_secret_key_label">Geheime sleutel</string>
     <string name="fui_sign_out_action">Uitloggen</string>
-    <string name="fui_signed_in_as">Ingelogd als</string>
+    <string name="fui_signed_in_as">Ingelogd als %1$s</string>
     <string name="fui_skip_action">Overslaan</string>
     <string name="fui_use_different_method_action">Gebruik een andere methode</string>
     <string name="fui_verification_code_label">Verificatiecode</string>

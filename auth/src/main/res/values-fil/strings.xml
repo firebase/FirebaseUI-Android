@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Ipadala muli ang verification email</string>
     <string name="fui_secret_key_label">Secret key</string>
     <string name="fui_sign_out_action">Mag-sign out</string>
-    <string name="fui_signed_in_as">Naka-sign in bilang</string>
+    <string name="fui_signed_in_as">Naka-sign in bilang %1$s</string>
     <string name="fui_skip_action">Laktawan</string>
     <string name="fui_use_different_method_action">Gumamit ng ibang paraan</string>
     <string name="fui_verification_code_label">Verification code</string>

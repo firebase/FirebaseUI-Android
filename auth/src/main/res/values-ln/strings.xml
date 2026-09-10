@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Tinda lisusu e-mail ya vérification</string>
     <string name="fui_secret_key_label">Clé secrète</string>
     <string name="fui_sign_out_action">Kobima</string>
-    <string name="fui_signed_in_as">Okoti lokola</string>
+    <string name="fui_signed_in_as">Okoti lokola %1$s</string>
     <string name="fui_skip_action">Leka</string>
     <string name="fui_use_different_method_action">Salelá méthode mosusu</string>
     <string name="fui_verification_code_label">Code ya vérification</string>

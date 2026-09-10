@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Поново пошаљи имејл за верификацију</string>
     <string name="fui_secret_key_label">Тајни кључ</string>
     <string name="fui_sign_out_action">Одјава</string>
-    <string name="fui_signed_in_as">Пријављен као</string>
+    <string name="fui_signed_in_as">Пријављен као %1$s</string>
     <string name="fui_skip_action">Прескочи</string>
     <string name="fui_use_different_method_action">Користи други метод</string>
     <string name="fui_verification_code_label">Код за верификацију</string>

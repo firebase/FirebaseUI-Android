@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">ارسال مجدد ایمیل تأیید</string>
     <string name="fui_secret_key_label">کلید مخفی</string>
     <string name="fui_sign_out_action">خروج</string>
-    <string name="fui_signed_in_as">وارد شده به عنوان</string>
+    <string name="fui_signed_in_as">وارد شده به عنوان %1$s</string>
     <string name="fui_skip_action">رد شدن</string>
     <string name="fui_use_different_method_action">استفاده از روش دیگر</string>
     <string name="fui_verification_code_label">کد تأیید</string>

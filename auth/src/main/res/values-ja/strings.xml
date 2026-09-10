@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">確認メールを再送信</string>
     <string name="fui_secret_key_label">シークレットキー</string>
     <string name="fui_sign_out_action">ログアウト</string>
-    <string name="fui_signed_in_as">ログイン中</string>
+    <string name="fui_signed_in_as">%1$s としてログイン中</string>
     <string name="fui_skip_action">スキップ</string>
     <string name="fui_use_different_method_action">別の方法を使用</string>
     <string name="fui_verification_code_label">確認コード</string>

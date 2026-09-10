@@ -47,7 +47,7 @@
     <string name="fui_name_hint">Nom i cognoms</string>
     <string name="fui_button_text_save">Desa</string>
     <string name="fui_progress_dialog_signing_up">T\'estàs registrant…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcter i combina lletres i números.</item> <item quantity="other">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcters i combina lletres i números.</item> </plurals>
+    <plurals name="fui_error_weak_password"> <item quantity="one">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcter i combina lletres i números.</item> <item quantity="many">La contrasenya no és prou segura. Utilitza com a mínim %1$d de caràcters i combina lletres i números.</item> <item quantity="other">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcters i combina lletres i números.</item> </plurals>
     <string name="fui_email_account_creation_error">No s\'ha pogut registrar el compte de correu electrònic</string>
     <string name="fui_terms_of_service">Condicions del servei</string>
     <string name="fui_privacy_policy">política de privadesa</string>
@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Torna a enviar el correu de verificació</string>
     <string name="fui_secret_key_label">Clau secreta</string>
     <string name="fui_sign_out_action">Tanca la sessió</string>
-    <string name="fui_signed_in_as">Has iniciat sessió com a</string>
+    <string name="fui_signed_in_as">Has iniciat sessió com a %1$s</string>
     <string name="fui_skip_action">Omet</string>
     <string name="fui_use_different_method_action">Utilitza un mètode diferent</string>
     <string name="fui_verification_code_label">Codi de verificació</string>

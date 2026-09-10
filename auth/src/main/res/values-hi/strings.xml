@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">सत्यापन ईमेल फिर से भेजें</string>
     <string name="fui_secret_key_label">गुप्त कुंजी</string>
     <string name="fui_sign_out_action">साइन आउट</string>
-    <string name="fui_signed_in_as">इस रूप में साइन इन किया</string>
+    <string name="fui_signed_in_as">%1$s के रूप में साइन इन किया</string>
     <string name="fui_skip_action">छोड़ें</string>
     <string name="fui_use_different_method_action">एक अलग विधि उपयोग करें</string>
     <string name="fui_verification_code_label">सत्यापन कोड</string>
