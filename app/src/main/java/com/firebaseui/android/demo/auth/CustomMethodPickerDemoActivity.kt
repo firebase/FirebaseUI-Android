@@ -142,6 +142,7 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                             Log.d("CustomMethodPickerDemo", "Auth cancelled")
                         },
                         customMethodPickerLayout = { providers, onProviderSelected ->
+                            // Owns the whole screen now, so the terms checkbox is inline here.
                             SpotlightMethodPicker(
                                 providers = providers,
                                 onProviderSelected = onProviderSelected,
@@ -181,6 +182,7 @@ fun SpotlightMethodPicker(
     val anonymous = groups["anonymous"]?.firstOrNull()
 
     LazyColumn(
+        // Owns the whole screen, so it handles its own insets.
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding(),
@@ -298,7 +300,7 @@ fun SpotlightMethodPicker(
 }
 
 @Composable
-private fun ProviderIconButton(
+fun ProviderIconButton(
     style: AuthUITheme.ProviderStyle,
     contentDescription: String,
     onClick: () -> Unit,
@@ -335,12 +337,12 @@ private fun ProviderIconButton(
 }
 
 @Composable
-private fun AuthUIAsset.asPainter(): Painter = when (this) {
+fun AuthUIAsset.asPainter(): Painter = when (this) {
     is AuthUIAsset.Resource -> painterResource(resId)
     is AuthUIAsset.Vector -> rememberVectorPainter(image)
 }
 
-private fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
+fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
     is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
     is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
     is AuthProvider.Github -> ProviderStyleDefaults.Github

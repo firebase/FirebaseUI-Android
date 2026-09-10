@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.firebaseui.android.demo.auth.fullcustomization.FullCustomizationDemoActivity
 
 class CustomSlotsThemingDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +47,9 @@ class CustomSlotsThemingDemoActivity : ComponentActivity() {
                         },
                         onCustomMethodPickerClick = {
                             startActivity(Intent(this, CustomMethodPickerDemoActivity::class.java))
+                        },
+                        onFullCustomizationClick = {
+                            startActivity(Intent(this, FullCustomizationDemoActivity::class.java))
                         }
                     )
                 }
@@ -60,6 +64,7 @@ fun CustomSlotsDemoChooser(
     onPhoneAuthSlotClick: () -> Unit,
     onShapeCustomizationClick: () -> Unit,
     onCustomMethodPickerClick: () -> Unit,
+    onFullCustomizationClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -105,6 +110,12 @@ fun CustomSlotsDemoChooser(
             title = "Custom Method Picker Layout & Terms",
             description = "Replace the default provider list with a custom layout, and swap the 'By continuing...' footer with a checkbox using customMethodPickerLayout and customMethodPickerTermsConfiguration on FirebaseAuthScreen.",
             onClick = onCustomMethodPickerClick
+        )
+
+        DemoCard(
+            title = "Full Customization",
+            description = "customMethodPickerLayout renders as the entire screen, so this layers a full-bleed background image and scrim behind the custom method picker.",
+            onClick = onFullCustomizationClick
         )
     }
 }
