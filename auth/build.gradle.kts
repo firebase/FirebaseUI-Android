@@ -37,14 +37,6 @@ android {
     }
 
     lint {
-        // Common lint options across all modules
-        disable += mutableSetOf(
-            "IconExpectedSize",
-            "InvalidPackage", // Firestore uses GRPC which makes lint mad
-            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor" // We almost never care about this
-        )
-
         // Module specific
         disable += mutableSetOf(
             "UnusedQuantity",
@@ -63,10 +55,6 @@ android {
             // needs redaction rather than a guard — CPRN-440, which also owns re-enabling this.
             "LogConditional"
         )
-
-        checkAllWarnings = true
-        warningsAsErrors = true
-        abortOnError = true
 
         // Pre-existing debt only: 168 localization findings (CPRN-432). Every entry is
         // suppressed; new ones still fail.

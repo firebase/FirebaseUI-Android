@@ -46,20 +46,11 @@ android {
     }
 
     lint {
-        // Common lint options across all modules
+        // Module specific
         disable += mutableSetOf(
-            "IconExpectedSize",
-            "InvalidPackage", // Firestore uses GRPC which makes lint mad
-            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor", // We almost never care about this
             "MediaCapabilities",
             "MissingApplicationIcon"
         )
-
-        checkAllWarnings = true
-        warningsAsErrors = true
-        abortOnError = true
-
     }
 
     androidComponents {
