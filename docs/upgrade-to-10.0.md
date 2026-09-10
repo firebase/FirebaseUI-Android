@@ -50,7 +50,7 @@ dependencies {
     // FirebaseUI Auth
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta05")
 
     // Required: Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:2026.06.01"))
@@ -517,7 +517,7 @@ val configuration = authUIConfiguration {
 
 ## Checklist
 
-- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta04`
+- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta05`
 - [ ] Migrated to Jetpack Compose
 - [ ] Converted Activities to ComponentActivities with `setContent {}`
 - [ ] Replaced `createSignInIntentBuilder()` with `authUIConfiguration {}`
