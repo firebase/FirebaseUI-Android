@@ -1,5 +1,5 @@
 object Config {
-    const val version = "10.0.0-beta04"
+    const val version = "10.0.0-beta05"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     object SdkVersions {

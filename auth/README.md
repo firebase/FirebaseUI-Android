@@ -98,7 +98,7 @@ Add the FirebaseUI Auth library dependency to your `build.gradle.kts` (Module):
 ```kotlin
 dependencies {
     // FirebaseUI for Auth
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta05")
 
     // Required: Firebase Auth
     implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
