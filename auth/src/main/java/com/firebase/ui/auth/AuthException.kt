@@ -686,7 +686,7 @@ abstract class AuthException(
 
                         "ERROR_INVALID_USER_TOKEN",
                         "ERROR_USER_TOKEN_EXPIRED" -> InvalidCredentialsException(
-                            message = stringProvider?.errorUserAccountGeneric.nonEmpty()
+                            message = stringProvider?.errorInvalidCredentials.nonEmpty()
                                 ?: stringProvider?.errorMultiFactorSessionExpired.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Your sign-in session expired. Sign in again to continue.",
