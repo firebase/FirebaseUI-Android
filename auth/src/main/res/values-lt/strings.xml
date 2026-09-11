@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Naudoti kitą telefono numerį</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentifikavimo klaida</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Bandykite dar kartą</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Reikalingas papildomas patvirtinimas. Užbaikite kelių veiksnių autentifikavimą.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Paskyrą reikia susieti. Išbandykite kitą prisijungimo būdą.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikavimas buvo atšauktas. Kai būsite pasirengę, bandykite dar kartą.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Pasirinkite autentifikavimo metodą</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Daugiafaktoris tapatybės nustatymas šiuo metu išjungtas</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Šis el. pašto adresas arba slaptažodis neteisingas</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Šis patvirtinimo seansas nebegalioja. Paprašykite naujo kodo.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Telefono numerio patvirtinimas nebuvo baigtas. Bandykite dar kartą.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Šie prisijungimo duomenys priklauso kitai paskyrai.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Šis telefono numeris nenustatytas kaip patvirtinimo būdas šioje paskyroje.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Jūsų prisijungimo seansas baigėsi. Norėdami tęsti, prisijunkite dar kartą.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Ši nuoroda nebegalioja. Paprašykite naujos.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Prieš tęsdami patvirtinkite savo el. pašto adresą.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Šis patvirtinimo būdas šioje paskyroje jau nustatytas.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Pasiekėte šios paskyros patvirtinimo būdų ribą.</string>
 </resources>

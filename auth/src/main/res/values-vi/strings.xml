@@ -10,7 +10,7 @@
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Điện thoại</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_email">Địa chỉ email</string>
     <string name="fui_sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="fui_continue_with_google">Đăng nhập bằng Google</string>
     <string name="fui_sign_in_with_facebook">Đăng nhập bằng Facebook</string>
@@ -31,7 +31,7 @@
     <string name="fui_sign_in_with_yahoo">Đăng nhập bằng Yahoo</string>
     <string name="fui_continue_with_yahoo">Đăng nhập bằng Yahoo</string>
     <string name="fui_next_default">Tiếp</string>
-    <string name="fui_email_hint">Email</string>
+    <string name="fui_email_hint">Địa chỉ email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
     <string name="fui_country_hint">Quốc gia</string>
     <string name="fui_country_selector_title" translation_description="Country selector modal title">Chọn quốc gia</string>
@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Đã tự động xác minh số điện thoại</string>
     <string name="fui_resend_code">Gửi lại mã</string>
     <string name="fui_verify_phone_number">Xác minh số điện thoại</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Dùng số điện thoại khác</string>
     <string name="fui_sms_terms_of_service">Bằng cách nhấn vào “%1$s”, bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s và %3$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Lỗi xác thực</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Thử lại</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Bạn cần xác minh thêm. Vui lòng hoàn tất quy trình xác thực nhiều yếu tố.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Bạn cần liên kết tài khoản. Vui lòng thử một phương thức đăng nhập khác.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Quá trình xác thực đã bị hủy. Vui lòng thử lại khi bạn sẵn sàng.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Chọn phương thức xác thực</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Xác thực đa yếu tố hiện đang bị vô hiệu hóa</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Email hoặc mật khẩu không chính xác</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Phiên xác minh này không còn hợp lệ. Hãy yêu cầu mã mới.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Quá trình xác minh số điện thoại chưa hoàn tất. Hãy thử lại.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Thông tin đăng nhập này thuộc về một tài khoản khác.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Số điện thoại này chưa được thiết lập để xác minh trên tài khoản này.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Phiên đăng nhập của bạn đã hết hạn. Hãy đăng nhập lại để tiếp tục.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Đường liên kết này không còn hợp lệ. Hãy yêu cầu một đường liên kết mới.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Hãy xác minh địa chỉ email của bạn trước khi tiếp tục.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Phương thức xác minh này đã được thiết lập trên tài khoản này.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Bạn đã đạt đến giới hạn số phương thức xác minh trên tài khoản này.</string>
 </resources>

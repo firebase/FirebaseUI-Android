@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Telefon numarası otomatik olarak doğrulandı</string>
     <string name="fui_resend_code">Kodu Yeniden Gönder</string>
     <string name="fui_verify_phone_number">Telefon Numarasını Doğrula</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Farklı bir telefon numarası kullan</string>
     <string name="fui_sms_terms_of_service">“%1$s” öğesine dokunarak SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” öğesine dokunarak %2$s ve %3$s hükümlerimizi kabul ettiğinizi bildirirsiniz. SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Kimlik Doğrulama Hatası</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tekrar dene</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ek doğrulama gerekiyor. Lütfen çok faktörlü kimlik doğrulamayı tamamlayın.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Hesabın bağlanması gerekiyor. Lütfen farklı bir oturum açma yöntemi deneyin.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Kimlik doğrulama iptal edildi. Hazır olduğunuzda tekrar deneyin.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Kimlik Doğrulama Yöntemini Seçin</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Çok faktörlü kimlik doğrulama şu anda devre dışı</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">E-posta adresi veya şifre yanlış</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Bu doğrulama oturumu artık geçerli değil. Yeni bir kod isteyin.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Telefon doğrulaması tamamlanmadı. Tekrar deneyin.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Bu kimlik bilgileri başka bir hesaba ait.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Bu telefon numarası, bu hesapta doğrulama için ayarlanmamış.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Oturumunuzun süresi doldu. Devam etmek için tekrar oturum açın.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Bu bağlantı artık geçerli değil. Yeni bir tane isteyin.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Devam etmeden önce e-posta adresinizi doğrulayın.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Bu doğrulama yöntemi bu hesapta zaten ayarlanmış.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Bu hesap için doğrulama yöntemi sınırına ulaştınız.</string>
 </resources>

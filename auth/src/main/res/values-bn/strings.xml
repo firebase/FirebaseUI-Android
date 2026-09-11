@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">ফোন নম্বরটি নিজে থেকে যাচাই করা হয়েছে</string>
     <string name="fui_resend_code">কোডটি আবার পাঠান</string>
     <string name="fui_verify_phone_number">ফোন নম্বর যাচাই করুন</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">অন্য একটি ফোন নম্বর ব্যবহার করুন</string>
     <string name="fui_sms_terms_of_service">%1$s এ ট্যাপ করলে আপনি একটি এসএমএস পাঠাতে পারেন। মেসেজ ও ডেটার চার্জ প্রযোজ্য।</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” বোতামে ট্যাপ করার অর্থ, আপনি আমাদের %2$s এবং %3$s-এর সাথে সম্মত। একটি এসএমএস পাঠানো হতে পারে। মেসেজ এবং ডেটার উপরে প্রযোজ্য চার্জ লাগতে পারে।</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">প্রমাণীকরণ সংক্রান্ত সমস্যা</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">আবার চেষ্টা করুন</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">অতিরিক্ত যাচাইকরণ প্রয়োজন। অনুগ্রহ করে মাল্টি-ফ্যাক্টর প্রমাণীকরণ সম্পূর্ণ করুন।</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">অ্যাকাউন্ট লিঙ্ক করা প্রয়োজন। অনুগ্রহ করে অন্য কোনও সাইন-ইন পদ্ধতি ব্যবহার করে দেখুন।</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">প্রমাণীকরণ বাতিল করা হয়েছে। আপনি প্রস্তুত হলে আবার চেষ্টা করুন।</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">প্রমাণীকরণ পদ্ধতি চয়ন করুন</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">মাল্টি-ফ্যাক্টর প্রমাণীকরণ বর্তমানে নিষ্ক্রিয়</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">ইমেল বা পাসওয়ার্ড সঠিক নয়</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">এই যাচাইকরণ সেশনটি আর বৈধ নেই। নতুন কোডের জন্য অনুরোধ করুন।</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">ফোন যাচাইকরণ সম্পূর্ণ হয়নি। আবার চেষ্টা করুন।</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">এই ক্রেডেনশিয়াল অন্য একটি অ্যাকাউন্টের।</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">এই অ্যাকাউন্টে যাচাইকরণের জন্য এই ফোন নম্বরটি সেট আপ করা নেই।</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">আপনার সাইন-ইন সেশনের মেয়াদ শেষ হয়ে গেছে। চালিয়ে যেতে আবার সাইন-ইন করুন।</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">এই লিঙ্কটি আর বৈধ নয়। নতুন একটির জন্য অনুরোধ করুন।</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">চালিয়ে যাওয়ার আগে আপনার ইমেল অ্যাড্রেস যাচাই করুন।</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">এই যাচাইকরণ পদ্ধতিটি এই অ্যাকাউন্টে ইতিমধ্যেই সেট আপ করা আছে।</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">এই অ্যাকাউন্টে যাচাইকরণ পদ্ধতির সীমায় আপনি পৌঁছে গেছেন।</string>
 </resources>

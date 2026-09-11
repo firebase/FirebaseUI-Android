@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefonní číslo bylo automaticky ověřeno</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Použít jiné telefonní číslo</string>
     <string name="fui_sms_terms_of_service">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačítko %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s. Může být odeslána SMS a mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba ověření</string>
@@ -175,4 +175,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Vícefaktorové ověřování je aktuálně zakázáno</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">E-mail nebo heslo nejsou správné</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Tato ověřovací relace už není platná. Vyžádejte si nový kód.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Ověření telefonu se nedokončilo. Zkuste to znovu.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Tyto přihlašovací údaje patří k jinému účtu.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Toto telefonní číslo není u tohoto účtu nastaveno pro ověřování.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Platnost vašeho přihlášení vypršela. Pokračujte opětovným přihlášením.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Tento odkaz už není platný. Vyžádejte si nový.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Před pokračováním ověřte svou e-mailovou adresu.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Tento způsob ověření je u tohoto účtu už nastavený.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Dosáhli jste limitu způsobů ověření pro tento účet.</string>
 </resources>

@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Awtomatikong na-verify ang numero ng telepono</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Gumamit ng ibang numero ng telepono</string>
     <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Sa pag-tap sa “%1$s”, ipinababatid mo na tinatanggap mo ang aming %2$s at %3$s. Maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error sa Pagpapatotoo</string>
@@ -146,7 +146,7 @@
     <string name="fui_mfa_choose_method_instruction">Pumili ng paraan ng pag-verify</string>
     <string name="fui_mfa_enrollment_instruction">Magdagdag ng karagdagang layer ng seguridad</string>
     <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Authenticator app</string>
+    <string name="fui_mfa_method_totp">App ng authenticator</string>
     <string name="fui_mfa_phone_number_already_exists_error">Ang numerong ito ay nauugnay sa ibang account</string>
     <string name="fui_mfa_second_factor_required_error">Kinakailangan ang pag-verify</string>
     <string name="fui_mfa_setup_instruction">I-scan ang QR code gamit ang iyong authenticator app</string>
@@ -163,16 +163,26 @@
     <string name="fui_reauthenticate_action">Mag-authenticate muli</string>
     <string name="fui_remove_action">Alisin</string>
     <string name="fui_resend_verification_email_action">Ipadala muli ang verification email</string>
-    <string name="fui_secret_key_label">Secret key</string>
+    <string name="fui_secret_key_label">Sikretong key</string>
     <string name="fui_sign_out_action">Mag-sign out</string>
     <string name="fui_signed_in_as">Naka-sign in bilang</string>
     <string name="fui_skip_action">Laktawan</string>
     <string name="fui_use_different_method_action">Gumamit ng ibang paraan</string>
-    <string name="fui_verification_code_label">Verification code</string>
+    <string name="fui_verification_code_label">Code sa pag-verify</string>
     <string name="fui_verified_email_action">Na-verify ang email</string>
     <string name="fui_verify_action">I-verify</string>
     <string name="fui_verify_email_instruction">Nagpadala kami ng verification email sa %1$s</string>
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Kasalukuyang naka-disable ang multi-factor authentication</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Mali ang email o password na iyon</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Wala nang bisa ang verification session na iyon. Humiling ng bagong code.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Hindi nakumpleto ang pag-verify ng telepono. Subukang muli.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Kabilang ang mga kredensyal na iyon sa ibang account.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Hindi naka-set up ang numero ng teleponong iyon para sa pag-verify sa account na ito.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Nag-expire na ang iyong sign-in session. Mag-sign in muli para magpatuloy.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Wala nang bisa ang link na iyon. Humiling ng bago.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">I-verify ang iyong email address bago ka magpatuloy.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Naka-set up na ang paraan ng pag-verify na iyon sa account na ito.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Naabot mo na ang limitasyon para sa mga paraan ng pag-verify sa account na ito.</string>
 </resources>

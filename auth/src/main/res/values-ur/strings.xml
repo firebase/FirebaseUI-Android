@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">فون نمبر کی خودکار طور پر توثیق ہو گئی</string>
     <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">مختلف فون نمبر استعمال کریں</string>
     <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s اور %3$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">تصدیق کی خرابی</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوبارہ کوشش کریں</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">اضافی تصدیق درکار ہے۔ براہ کرم کثیر عنصری تصدیق مکمل کریں۔</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">اکاؤنٹ کو لنک کرنے کی ضرورت ہے۔ براہ کرم مختلف سائن ان طریقہ آزمائیں۔</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تصدیق منسوخ کر دی گئی۔ تیار ہونے پر دوبارہ کوشش کریں۔</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">تصدیقی طریقہ منتخب کریں</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">ملٹی فیکٹر تصدیق فی الحال غیر فعال ہے</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">وہ ای میل یا پاس ورڈ درست نہیں ہے</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">یہ توثیقی سیشن اب کارآمد نہیں رہا۔ نیا کوڈ طلب کریں۔</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">فون کی توثیق مکمل نہیں ہوئی۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">یہ اسناد کسی دوسرے اکاؤنٹ سے تعلق رکھتی ہیں۔</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">یہ فون نمبر اس اکاؤنٹ پر توثیق کے لیے سیٹ اپ نہیں ہے۔</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">آپ کا سائن ان سیشن ختم ہو گیا۔ جاری رکھنے کے لیے دوبارہ سائن ان کریں۔</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">یہ لنک اب کارآمد نہیں رہا۔ نیا لنک طلب کریں۔</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">جاری رکھنے سے پہلے اپنے ای میل پتے کی توثیق کریں۔</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">یہ توثیقی طریقہ اس اکاؤنٹ پر پہلے سے سیٹ اپ ہے۔</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">آپ اس اکاؤنٹ پر توثیقی طریقوں کی حد تک پہنچ گئے ہیں۔</string>
 </resources>
