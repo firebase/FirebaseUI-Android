@@ -192,7 +192,7 @@ internal suspend fun AuthFlowScope.createOrLinkUserWithEmailAndPassword(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -351,7 +351,7 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
         throw e
     } catch (e: Exception) {
         val authException = recoverLegacyDifferentSignInMethod(email, e)
-            ?: AuthException.from(e, context)
+            ?: AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -365,7 +365,7 @@ private suspend fun AuthFlowScope.recoverLegacyDifferentSignInMethod(
         return null
     }
 
-    val authException = AuthException.from(cause)
+    val authException = AuthException.from(cause, config.stringProvider)
     if (authException !is AuthException.InvalidCredentialsException &&
         authException !is AuthException.UserNotFoundException) {
         return null
@@ -500,7 +500,7 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -565,7 +565,7 @@ internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -702,7 +702,7 @@ internal suspend fun AuthFlowScope.signInWithEmailLink(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -824,7 +824,7 @@ internal suspend fun AuthFlowScope.sendPasswordResetEmail(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }

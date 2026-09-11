@@ -38,7 +38,7 @@ internal fun AuthFlowScope.rememberGoogleSignInHandler(
                 emit(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
-                val authException = AuthException.from(e, context)
+                val authException = AuthException.from(e, config.stringProvider)
                 emit(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
@@ -73,7 +73,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
                 authorizationProvider.authorize(context, requestedScopes)
             } catch (e: Exception) {
                 // Continue with sign-in even if scope authorization fails
-                val authException = AuthException.from(e, context)
+                val authException = AuthException.from(e, config.stringProvider)
                 emit(AuthState.Error(authException))
             }
         }
@@ -193,7 +193,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
         throw e
 
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }

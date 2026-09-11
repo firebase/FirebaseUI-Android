@@ -23,6 +23,8 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -422,4 +424,53 @@ class AnonymousAuthProviderFirebaseAuthUITest {
             ArgumentMatchers.anyString()
         )
     }
+
+    // =============================================================================================
+    // Error message routing — the configured AuthUIStringProvider, not the device
+    // =============================================================================================
+
+    @Test
+    fun `signInAnonymously - failure message comes from the configured string provider`() =
+        runTest {
+            // "A network error has occurred", in Japanese.
+            val localizedMessage = "ネットワークエラーが発生しました"
+            val networkException = FirebaseNetworkException("A network error has occurred.")
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setException(networkException)
+            `when`(mockFirebaseAuth.signInAnonymously()).thenReturn(taskCompletionSource.task)
+
+            val localizedConfig = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(AuthProvider.Anonymous)
+                    provider(
+                        AuthProvider.Email(
+                            emailLinkActionCodeSettings = null,
+                            passwordValidationRules = emptyList()
+                        )
+                    )
+                }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorNetworkGeneric: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(localizedConfig).signInAnonymously()
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            // Without the configured provider the conversion keeps Firebase's own English text.
+            assertThat(thrown).isInstanceOf(AuthException.NetworkException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
 }
