@@ -19,6 +19,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -198,16 +199,19 @@ class TopLevelDialogController(
  * live auth state on every [TopLevelDialogController.showErrorDialog] call without being
  * recreated (and losing its de-duplication history) whenever the auth state changes.
  *
- * The `remember` is deliberately unkeyed: the controller holds nothing that can go stale, and
- * [TopLevelDialogController.CurrentDialog] resolves its strings from [LocalAuthUIStringProvider]
- * at render time. Any key here would be a way to lose a dialog that was just shown.
+ * The `remember` is deliberately unkeyed, so any key would be a way to lose a dialog that was
+ * just shown. Nothing kept across recompositions goes stale as a result: strings are resolved
+ * from [LocalAuthUIStringProvider] at render time, and [authState] is read through
+ * [rememberUpdatedState] rather than captured, so the first composition's lambda is not pinned
+ * for the controller's life.
  */
 @Composable
 fun rememberTopLevelDialogController(
     authState: () -> AuthState
 ): TopLevelDialogController {
+    val currentAuthState by rememberUpdatedState(authState)
     return remember {
-        TopLevelDialogController(authState)
+        TopLevelDialogController { currentAuthState() }
     }
 }
 
