@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">전화번호가 자동으로 확인되었습니다.</string>
     <string name="fui_resend_code">코드 재전송</string>
     <string name="fui_verify_phone_number">전화번호 인증</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">다른 전화번호 사용</string>
     <string name="fui_sms_terms_of_service">“%1$s” 버튼을 탭하면 SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">인증 오류</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">다시 시도</string>
@@ -174,4 +174,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">다단계 인증이 현재 비활성화되어 있습니다</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">이메일 또는 비밀번호가 올바르지 않습니다.</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">이 인증 세션은 더 이상 유효하지 않습니다. 새 코드를 요청하세요.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">전화번호 인증이 완료되지 않았습니다. 다시 시도하세요.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">이 사용자 인증 정보는 다른 계정에 속해 있습니다.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">이 전화번호는 이 계정의 인증 수단으로 설정되어 있지 않습니다.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">로그인 세션이 만료되었습니다. 계속하려면 다시 로그인하세요.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">이 링크는 더 이상 유효하지 않습니다. 새 링크를 요청하세요.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">계속하기 전에 이메일 주소를 인증하세요.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">이 인증 수단은 이 계정에 이미 설정되어 있습니다.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">이 계정에서 설정할 수 있는 인증 수단 한도에 도달했습니다.</string>
 </resources>

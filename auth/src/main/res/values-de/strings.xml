@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefonnummer wurde automatisch bestätigt</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Eine andere Telefonnummer verwenden</string>
     <string name="fui_sms_terms_of_service">Wenn Sie auf “%1$s” tippen, erhalten Sie möglicherweise eine SMS. Es können Gebühren für SMS und Datenübertragung anfallen.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Indem Sie auf "%1$s" tippen, stimmen Sie unseren %2$s und unserer %3$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentifizierungsfehler</string>
@@ -193,4 +193,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Die Multi-Faktor-Authentifizierung ist derzeit deaktiviert</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">E-Mail-Adresse oder Passwort ist nicht korrekt</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Diese Bestätigungssitzung ist nicht mehr gültig. Fordern Sie einen neuen Code an.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Die Telefonbestätigung wurde nicht abgeschlossen. Versuchen Sie es erneut.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Diese Anmeldedaten gehören zu einem anderen Konto.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Diese Telefonnummer ist für dieses Konto nicht zur Bestätigung eingerichtet.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Ihre Anmeldesitzung ist abgelaufen. Melden Sie sich erneut an, um fortzufahren.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Dieser Link ist nicht mehr gültig. Fordern Sie einen neuen an.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Diese Bestätigungsmethode ist für dieses Konto bereits eingerichtet.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Sie haben die maximale Anzahl an Bestätigungsmethoden für dieses Konto erreicht.</string>
 </resources>

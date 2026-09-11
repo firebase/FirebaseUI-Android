@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefonnummeret ble bekreftet automatisk</string>
     <string name="fui_resend_code">Send koden på nytt</string>
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Bruk et annet telefonnummer</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Godkjenningsfeil</string>
@@ -175,4 +175,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Flerfaktorautentisering er for øyeblikket deaktivert</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">E-postadressen eller passordet er feil</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Denne bekreftelsesøkten er ikke lenger gyldig. Be om en ny kode.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Telefonbekreftelsen ble ikke fullført. Prøv igjen.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Denne påloggingsinformasjonen tilhører en annen konto.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Dette telefonnummeret er ikke satt opp for bekreftelse på denne kontoen.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Påloggingsøkten din er utløpt. Logg på igjen for å fortsette.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Denne lenken er ikke lenger gyldig. Be om en ny.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Bekreft e-postadressen din før du fortsetter.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Denne bekreftelsesmetoden er allerede satt opp på denne kontoen.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Du har nådd grensen for bekreftelsesmetoder på denne kontoen.</string>
 </resources>

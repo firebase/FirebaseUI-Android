@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">שימוש במספר טלפון אחר</string>
     <string name="fui_sms_terms_of_service">הקשה על “%1$s” עשויה לגרום לשליחה של הודעת SMS. ייתכן שיחולו תעריפי הודעות והעברת נתונים.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">הקשה על “%1$s”, תפורש כהסכמתך ל%2$s ול%3$s. ייתכן שתישלח הודעת SMS. ייתכנו חיובים בגין שליחת הודעות ושימוש בנתונים.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">שגיאת אימות</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">נסה שוב</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">נדרש אימות נוסף. יש להשלים אימות רב-שלבי.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">יש לקשר את החשבון. יש לנסות שיטת כניסה אחרת.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">האימות בוטל. יש לנסות שוב כשתהיו מוכנים.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">בחר שיטת אימות</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">אימות רב-גורמי מושבת כעת</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">האימייל או הסיסמה שגויים</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">הפעלת האימות הזו כבר לא בתוקף. יש לבקש קוד חדש.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">אימות הטלפון לא הושלם. יש לנסות שוב.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">פרטי הכניסה האלה שייכים לחשבון אחר.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">מספר הטלפון הזה לא מוגדר לאימות בחשבון הזה.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">הפעלת הכניסה שלך פגה. יש להיכנס שוב כדי להמשיך.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">הקישור הזה כבר לא בתוקף. יש לבקש קישור חדש.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">יש לאמת את כתובת האימייל שלך לפני שממשיכים.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">שיטת האימות הזו כבר מוגדרת בחשבון הזה.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">הגעת למגבלה של שיטות אימות בחשבון הזה.</string>
 </resources>
