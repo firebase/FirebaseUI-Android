@@ -155,6 +155,9 @@ class DefaultAuthUIStringProvider(
     override fun passwordTooShort(minimumLength: Int): String =
         localizedContext.getString(R.string.fui_error_password_too_short, minimumLength)
 
+    override fun passwordTooLong(maximumLength: Int): String =
+        localizedContext.getString(R.string.fui_error_password_too_long, maximumLength)
+
     override val passwordMissingUppercase: String
         get() = localizedContext.getString(R.string.fui_error_password_missing_uppercase)
     override val passwordMissingLowercase: String
@@ -600,4 +603,10 @@ class DefaultAuthUIStringProvider(
 
     override val errorMaximumSecondFactorCountExceeded: String
         get() = localizedContext.getString(R.string.fui_error_maximum_second_factor_count_exceeded)
+
+    override val errorPasswordPolicyGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_password_policy_generic)
+
+    override val errorPasskeyNotFound: String
+        get() = localizedContext.getString(R.string.fui_error_passkey_not_found)
 }
