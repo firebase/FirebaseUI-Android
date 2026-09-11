@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">جاری رکھنے سے پہلے اپنے ای میل پتے کی توثیق کریں۔</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">یہ توثیقی طریقہ اس اکاؤنٹ پر پہلے سے سیٹ اپ ہے۔</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">آپ اس اکاؤنٹ پر توثیقی طریقوں کی حد تک پہنچ گئے ہیں۔</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">آپ کا پاس ورڈ تقاضے پورے نہیں کرتا۔ کوئی دوسرا آزمائیں۔</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">پاس ورڈ بہت طویل ہے۔ زیادہ سے زیادہ طوالت %1$d ہے۔</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">اس اکاؤنٹ کے لیے پاس کی نہیں ملی۔ کسی اور طریقے سے سائن ان کریں۔</string>
 </resources>

@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">તમે આગળ વધો તે પહેલાં તમારું ઇમેઇલ ઍડ્રેસ ચકાસો.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">તે ચકાસણી પદ્ધતિ આ એકાઉન્ટ પર પહેલેથી જ સેટ કરેલી છે.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">તમે આ એકાઉન્ટ પર ચકાસણી પદ્ધતિઓની મર્યાદા પર પહોંચી ગયા છો.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">તમારો પાસવર્ડ જરૂરિયાતો પૂરી કરતો નથી. બીજો પાસવર્ડ અજમાવો.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">પાસવર્ડ ઘણો લાંબો છે. મહત્તમ લંબાઈ %1$d છે.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">આ એકાઉન્ટ માટે કોઈ પાસકી મળી નથી. બીજી રીતે સાઇન ઇન કરો.</string>
 </resources>
