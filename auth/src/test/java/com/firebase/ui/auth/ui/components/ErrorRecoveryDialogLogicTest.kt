@@ -4,6 +4,7 @@ import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.google.common.truth.Truth
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,9 +42,22 @@ class ErrorRecoveryDialogLogicTest {
     // =============================================================================================
 
     @Test
-    fun `getRecoveryMessage returns network error message for NetworkException`() {
+    fun `getRecoveryMessage prefers the library-owned message for NetworkException`() {
+        // Arrange - AuthException.from now puts the configured provider's string on the exception,
+        // so discarding it here would throw away the host's own translated copy.
+        val error = AuthException.NetworkException("Pas de connexion Internet")
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert
+        Truth.assertThat(message).isEqualTo("Pas de connexion Internet")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns network error message for NetworkException with blank message`() {
         // Arrange
-        val error = AuthException.NetworkException("Network error")
+        val error = AuthException.NetworkException("")
 
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
@@ -77,15 +91,16 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
-    fun `getRecoveryMessage returns generic message for InvalidCredentialsException with generic error text`() {
-        // Arrange - When error message is the generic fallback
+    fun `getRecoveryMessage shows the hardcoded fallback text for InvalidCredentialsException`() {
+        // Arrange - The old sentinel dropped this exact string on the floor. It could never match
+        // real traffic anyway: the SDK formats every message as "<canned English> [ <detail> ]".
         val error = AuthException.InvalidCredentialsException("Invalid credentials provided")
 
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
-        // Assert - Should show the localized generic message
-        Truth.assertThat(message).isEqualTo("Incorrect password.")
+        // Assert
+        Truth.assertThat(message).isEqualTo("Invalid credentials provided")
     }
 
     @Test
@@ -101,9 +116,21 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
-    fun `getRecoveryMessage returns user not found message for UserNotFoundException`() {
+    fun `getRecoveryMessage prefers the library-owned message for UserNotFoundException`() {
         // Arrange
-        val error = AuthException.UserNotFoundException("User not found")
+        val error = AuthException.UserNotFoundException("Aucun compte pour cette adresse")
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert
+        Truth.assertThat(message).isEqualTo("Aucun compte pour cette adresse")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns user not found message for UserNotFoundException with blank message`() {
+        // Arrange
+        val error = AuthException.UserNotFoundException("")
 
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
@@ -116,7 +143,7 @@ class ErrorRecoveryDialogLogicTest {
     fun `getRecoveryMessage returns weak password message with reason for WeakPasswordException`() {
         // Arrange
         val error = AuthException.WeakPasswordException(
-            "Password is too weak",
+            "",
             null,
             "Password should be at least 8 characters"
         )
@@ -124,14 +151,14 @@ class ErrorRecoveryDialogLogicTest {
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
-        // Assert
+        // Assert - blank message, so the provider string supplies the base and the reason is kept
         Truth.assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers\n\nReason: Password should be at least 8 characters")
     }
 
     @Test
     fun `getRecoveryMessage returns weak password message without reason for WeakPasswordException`() {
         // Arrange
-        val error = AuthException.WeakPasswordException("Password is too weak", null, null)
+        val error = AuthException.WeakPasswordException("", null, null)
 
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
@@ -144,7 +171,7 @@ class ErrorRecoveryDialogLogicTest {
     fun `getRecoveryMessage returns email already in use message with email for EmailAlreadyInUseException`() {
         // Arrange
         val error = AuthException.EmailAlreadyInUseException(
-            "Email already in use",
+            "",
             null,
             "test@example.com"
         )
@@ -152,20 +179,117 @@ class ErrorRecoveryDialogLogicTest {
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
-        // Assert
+        // Assert - blank message, so the provider string supplies the base and the email is kept
         Truth.assertThat(message).isEqualTo("Email account registration unsuccessful (test@example.com)")
     }
 
     @Test
     fun `getRecoveryMessage returns email already in use message without email for EmailAlreadyInUseException`() {
         // Arrange
-        val error = AuthException.EmailAlreadyInUseException("Email already in use", null, null)
+        val error = AuthException.EmailAlreadyInUseException("", null, null)
 
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
         Truth.assertThat(message).isEqualTo("Email account registration unsuccessful")
+    }
+
+    // =============================================================================================
+    // Misconfiguration — the one message that is never rendered
+    // =============================================================================================
+
+    @Test
+    fun `getRecoveryMessage never shows the raw message for MisconfigurationException`() {
+        // Arrange - exactly what firebase-auth 24.2.0 puts on a disabled sign-in provider. It is
+        // untranslated, it names the Firebase console, and the user can do nothing with it.
+        val rawDiagnostic = "This operation is not allowed. This may be because the given sign-in " +
+                "provider is disabled for this Firebase project. Enable it in the Firebase " +
+                "console, under the sign-in method tab of the Auth section. [ OPERATION_NOT_ALLOWED ]"
+        val error = AuthException.MisconfigurationException(rawDiagnostic)
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert
+        Truth.assertThat(message).isEqualTo("An unknown error occurred.")
+        Truth.assertThat(message).doesNotContain("Firebase")
+        Truth.assertThat(message).doesNotContain("OPERATION_NOT_ALLOWED")
+    }
+
+    @Test
+    fun `MisconfigurationException from() keeps the raw diagnostic on the cause, not the message`() {
+        // EmailAuthScreen and PhoneAuthScreen render `exception.message` inline without going
+        // through getRecoveryMessage, so the diagnostic has to be off the message entirely.
+        val rawDiagnostic = "The supplied auth credential is malformed. [ INVALID_CERT_HASH ]"
+        val firebaseException =
+            object : FirebaseAuthException("ERROR_INVALID_CERT_HASH", rawDiagnostic) {}
+
+        val error = AuthException.from(firebaseException, mockStringProvider)
+
+        Truth.assertThat(error).isInstanceOf(AuthException.MisconfigurationException::class.java)
+        Truth.assertThat(error.message).isEqualTo("An unknown error occurred.")
+        Truth.assertThat(error.cause).isEqualTo(firebaseException)
+        Truth.assertThat(error.cause?.message).isEqualTo(rawDiagnostic)
+    }
+
+    @Test
+    fun `isRecoverable returns false for MisconfigurationException`() {
+        val error = AuthException.MisconfigurationException("Unauthorized domain")
+
+        Truth.assertThat(isRecoverable(error)).isFalse()
+    }
+
+    // =============================================================================================
+    // Subtypes whose arms used to discard error.message outright
+    // =============================================================================================
+
+    @Test
+    fun `getRecoveryMessage prefers the library-owned message for TooManyRequestsException`() {
+        val error = AuthException.TooManyRequestsException("Trop de tentatives")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("Trop de tentatives")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns the recovery string for TooManyRequestsException with blank message`() {
+        val error = AuthException.TooManyRequestsException("")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("This phone number has been used too many times")
+    }
+
+    @Test
+    fun `getRecoveryMessage prefers the library-owned message for MfaRequiredException`() {
+        val error = AuthException.MfaRequiredException("Vérification supplémentaire requise")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("Vérification supplémentaire requise")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns the recovery string for MfaRequiredException with blank message`() {
+        val error = AuthException.MfaRequiredException("")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("Additional verification required. Please complete multi-factor authentication.")
+    }
+
+    @Test
+    fun `getRecoveryMessage prefers the library-owned message for AuthCancelledException`() {
+        val error = AuthException.AuthCancelledException("Connexion annulée")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("Connexion annulée")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns the recovery string for AuthCancelledException with blank message`() {
+        val error = AuthException.AuthCancelledException("")
+
+        Truth.assertThat(getRecoveryMessage(error, mockStringProvider))
+            .isEqualTo("Authentication was cancelled. Please try again when ready.")
     }
 
     // =============================================================================================
