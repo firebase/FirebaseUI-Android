@@ -567,4 +567,37 @@ class DefaultAuthUIStringProvider(
 
     override val errorAuthCancelled: String
         get() = localizedContext.getString(R.string.fui_error_auth_cancelled)
+
+    override val errorIncorrectEmailOrPassword: String
+        get() = localizedContext.getString(R.string.fui_error_incorrect_email_or_password)
+
+    override val errorInvalidVerificationId: String
+        get() = localizedContext.getString(R.string.fui_error_invalid_verification_id)
+
+    override val errorRetryPhoneAuth: String
+        get() = localizedContext.getString(R.string.fui_error_retry_phone_auth)
+
+    override val errorUserMismatch: String
+        get() = localizedContext.getString(R.string.fui_error_user_mismatch)
+
+    override val errorPhoneNumberNotEnrolled: String
+        get() = localizedContext.getString(R.string.fui_error_phone_number_not_enrolled)
+
+    override val errorSessionExpired: String
+        get() = localizedContext.getString(R.string.fui_error_session_expired)
+
+    override val errorMultiFactorSessionExpired: String
+        get() = localizedContext.getString(R.string.fui_error_multi_factor_session_expired)
+
+    override val errorActionCodeInvalid: String
+        get() = localizedContext.getString(R.string.fui_error_action_code_invalid)
+
+    override val errorUnverifiedEmail: String
+        get() = localizedContext.getString(R.string.fui_error_unverified_email)
+
+    override val errorSecondFactorAlreadyEnrolled: String
+        get() = localizedContext.getString(R.string.fui_error_second_factor_already_enrolled)
+
+    override val errorMaximumSecondFactorCountExceeded: String
+        get() = localizedContext.getString(R.string.fui_error_maximum_second_factor_count_exceeded)
 }

@@ -19,7 +19,9 @@ import com.firebase.ui.auth.AuthException.Companion.from
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuthActionCodeException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -257,6 +259,27 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * The Firebase project or the app is not set up for the operation that was attempted.
+     *
+     * Examples are a sign-in provider left disabled in the Firebase console, an unauthorized
+     * continue-URL domain, a missing SHA-1 certificate hash, and the reCAPTCHA and tenant
+     * families. None of these are anything the user can act on.
+     *
+     * [message] is generic translated copy, safe to render anywhere — the error dialog, an inline
+     * error on a screen, or a host's own `onSignInFailure`. The raw Firebase SDK diagnostic is
+     * untranslated but names the actual misconfiguration, so [from] keeps it on [cause] (the
+     * original [com.google.firebase.auth.FirebaseAuthException]): it stays in the stack trace and
+     * is reachable as `exception.cause?.message`.
+     *
+     * @property message Generic translated copy, safe to display
+     * @property cause The original Firebase exception, carrying the raw diagnostic for logs
+     */
+    class MisconfigurationException(
+        message: String,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * An unknown or unhandled error occurred.
      *
      * This exception is thrown for errors that don't match any of the specific
@@ -361,11 +384,14 @@ abstract class AuthException(
          *
          * **Mapping:**
          * - [FirebaseException] → [NetworkException] (for network-related errors)
-         * - [FirebaseAuthInvalidCredentialsException] → [InvalidCredentialsException]
+         * - [FirebaseTooManyRequestsException] → [TooManyRequestsException]
+         * - [FirebaseAuthInvalidCredentialsException] → [InvalidCredentialsException], with the
+         *   message selected by `errorCode`
          * - [FirebaseAuthInvalidUserException] → [UserNotFoundException]
          * - [FirebaseAuthWeakPasswordException] → [WeakPasswordException]
          * - [FirebaseAuthUserCollisionException] → [EmailAlreadyInUseException]
-         * - [FirebaseAuthException] with ERROR_TOO_MANY_REQUESTS → [TooManyRequestsException]
+         * - [FirebaseAuthActionCodeException] → [InvalidCredentialsException]
+         * - [FirebaseAuthException] with a developer-setup `errorCode` → [MisconfigurationException]
          * - [FirebaseAuthMultiFactorException] → [MfaRequiredException]
          * - Other exceptions → [UnknownException]
          *
@@ -399,8 +425,16 @@ abstract class AuthException(
          * [stringProvider] so it honours the host's configured strings and locale.
          *
          * This is the preferred overload; see the [Context] one above for the exception mapping
-         * table and an example. A `null` [stringProvider], or one whose resource for a given error
-         * is blank, falls back to the Firebase SDK's own message.
+         * table and an example.
+         *
+         * Given a non-null [stringProvider], the returned exception's `message` is always
+         * library-owned, translated copy, so it is safe for any consumer to render directly. Each
+         * branch resolves in this order: the blank-able hook scoped to the exception type, then
+         * the string for the specific Firebase `errorCode`, then the corresponding generic
+         * recovery message, and only then the Firebase SDK's own untranslated message. The
+         * exception is [MisconfigurationException], which never uses the SDK message at all — the
+         * raw diagnostic lives on `cause`. A `null` [stringProvider] has nothing to resolve
+         * against and falls back to the SDK message everywhere except [MisconfigurationException].
          *
          * @param firebaseException The Firebase exception to convert
          * @param stringProvider Supplies localized message text; pass `config.stringProvider`
@@ -431,6 +465,7 @@ abstract class AuthException(
                     } else {
                         WeakPasswordException(
                             message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                ?: stringProvider?.weakPasswordRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Password is too weak",
                             cause = firebaseException,
@@ -440,18 +475,154 @@ abstract class AuthException(
                 }
 
                 is FirebaseAuthInvalidCredentialsException -> {
-                    InvalidCredentialsException(
-                        message = stringProvider?.errorInvalidCredentials.nonEmpty()
-                            ?: firebaseException.message
-                            ?: "Invalid credentials provided",
-                        cause = firebaseException
-                    )
+                    // `errorInvalidCredentials` is the blank-able hook for the whole exception
+                    // type, so it stays ahead of the per-code string in every branch.
+                    val typeLevel = stringProvider?.errorInvalidCredentials.nonEmpty()
+                    when (firebaseException.errorCode) {
+                        // Under email enumeration protection the backend merges "wrong password"
+                        // and "no such account" into this one code, so the copy cannot claim the
+                        // password specifically.
+                        "ERROR_INVALID_CREDENTIAL" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorIncorrectEmailOrPassword.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That email or password isn't correct",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_WRONG_PASSWORD" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.invalidPassword.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Incorrect password.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_INVALID_EMAIL" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.invalidEmailAddress.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That email address isn't correct",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_MISSING_EMAIL" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.missingEmailAddress.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Enter your email address to continue",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_MISSING_PASSWORD",
+                        "ERROR_MISSING_VERIFICATION_CODE" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.requiredField.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "You can't leave this empty.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_INVALID_PHONE_NUMBER" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.invalidPhoneNumber.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Enter a valid phone number",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_MISSING_PHONE_NUMBER" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.missingPhoneNumber.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "You can't leave this empty.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_INVALID_VERIFICATION_CODE" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.invalidVerificationCode.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Wrong code. Try again.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_SESSION_EXPIRED" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorSessionExpired.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "This code is no longer valid",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_INVALID_VERIFICATION_ID",
+                        "ERROR_MISSING_VERIFICATION_ID" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorInvalidVerificationId.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That verification session is no longer valid. Request a new code.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_RETRY_PHONE_AUTH" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorRetryPhoneAuth.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Phone verification didn't complete. Try again.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_USER_MISMATCH" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorUserMismatch.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Those credentials belong to a different account.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_PHONE_NUMBER_NOT_FOUND",
+                        "ERROR_MULTI_FACTOR_INFO_NOT_FOUND",
+                        "ERROR_MISSING_MULTI_FACTOR_INFO" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorPhoneNumberNotEnrolled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That phone number isn't set up for verification on this account.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_INVALID_MULTI_FACTOR_SESSION",
+                        "ERROR_MISSING_MULTI_FACTOR_SESSION" -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: stringProvider?.errorMultiFactorSessionExpired.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Your sign-in session expired. Sign in again to continue.",
+                            cause = firebaseException
+                        )
+
+                        // Custom tokens are minted by the developer's own backend; the SDK's
+                        // diagnostic names the setup problem and means nothing to the user, so it
+                        // stays on `cause` while `message` carries renderable generic copy.
+                        "ERROR_INVALID_CUSTOM_TOKEN",
+                        "ERROR_CUSTOM_TOKEN_MISMATCH" -> MisconfigurationException(
+                            message = stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
+                                ?: "An unknown error occurred.",
+                            cause = firebaseException
+                        )
+
+                        else -> InvalidCredentialsException(
+                            message = typeLevel
+                                ?: firebaseException.message
+                                ?: "Invalid credentials provided",
+                            cause = firebaseException
+                        )
+                    }
                 }
 
                 is FirebaseAuthInvalidUserException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_USER_NOT_FOUND" -> UserNotFoundException(
                             message = stringProvider?.errorUserNotFound.nonEmpty()
+                                ?: stringProvider?.userNotFoundRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "User not found",
                             cause = firebaseException
@@ -464,10 +635,45 @@ abstract class AuthException(
                             cause = firebaseException
                         )
 
+                        "ERROR_INVALID_USER_TOKEN",
+                        "ERROR_USER_TOKEN_EXPIRED" -> InvalidCredentialsException(
+                            message = stringProvider?.errorUserAccountGeneric.nonEmpty()
+                                ?: stringProvider?.errorMultiFactorSessionExpired.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Your sign-in session expired. Sign in again to continue.",
+                            cause = firebaseException
+                        )
+
                         else -> UserNotFoundException(
                             message = stringProvider?.errorUserAccountGeneric.nonEmpty()
+                                ?: stringProvider?.userNotFoundRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "User account error",
+                            cause = firebaseException
+                        )
+                    }
+                }
+
+                // Must precede the plain FirebaseAuthException arm, which it extends.
+                is FirebaseAuthActionCodeException -> {
+                    when (firebaseException.errorCode) {
+                        // The type-level hook is the one scoped to the exception this produces —
+                        // `errorInvalidCredentials`. Using `errorUnknownAuth` here would let a
+                        // host customising the unknown-error copy silently lose this string.
+                        "ERROR_EXPIRED_ACTION_CODE",
+                        "ERROR_INVALID_ACTION_CODE" -> InvalidCredentialsException(
+                            message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                                ?: stringProvider?.errorActionCodeInvalid.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That link is no longer valid. Request a new one.",
+                            cause = firebaseException
+                        )
+
+                        else -> UnknownException(
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "An unknown authentication error occurred",
                             cause = firebaseException
                         )
                     }
@@ -477,6 +683,7 @@ abstract class AuthException(
                     when (firebaseException.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> EmailAlreadyInUseException(
                             message = stringProvider?.errorEmailAlreadyInUse.nonEmpty()
+                                ?: stringProvider?.emailAlreadyInUseRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Email address is already in use",
                             cause = firebaseException,
@@ -485,6 +692,7 @@ abstract class AuthException(
 
                         "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> AccountLinkingRequiredException(
                             message = stringProvider?.errorAccountExistsDifferentCredential.nonEmpty()
+                                ?: stringProvider?.accountLinkingRequiredRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Account already exists with different credentials",
                             cause = firebaseException
@@ -492,6 +700,7 @@ abstract class AuthException(
 
                         "ERROR_CREDENTIAL_ALREADY_IN_USE" -> AccountLinkingRequiredException(
                             message = stringProvider?.errorCredentialAlreadyInUse.nonEmpty()
+                                ?: stringProvider?.accountLinkingRequiredRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Credential is already associated with a different user account",
                             cause = firebaseException
@@ -499,6 +708,7 @@ abstract class AuthException(
 
                         else -> AccountLinkingRequiredException(
                             message = stringProvider?.errorAccountCollisionGeneric.nonEmpty()
+                                ?: stringProvider?.accountLinkingRequiredRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Account collision error",
                             cause = firebaseException
@@ -509,6 +719,7 @@ abstract class AuthException(
                 is FirebaseAuthMultiFactorException -> {
                     MfaRequiredException(
                         message = stringProvider?.errorMfaRequiredFallback.nonEmpty()
+                            ?: stringProvider?.mfaRequiredRecoveryMessage.nonEmpty()
                             ?: firebaseException.message
                             ?: "Multi-factor authentication required",
                         cause = firebaseException
@@ -526,28 +737,114 @@ abstract class AuthException(
 
                 is FirebaseAuthException -> {
                     when (firebaseException.errorCode) {
-                        "ERROR_TOO_MANY_REQUESTS" -> TooManyRequestsException(
-                            message = stringProvider?.errorTooManyRequests.nonEmpty()
-                                ?: firebaseException.message
-                                ?: "Too many requests. Please try again later",
-                            cause = firebaseException
-                        )
-
-                        // FirebaseAuthWebException code for backing out of the OAuth custom tab
-                        "ERROR_WEB_CONTEXT_CANCELED" -> AuthCancelledException(
+                        // FirebaseAuthWebException code for backing out of the OAuth custom tab,
+                        // and the Credential Manager / Play services equivalent.
+                        "ERROR_WEB_CONTEXT_CANCELED",
+                        "ERROR_USER_CANCELLED" -> AuthCancelledException(
                             message = stringProvider?.errorAuthCancelled.nonEmpty()
+                                ?: stringProvider?.authCancelledRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Authentication was cancelled",
                             cause = firebaseException
                         )
 
+                        // These three produce InvalidCredentialsException, so the type-level hook
+                        // is `errorInvalidCredentials`. `errorUnknownAuth` would let a host that
+                        // customises only the unknown-error copy lose all three specific strings.
+                        "ERROR_UNVERIFIED_EMAIL" -> InvalidCredentialsException(
+                            message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                                ?: stringProvider?.errorUnverifiedEmail.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Verify your email address before you continue.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_SECOND_FACTOR_ALREADY_ENROLLED" -> InvalidCredentialsException(
+                            message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                                ?: stringProvider?.errorSecondFactorAlreadyEnrolled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "That verification method is already set up on this account.",
+                            cause = firebaseException
+                        )
+
+                        "ERROR_MAXIMUM_SECOND_FACTOR_COUNT_EXCEEDED" -> InvalidCredentialsException(
+                            message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                                ?: stringProvider?.errorMaximumSecondFactorCountExceeded.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "You've reached the limit for verification methods on this account.",
+                            cause = firebaseException
+                        )
+
+                        // Developer setup problems. The user can do nothing about any of them, so
+                        // `message` carries generic translated copy and the raw Firebase
+                        // diagnostic is kept on `cause` for logs. INTERNAL_ERROR and
+                        // ERROR_WEB_INTERNAL_ERROR are deliberately absent — they are backend
+                        // faults, not configuration.
+                        "ERROR_OPERATION_NOT_ALLOWED",
+                        "ERROR_APP_NOT_AUTHORIZED",
+                        "ERROR_UNAUTHORIZED_DOMAIN",
+                        "ERROR_MISSING_CONTINUE_URI",
+                        "ERROR_INVALID_CERT_HASH",
+                        "ERROR_DYNAMIC_LINK_NOT_ACTIVATED",
+                        "ERROR_INVALID_DYNAMIC_LINK_DOMAIN",
+                        "ERROR_INVALID_HOSTING_LINK_DOMAIN",
+                        "ERROR_INVALID_PROVIDER_ID",
+                        "ERROR_ADMIN_RESTRICTED_OPERATION",
+                        "ERROR_UNSUPPORTED_FIRST_FACTOR",
+                        "ERROR_UNSUPPORTED_PASSTHROUGH_OPERATION",
+                        "ERROR_INVALID_REQ_TYPE",
+                        "ERROR_WEB_CONTEXT_ALREADY_PRESENTED",
+                        // Tenant family
+                        "ERROR_INVALID_TENANT_ID",
+                        "ERROR_TENANT_ID_MISMATCH",
+                        "ERROR_UNSUPPORTED_TENANT_OPERATION",
+                        // reCAPTCHA / app verification family
+                        "ERROR_RECAPTCHA_NOT_ENABLED",
+                        "ERROR_CAPTCHA_CHECK_FAILED",
+                        "ERROR_MISSING_RECAPTCHA_TOKEN",
+                        "ERROR_INVALID_RECAPTCHA_TOKEN",
+                        "ERROR_INVALID_RECAPTCHA_ACTION",
+                        "ERROR_MISSING_RECAPTCHA_VERSION",
+                        "ERROR_INVALID_RECAPTCHA_VERSION",
+                        "ERROR_MISSING_CLIENT_TYPE",
+                        "ERROR_MISSING_CLIENT_IDENTIFIER",
+                        "ERROR_ALTERNATE_CLIENT_IDENTIFIER_REQUIRED",
+                        // Email-template settings in the Firebase console. These arrive as
+                        // FirebaseAuthEmailException, which extends FirebaseAuthException
+                        // directly and so lands in this arm.
+                        "ERROR_INVALID_MESSAGE_PAYLOAD",
+                        "ERROR_INVALID_SENDER",
+                        "ERROR_INVALID_RECIPIENT_EMAIL",
+                        // Host integration and project quota.
+                        "ERROR_MISSING_ACTIVITY",
+                        "ERROR_WEB_STORAGE_UNSUPPORTED",
+                        "ERROR_QUOTA_EXCEEDED" -> MisconfigurationException(
+                            message = stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
+                                ?: "An unknown error occurred.",
+                            cause = firebaseException
+                        )
+
                         else -> UnknownException(
                             message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "An unknown authentication error occurred",
                             cause = firebaseException
                         )
                     }
+                }
+
+                // Rate limiting arrives as a plain FirebaseTooManyRequestsException, which is NOT a
+                // FirebaseAuthException and carries no error code. Without this arm it falls to the
+                // FirebaseException branch below and a throttled user is told they are offline.
+                is FirebaseTooManyRequestsException -> {
+                    TooManyRequestsException(
+                        message = stringProvider?.errorTooManyRequests.nonEmpty()
+                            ?: stringProvider?.tooManyRequestsRecoveryMessage.nonEmpty()
+                            ?: firebaseException.message
+                            ?: "Too many requests. Please try again later",
+                        cause = firebaseException
+                    )
                 }
 
                 is FirebaseException -> {
@@ -565,6 +862,7 @@ abstract class AuthException(
                     } else {
                         NetworkException(
                             message = stringProvider?.errorNetworkGeneric.nonEmpty()
+                                ?: stringProvider?.networkErrorRecoveryMessage.nonEmpty()
                                 ?: msg.ifEmpty { "Network error occurred" },
                             cause = firebaseException
                         )
@@ -577,6 +875,7 @@ abstract class AuthException(
                     ) {
                         AuthCancelledException(
                             message = stringProvider?.errorAuthCancelled.nonEmpty()
+                                ?: stringProvider?.authCancelledRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Authentication was cancelled",
                             cause = firebaseException
@@ -584,6 +883,7 @@ abstract class AuthException(
                     } else {
                         UnknownException(
                             message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "An unknown error occurred",
                             cause = firebaseException
