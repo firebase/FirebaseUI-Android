@@ -229,6 +229,7 @@ internal fun getRecoveryActionText(
     error: AuthException,
     stringProvider: AuthUIStringProvider
 ): String {
+    if (!isRecoverable(error)) return stringProvider.dismissAction
     return when (error) {
         is AuthException.AuthCancelledException -> stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
@@ -240,12 +241,6 @@ internal fun getRecoveryActionText(
         is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
         is AuthException.EmailLinkWrongDeviceException -> stringProvider.continueText
         is AuthException.UserNotFoundException -> stringProvider.signupPageTitle // Navigate to sign-up when user not found
-        // Every type [isRecoverable] reports `false` for: retry must never be their answer.
-        is AuthException.EmailLinkDifferentAnonymousUserException,
-        is AuthException.MisconfigurationException,
-        is AuthException.SignInMethodUnavailableException,
-        is AuthException.TooManyRequestsException,
-        is AuthException.PhoneVerificationCooldownException -> stringProvider.dismissAction
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
         is AuthException.WeakPasswordException,
