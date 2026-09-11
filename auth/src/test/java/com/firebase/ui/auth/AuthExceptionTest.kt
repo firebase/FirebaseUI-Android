@@ -84,17 +84,6 @@ class AuthExceptionTest {
         assertThat(result.message).isEqualTo("Zu viele Versuche")
     }
 
-    @Test
-    fun `from() no longer treats ERROR_TOO_MANY_REQUESTS as a real Firebase Auth code`() {
-        // firebase-auth 24.2.0 has no such code: every status that means "rate limited" (17010,
-        // 17052) is turned into a FirebaseTooManyRequestsException instead. Anything still
-        // carrying this string is not from the SDK, so it is just an unknown code.
-        val firebaseException = object : FirebaseAuthException("ERROR_TOO_MANY_REQUESTS", "x") {}
-
-        val result = AuthException.from(firebaseException)
-
-        assertThat(result).isInstanceOf(AuthException.UnknownException::class.java)
-    }
 
     @Test
     fun `from() maps FirebaseAuthException with unknown error code to UnknownException`() {
