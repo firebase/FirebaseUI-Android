@@ -578,4 +578,19 @@ class AuthExceptionTest {
             assertWithMessage(name).that(method.isDefault).isTrue()
         }
     }
+    @Test
+    fun `an expired user token honours the credentials hook, not the account-generic one`() {
+        // It produces an InvalidCredentialsException, so errorUserAccountGeneric — the hook the
+        // UserNotFoundException arm below it uses — must not win.
+        val stringProvider = mock(AuthUIStringProvider::class.java)
+        whenever(stringProvider.errorInvalidCredentials).thenReturn("Custom: credentials")
+        whenever(stringProvider.errorUserAccountGeneric).thenReturn("Custom: account generic")
+        val firebaseException = FirebaseAuthInvalidUserException("ERROR_USER_TOKEN_EXPIRED", "x")
+
+        val result = AuthException.from(firebaseException, stringProvider)
+
+        assertThat(result).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+        assertThat(result.message).isEqualTo("Custom: credentials")
+    }
+
 }
