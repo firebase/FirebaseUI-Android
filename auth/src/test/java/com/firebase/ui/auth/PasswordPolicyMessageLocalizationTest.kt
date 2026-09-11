@@ -30,12 +30,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Covers the Google Identity Platform password-policy path, which [FirebaseAuthErrorCodeSweepTest]
- * structurally cannot reach.
+ * Covers the Google Identity Platform password-policy path.
  *
- * That sweep's synthetic diagnostic never carries the `PASSWORD_DOES_NOT_MEET_REQUIREMENTS`
- * marker, so neither policy branch is ever entered. The fixtures below are the real backend
- * strings, captured from a project with `Require` enforcement and a minimum length of 10.
+ * The fixtures are the real backend strings, captured from a project with `Require` enforcement
+ * and a minimum length of 10.
  *
  * @suppress Internal test class
  */
@@ -88,7 +86,7 @@ class PasswordPolicyMessageLocalizationTest {
     )
 
     // =============================================================================================
-    // The leak the sweep could not see
+    // Untranslated English reaching the dialog
     // =============================================================================================
 
     @Test

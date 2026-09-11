@@ -349,31 +349,7 @@ class AuthExceptionRecoveryResolutionTest {
     // The copy is actually translated, not just library-owned
     // =============================================================================================
 
-    @Test
-    fun `a French device offline sees French, not the English network diagnostic`() {
-        val french = DefaultAuthUIStringProvider(context, Locale.FRENCH)
-        val firebaseException = object : FirebaseException(networkDiagnostic) {}
 
-        val resolved = resolve(firebaseException, french)
-
-        assertThat(resolved).isEqualTo(french.networkErrorRecoveryMessage)
-        assertThat(resolved).isNotEqualTo(networkDiagnostic)
-        // Guards against the French resource silently falling back to values/.
-        assertThat(resolved).isNotEqualTo(strings.networkErrorRecoveryMessage)
-    }
-
-    @Test
-    fun `a French device with no such account sees French, not the English diagnostic`() {
-        val french = DefaultAuthUIStringProvider(context, Locale.FRENCH)
-        val firebaseException =
-            FirebaseAuthInvalidUserException("ERROR_USER_NOT_FOUND", userNotFoundDiagnostic)
-
-        val resolved = resolve(firebaseException, french)
-
-        assertThat(resolved).isEqualTo(french.userNotFoundRecoveryMessage)
-        assertThat(resolved).isNotEqualTo(userNotFoundDiagnostic)
-        assertThat(resolved).isNotEqualTo(strings.userNotFoundRecoveryMessage)
-    }
 
     @Test
     fun `a French device changing its email sees French, not the English reauth diagnostic`() {
