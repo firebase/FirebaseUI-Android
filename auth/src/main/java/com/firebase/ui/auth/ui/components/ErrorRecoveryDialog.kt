@@ -155,15 +155,15 @@ internal fun getRecoveryMessage(
             error.message?.takeIf { it.isNotBlank() }
                 ?: stringProvider.invalidCredentialsRecoveryMessage
         }
+        is AuthException.SignInMethodUnavailableException ->
+            // Passkey-specific fallback behind a general type — see the exception's KDoc.
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.errorPasskeyNotFound
         is AuthException.UserNotFoundException ->
             error.message?.takeIf { it.isNotBlank() } ?: stringProvider.userNotFoundRecoveryMessage
         is AuthException.WeakPasswordException -> {
-            // Include specific reason if available
-            val baseMessage = error.message?.takeIf { it.isNotBlank() }
+            // `error.reason` is untranslated SDK text, so it is deliberately not appended.
+            error.message?.takeIf { it.isNotBlank() }
                 ?: stringProvider.weakPasswordRecoveryMessage
-            error.reason?.let { reason ->
-                "$baseMessage\n\nReason: $reason"
-            } ?: baseMessage
         }
 
         is AuthException.PasswordPolicyViolationException -> {
@@ -185,16 +185,18 @@ internal fun getRecoveryMessage(
                 ?: stringProvider.tooManyRequestsRecoveryMessage
         is AuthException.PhoneVerificationCooldownException -> {
             // Use the custom message which includes remaining cooldown time
-            error.message ?: stringProvider.unknownErrorRecoveryMessage
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.unknownErrorRecoveryMessage
         }
         is AuthException.MfaRequiredException ->
             error.message?.takeIf { it.isNotBlank() } ?: stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> {
             // Use the custom message which includes email and provider details
-            error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
+            error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
         is AuthException.DifferentSignInMethodRequiredException -> {
-            error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
+            error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
         is AuthException.EmailMismatchException -> stringProvider.emailMismatchMessage
         is AuthException.InvalidEmailLinkException -> stringProvider.emailLinkInvalidLinkMessage
@@ -237,14 +239,17 @@ internal fun getRecoveryActionText(
         is AuthException.EmailLinkPromptForEmailException -> stringProvider.continueText
         is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
         is AuthException.EmailLinkWrongDeviceException -> stringProvider.continueText
-        is AuthException.EmailLinkDifferentAnonymousUserException -> stringProvider.dismissAction
         is AuthException.UserNotFoundException -> stringProvider.signupPageTitle // Navigate to sign-up when user not found
+        // Every type [isRecoverable] reports `false` for: retry must never be their answer.
+        is AuthException.EmailLinkDifferentAnonymousUserException,
+        is AuthException.MisconfigurationException,
+        is AuthException.SignInMethodUnavailableException,
+        is AuthException.TooManyRequestsException,
+        is AuthException.PhoneVerificationCooldownException -> stringProvider.dismissAction
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
         is AuthException.WeakPasswordException,
-        is AuthException.PasswordPolicyViolationException,
-        is AuthException.TooManyRequestsException,
-        is AuthException.PhoneVerificationCooldownException -> stringProvider.retryAction
+        is AuthException.PasswordPolicyViolationException -> stringProvider.retryAction
         is AuthException.UnknownException -> stringProvider.retryAction
 
         else -> stringProvider.retryAction
@@ -276,6 +281,8 @@ internal fun isRecoverable(error: AuthException): Boolean {
         is AuthException.EmailLinkWrongDeviceException -> true
         is AuthException.EmailLinkDifferentAnonymousUserException -> false
         is AuthException.MisconfigurationException -> false // Retrying cannot fix project setup
+        // The method is not available on this account; repeating it cannot change that.
+        is AuthException.SignInMethodUnavailableException -> false
         is AuthException.UnknownException -> true
         else -> true
     }

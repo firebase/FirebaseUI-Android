@@ -6,6 +6,7 @@ import com.google.common.truth.Truth
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
+import java.lang.reflect.Modifier
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -140,8 +141,8 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
-    fun `getRecoveryMessage returns weak password message with reason for WeakPasswordException`() {
-        // Arrange
+    fun `getRecoveryMessage drops the untranslated reason for WeakPasswordException`() {
+        // Arrange - the reason is the raw SDK string, English in every locale.
         val error = AuthException.WeakPasswordException(
             "",
             null,
@@ -151,8 +152,11 @@ class ErrorRecoveryDialogLogicTest {
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
-        // Assert - blank message, so the provider string supplies the base and the reason is kept
-        Truth.assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers\n\nReason: Password should be at least 8 characters")
+        // Assert - blank message, so the provider string supplies the whole body. The reason is
+        // not appended: it is untranslated, and the provider string already states the minimum.
+        Truth.assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers")
+        Truth.assertThat(message).doesNotContain("Reason:")
+        Truth.assertThat(message).doesNotContain("Password should be at least 8 characters")
     }
 
     @Test
@@ -432,5 +436,46 @@ class ErrorRecoveryDialogLogicTest {
 
         // Act & Assert
         Truth.assertThat(isRecoverable(error)).isTrue()
+    }
+
+    @Test
+    fun `no non-recoverable error offers a retry as its action text`() {
+        // Derived, so a new non-recoverable type fails here until getRecoveryActionText names it.
+        Mockito.`when`(mockStringProvider.dismissAction).thenReturn("Dismiss")
+
+        val nonRecoverable = allAuthExceptionSubtypes().filterNot { isRecoverable(it) }
+
+        Truth.assertWithMessage("no non-recoverable subtype was discovered by reflection")
+            .that(nonRecoverable).isNotEmpty()
+        for (error in nonRecoverable) {
+            Truth.assertWithMessage(error::class.simpleName)
+                .that(getRecoveryActionText(error, mockStringProvider)).isEqualTo("Dismiss")
+        }
+    }
+
+    /** One instance of every concrete [AuthException] subtype, built with placeholder arguments. */
+    private fun allAuthExceptionSubtypes(): List<AuthException> =
+        AuthException::class.java.declaredClasses
+            .filter { AuthException::class.java.isAssignableFrom(it) }
+            .filterNot { Modifier.isAbstract(it.modifiers) }
+            .sortedBy { it.name }
+            .map { instantiate(it) }
+
+    private fun instantiate(type: Class<*>): AuthException {
+        val constructor = type.declaredConstructors
+            .filterNot { it.isSynthetic }
+            .minByOrNull { it.parameterCount }
+            ?: error("${type.simpleName} has no usable constructor")
+        val arguments = constructor.parameterTypes.map { parameter ->
+            when (parameter) {
+                String::class.java -> "placeholder"
+                List::class.java -> emptyList<String>()
+                Long::class.javaPrimitiveType -> 0L
+                Int::class.javaPrimitiveType -> 0
+                Boolean::class.javaPrimitiveType -> false
+                else -> null
+            }
+        }
+        return constructor.newInstance(*arguments.toTypedArray()) as AuthException
     }
 }

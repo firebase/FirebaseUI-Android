@@ -18,20 +18,25 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.ui.components.getRecoveryActionText
 import com.firebase.ui.auth.ui.components.getRecoveryMessage
+import com.firebase.ui.auth.ui.components.isRecoverable
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthMissingActivityForRecaptchaException
 import com.google.firebase.auth.FirebaseAuthMultiFactorException
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import java.util.Locale
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.doCallRealMethod
 import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -70,6 +75,8 @@ class AuthExceptionRecoveryResolutionTest {
             "least 6 characters ]"
     private val emailInUseDiagnostic = "The email address is already in use by another account."
     private val mfaDiagnostic = "Please complete a second factor challenge."
+    private val recentLoginDiagnostic = "This operation is sensitive and requires recent " +
+            "authentication. Log in again before retrying this request."
     private val cancelledDiagnostic = "User cancelled the sign-in flow."
     private val operationNotAllowedDiagnostic = "This operation is not allowed. This may be " +
             "because the given sign-in provider is disabled for this Firebase project. Enable it " +
@@ -136,8 +143,6 @@ class AuthExceptionRecoveryResolutionTest {
 
         val authException = AuthException.from(firebaseException, strings)
 
-        // getRecoveryMessage appends the SDK's untranslated `reason` on top of the base copy, so
-        // the invariant this test defends is the exception's own message.
         assertThat(authException.message).isEqualTo(strings.weakPasswordRecoveryMessage)
         assertThat(authException.message).isNotEqualTo(weakPasswordDiagnostic)
         assertThat(resolve(firebaseException)).startsWith(strings.weakPasswordRecoveryMessage)
@@ -231,6 +236,7 @@ class AuthExceptionRecoveryResolutionTest {
             "ERROR_INVALID_MESSAGE_PAYLOAD",
             "ERROR_INVALID_SENDER",
             "ERROR_INVALID_RECIPIENT_EMAIL",
+            // Declared on FirebaseAuthMissingActivityForRecaptchaException's own constructor.
             "ERROR_MISSING_ACTIVITY",
             "ERROR_WEB_STORAGE_UNSUPPORTED",
             "ERROR_QUOTA_EXCEEDED",
@@ -248,13 +254,34 @@ class AuthExceptionRecoveryResolutionTest {
         }
     }
 
+    @Test
+    fun `the SDK's own missing-activity exception type reaches the misconfiguration arm`() {
+        // The synthetic assertions elsewhere pin the `when` arm; this pins that the SDK's own
+        // type still reaches it, which an SDK release reparenting it would break silently.
+        val firebaseException = FirebaseAuthMissingActivityForRecaptchaException()
+
+        val authException = AuthException.from(firebaseException, strings)
+
+        assertThat(firebaseException.errorCode).isEqualTo("ERROR_MISSING_ACTIVITY")
+        assertThat(authException)
+            .isInstanceOf(AuthException.MisconfigurationException::class.java)
+        // Retrying cannot conjure the Activity the host never supplied.
+        assertThat(isRecoverable(authException)).isFalse()
+        assertThat(authException.message).isEqualTo(strings.unknownErrorRecoveryMessage)
+        assertThat(authException.message).doesNotContain("Recaptcha")
+        // The SDK's own English stays on the cause, where logs still reach it.
+        assertThat(authException.cause).isEqualTo(firebaseException)
+        assertThat(authException.cause?.message).contains("valid Activity is required")
+    }
+
     // =============================================================================================
     // Blanket invariant
     // =============================================================================================
 
     @Test
     fun `no Firebase error code resolves to the raw SDK diagnostic`() {
-        // One representative code per arm of from(), plus codes that hit each else branch.
+        // One representative code per named arm of the FirebaseAuthInvalidCredentialsException
+        // branch of from(), then, below the blank line, the codes that fall through to its `else`.
         val codes = listOf(
             "ERROR_INVALID_CREDENTIAL",
             "ERROR_WRONG_PASSWORD",
@@ -273,6 +300,13 @@ class AuthExceptionRecoveryResolutionTest {
             "ERROR_MISSING_MULTI_FACTOR_INFO",
             "ERROR_INVALID_MULTI_FACTOR_SESSION",
             "ERROR_INVALID_CUSTOM_TOKEN",
+            "ERROR_MISSING_OR_INVALID_NONCE",
+            "ERROR_INVALID_AUTHENTICATOR_RESPONSE",
+            "ERROR_PASSKEY_ENROLLMENT_NOT_FOUND",
+
+            // The first ships in firebase-auth 24.2.0; the second stands in for a future code.
+            "ERROR_REJECTED_CREDENTIAL",
+            "ERROR_SOME_FUTURE_CREDENTIAL_CODE",
         )
         val diagnostic = "The Firebase SDK's own untranslated English."
 
@@ -341,6 +375,117 @@ class AuthExceptionRecoveryResolutionTest {
         assertThat(resolved).isNotEqualTo(strings.userNotFoundRecoveryMessage)
     }
 
+    @Test
+    fun `a French device changing its email sees French, not the English reauth diagnostic`() {
+        val french = DefaultAuthUIStringProvider(context, Locale.FRENCH)
+        val firebaseException = FirebaseAuthRecentLoginRequiredException(
+            "ERROR_REQUIRES_RECENT_LOGIN",
+            recentLoginDiagnostic
+        )
+
+        val resolved = resolve(firebaseException, french)
+
+        // `errorRecentLoginRequired` ships blank, so the arm falls to the MFA string.
+        assertThat(resolved).isEqualTo(french.mfaErrorRecentLoginRequired)
+        assertThat(resolved).isNotEqualTo(recentLoginDiagnostic)
+        assertThat(resolved).isNotEqualTo(strings.mfaErrorRecentLoginRequired)
+    }
+
+    @Test
+    fun `reauthentication required resolves to library copy, not the SDK diagnostic`() {
+        val firebaseException = FirebaseAuthRecentLoginRequiredException(
+            "ERROR_REQUIRES_RECENT_LOGIN",
+            recentLoginDiagnostic
+        )
+
+        val result = AuthException.from(firebaseException, strings)
+
+        assertThat(result).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+        assertThat(result.message).isEqualTo(strings.mfaErrorRecentLoginRequired)
+        assertThat(result.cause?.message).isEqualTo(recentLoginDiagnostic)
+        assertThat(resolve(firebaseException)).isEqualTo(strings.mfaErrorRecentLoginRequired)
+    }
+
+    // =============================================================================================
+    // Developer-setup faults in the invalid-credential family
+    // =============================================================================================
+
+    @Test
+    fun `a bad Sign in with Apple nonce is reported as a misconfiguration, not a bad password`() {
+        val diagnostic = "The supplied auth credential is malformed, has expired or is " +
+                "currently unsupported. [ MISSING_OR_INVALID_NONCE ]"
+
+        for (code in listOf("ERROR_MISSING_OR_INVALID_NONCE", "ERROR_INVALID_AUTHENTICATOR_RESPONSE")) {
+            val firebaseException =
+                com.google.firebase.auth.FirebaseAuthInvalidCredentialsException(code, diagnostic)
+            val result = AuthException.from(firebaseException, strings)
+
+            // The host built the federated request wrong, so this must not be recoverable.
+            assertWithMessage(code).that(result)
+                .isInstanceOf(AuthException.MisconfigurationException::class.java)
+            assertWithMessage(code).that(result.message)
+                .isEqualTo(strings.unknownErrorRecoveryMessage)
+            assertWithMessage(code).that(result.cause?.message).isEqualTo(diagnostic)
+        }
+    }
+
+    @Test
+    fun `unnamed invalid-credential codes stay recoverable but never show the SDK diagnostic`() {
+        val diagnostic = "The Firebase SDK's own untranslated English."
+
+        for (code in listOf("ERROR_REJECTED_CREDENTIAL", "ERROR_SOME_FUTURE_CREDENTIAL_CODE")) {
+            val firebaseException =
+                com.google.firebase.auth.FirebaseAuthInvalidCredentialsException(code, diagnostic)
+            val result = AuthException.from(firebaseException, strings)
+
+            // "Mismatching credentials" also covers the wrong account, which signing in fixes.
+            assertWithMessage(code).that(result)
+                .isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            // But the copy has to be generic — we do not know what the code means.
+            assertWithMessage(code).that(result.message)
+                .isEqualTo(strings.unknownErrorRecoveryMessage)
+            assertWithMessage(code).that(result.message).isNotEqualTo(diagnostic)
+            assertWithMessage(code).that(result.cause?.message).isEqualTo(diagnostic)
+        }
+    }
+
+    @Test
+    fun `a missing passkey enrolment points at another sign-in method, not a futile retry`() {
+        val diagnostic = "Cannot find the passkey linked to the current account."
+        val firebaseException = com.google.firebase.auth.FirebaseAuthInvalidCredentialsException(
+            "ERROR_PASSKEY_ENROLLMENT_NOT_FOUND", diagnostic
+        )
+
+        val result = AuthException.from(firebaseException, strings)
+
+        // Not InvalidCredentialsException: that is recoverable, so the dialog would offer a retry.
+        assertThat(result).isInstanceOf(AuthException.SignInMethodUnavailableException::class.java)
+        assertThat(result).isNotInstanceOf(AuthException.InvalidCredentialsException::class.java)
+        // Specific copy, not the generic unknown-error string.
+        assertThat(result.message).isEqualTo(strings.errorPasskeyNotFound)
+        assertThat(result.message).isNotEqualTo(strings.unknownErrorRecoveryMessage)
+        assertThat(result.message).isNotEqualTo(diagnostic)
+        assertThat(result.cause?.message).isEqualTo(diagnostic)
+    }
+
+    @Test
+    fun `the dialog offers no retry action for a missing passkey enrolment`() {
+        val firebaseException = com.google.firebase.auth.FirebaseAuthInvalidCredentialsException(
+            "ERROR_PASSKEY_ENROLLMENT_NOT_FOUND",
+            "Cannot find the passkey linked to the current account."
+        )
+
+        val result = AuthException.from(firebaseException, strings)
+
+        // The dialog renders the action button only when isRecoverable is true.
+        assertThat(isRecoverable(result)).isFalse()
+        // And the text itself is not a retry invitation, for any caller reading it directly.
+        assertThat(getRecoveryActionText(result, strings)).isNotEqualTo(strings.retryAction)
+        assertThat(getRecoveryActionText(result, strings)).isEqualTo(strings.dismissAction)
+        // The body still says the useful thing.
+        assertThat(getRecoveryMessage(result, strings)).isEqualTo(strings.errorPasskeyNotFound)
+    }
+
     // =============================================================================================
     // A host's own hook still wins
     // =============================================================================================
@@ -354,5 +499,42 @@ class AuthExceptionRecoveryResolutionTest {
         val result = AuthException.from(object : FirebaseException(networkDiagnostic) {}, hostStrings)
 
         assertThat(result.message).isEqualTo("Host network copy")
+    }
+
+    @Test
+    fun `a host's credential copy does not hijack the missing-passkey message`() {
+        // `errorInvalidCredentials` is the hook for a type this arm deliberately does not return,
+        // so a host overriding both must see its passkey copy, not its password copy.
+        val hostStrings = mock(AuthUIStringProvider::class.java)
+        whenever(hostStrings.errorInvalidCredentials)
+            .thenReturn("Check your password and try again.")
+        whenever(hostStrings.errorPasskeyNotFound).thenReturn("Use another way to sign in.")
+
+        val result = AuthException.from(
+            com.google.firebase.auth.FirebaseAuthInvalidCredentialsException(
+                "ERROR_PASSKEY_ENROLLMENT_NOT_FOUND",
+                "Cannot find the passkey linked to the current account."
+            ),
+            hostStrings
+        )
+
+        assertThat(result).isInstanceOf(AuthException.SignInMethodUnavailableException::class.java)
+        assertThat(result.message).isEqualTo("Use another way to sign in.")
+        assertThat(result.message).isNotEqualTo("Check your password and try again.")
+    }
+
+    @Test
+    fun `a host that leaves the passkey hook unset gets the generic string, not credential copy`() {
+        // The interface default is what a host implementing AuthUIStringProvider directly sees;
+        // credential copy there would sit in a dialog with no retry button.
+        val hostStrings = mock(AuthUIStringProvider::class.java)
+        doCallRealMethod().whenever(hostStrings).errorPasskeyNotFound
+        whenever(hostStrings.errorInvalidCredentials).thenReturn("Check your password and try again.")
+        whenever(hostStrings.errorUnknownAuth).thenReturn("Something went wrong. Please try later.")
+
+        assertThat(hostStrings.errorPasskeyNotFound)
+            .isEqualTo("Something went wrong. Please try later.")
+        assertThat(hostStrings.errorPasskeyNotFound)
+            .isNotEqualTo("Check your password and try again.")
     }
 }

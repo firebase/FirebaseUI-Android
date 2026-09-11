@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import java.util.Locale
 
 /**
  * Abstract base class representing all possible authentication exceptions in Firebase Auth UI.
@@ -96,6 +97,26 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * The account exists, but the sign-in method the user just attempted is not available on it.
+     *
+     * The attempt was well-formed and the backend answered definitively that this method cannot
+     * be used for this account, so the error is not recoverable: the error dialog offers no retry
+     * and the copy points the user at a different way to sign in.
+     *
+     * The type is general, but the copy is not. `ERROR_PASSKEY_ENROLLMENT_NOT_FOUND` is the only
+     * code routed here today and the dialog's fallback for a blank message is `errorPasskeyNotFound`.
+     * Routing a second code here means giving it its own string and making that fallback a
+     * per-method choice.
+     *
+     * @property message The detailed error message
+     * @property cause The underlying [Throwable] that caused this exception
+     */
+    class SignInMethodUnavailableException(
+        message: String,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * The user account does not exist.
      *
      * This exception is thrown when attempting to sign in with credentials
@@ -131,11 +152,16 @@ abstract class AuthException(
      * This exception is thrown when GIdP password policy enforcement is enabled and the supplied
      * password fails one or more configured constraints (e.g. minimum length, missing uppercase).
      *
-     * [message] is a newline-separated, human-readable description of each failing constraint
-     * as returned by the server, suitable for direct display in the UI.
+     * [message] is a newline-separated, human-readable description of each failing constraint,
+     * suitable for direct display in the UI. Built by [from], each constraint is translated copy
+     * where the library recognises the server's sentence, and the server's own English where it
+     * does not.
      *
-     * @property message Human-readable description of the failing constraints
-     * @property failingRequirements The individual constraint strings from the server
+     * [failingRequirements] keeps the **raw** server sentences, untranslated, for hosts that
+     * render the constraints themselves rather than showing [message].
+     *
+     * @property message Translated description of the failing constraints
+     * @property failingRequirements The raw, untranslated constraint strings from the server
      * @property cause The underlying [Throwable] that caused this exception
      */
     class PasswordPolicyViolationException(
@@ -382,17 +408,24 @@ abstract class AuthException(
          * This method maps known Firebase exception types to their corresponding [AuthException]
          * subtypes, providing a consistent exception hierarchy for error handling.
          *
-         * **Mapping:**
-         * - [FirebaseException] → [NetworkException] (for network-related errors)
-         * - [FirebaseTooManyRequestsException] → [TooManyRequestsException]
+         * **Mapping**, in dispatch order. Several of these types extend one another, so the order
+         * is load-bearing rather than cosmetic:
+         * - [FirebaseAuthWeakPasswordException] → [WeakPasswordException], or
+         *   [PasswordPolicyViolationException] when the diagnostic carries a GIdP password-policy
+         *   rejection
          * - [FirebaseAuthInvalidCredentialsException] → [InvalidCredentialsException], with the
-         *   message selected by `errorCode`
+         *   message selected by `errorCode`; the `errorCode`s in that family that are developer
+         *   setup faults rather than user error (custom token, OIDC nonce, authenticator
+         *   response) → [MisconfigurationException]
          * - [FirebaseAuthInvalidUserException] → [UserNotFoundException]
-         * - [FirebaseAuthWeakPasswordException] → [WeakPasswordException]
-         * - [FirebaseAuthUserCollisionException] → [EmailAlreadyInUseException]
          * - [FirebaseAuthActionCodeException] → [InvalidCredentialsException]
-         * - [FirebaseAuthException] with a developer-setup `errorCode` → [MisconfigurationException]
+         * - [FirebaseAuthUserCollisionException] → [EmailAlreadyInUseException]
          * - [FirebaseAuthMultiFactorException] → [MfaRequiredException]
+         * - [FirebaseAuthRecentLoginRequiredException] → [InvalidCredentialsException]
+         * - [FirebaseAuthException] with a developer-setup `errorCode` → [MisconfigurationException]
+         * - [FirebaseTooManyRequestsException] → [TooManyRequestsException]
+         * - [FirebaseException] → [NetworkException] (for network-related errors), or
+         *   [PasswordPolicyViolationException] when the message carries a policy rejection
          * - Other exceptions → [UnknownException]
          *
          * **Example:**
@@ -427,14 +460,24 @@ abstract class AuthException(
          * This is the preferred overload; see the [Context] one above for the exception mapping
          * table and an example.
          *
-         * Given a non-null [stringProvider], the returned exception's `message` is always
-         * library-owned, translated copy, so it is safe for any consumer to render directly. Each
-         * branch resolves in this order: the blank-able hook scoped to the exception type, then
-         * the string for the specific Firebase `errorCode`, then the corresponding generic
-         * recovery message, and only then the Firebase SDK's own untranslated message. The
-         * exception is [MisconfigurationException], which never uses the SDK message at all — the
-         * raw diagnostic lives on `cause`. A `null` [stringProvider] has nothing to resolve
-         * against and falls back to the SDK message everywhere except [MisconfigurationException].
+         * Given a non-null [stringProvider], the `message` on an exception returned by **this
+         * method** is library-owned translated copy, so it is safe to render directly. Each branch
+         * resolves in this order: the blank-able hook scoped to the exception type, then the
+         * string for the specific Firebase `errorCode`, then the corresponding generic recovery
+         * message, and only then the Firebase SDK's own untranslated message.
+         * [MisconfigurationException] never uses the SDK message at all — the raw diagnostic lives
+         * on `cause`. A `null` [stringProvider] has nothing to resolve against and falls back to
+         * the SDK message everywhere except [MisconfigurationException].
+         * [PasswordPolicyViolationException] is partial by design: each requirement sentence the
+         * backend returns is translated when it is recognised and kept verbatim when it is not.
+         *
+         * The guarantee covers `from()` only. Subtypes constructed directly carry whatever
+         * `message` their caller passed, and the email-link subtypes
+         * ([InvalidEmailLinkException], [EmailLinkWrongDeviceException],
+         * [EmailLinkCrossDeviceLinkingException], [EmailLinkPromptForEmailException],
+         * [EmailLinkDifferentAnonymousUserException], [EmailMismatchException]) bake English into
+         * their own constructors. `getRecoveryMessage` keeps that out of the error dialog by
+         * resolving those types through [AuthUIStringProvider] instead of reading `message`.
          *
          * @param firebaseException The Firebase exception to convert
          * @param stringProvider Supplies localized message text; pass `config.stringProvider`
@@ -453,15 +496,7 @@ abstract class AuthException(
                 is FirebaseAuthWeakPasswordException -> {
                     val sourceText = firebaseException.reason ?: firebaseException.message ?: ""
                     if (sourceText.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
-                        val requirements = parsePasswordPolicyRequirements(sourceText)
-                        PasswordPolicyViolationException(
-                            message = requirements.joinToString("\n").ifEmpty {
-                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
-                                    ?: "Password does not meet policy requirements"
-                            },
-                            failingRequirements = requirements,
-                            cause = firebaseException
-                        )
+                        passwordPolicyViolation(sourceText, firebaseException, stringProvider)
                     } else {
                         WeakPasswordException(
                             message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
@@ -603,14 +638,28 @@ abstract class AuthException(
                         // diagnostic names the setup problem and means nothing to the user, so it
                         // stays on `cause` while `message` carries renderable generic copy.
                         "ERROR_INVALID_CUSTOM_TOKEN",
-                        "ERROR_CUSTOM_TOKEN_MISMATCH" -> MisconfigurationException(
+                        "ERROR_CUSTOM_TOKEN_MISMATCH",
+                        // Same shape: the app built the federated request wrong.
+                        "ERROR_MISSING_OR_INVALID_NONCE",
+                        "ERROR_INVALID_AUTHENTICATOR_RESPONSE" -> MisconfigurationException(
                             message = stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
                                 ?: "An unknown error occurred.",
                             cause = firebaseException
                         )
 
+                        // Not InvalidCredentialsException, so its `typeLevel` hook is skipped too.
+                        "ERROR_PASSKEY_ENROLLMENT_NOT_FOUND" -> SignInMethodUnavailableException(
+                            message = stringProvider?.errorPasskeyNotFound.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "We couldn't find a passkey for this account. " +
+                                "Sign in another way.",
+                            cause = firebaseException
+                        )
+
+                        // Unrecognised codes stay recoverable, but the copy must stay generic.
                         else -> InvalidCredentialsException(
                             message = typeLevel
+                                ?: stringProvider?.unknownErrorRecoveryMessage.nonEmpty()
                                 ?: firebaseException.message
                                 ?: "Invalid credentials provided",
                             cause = firebaseException
@@ -727,8 +776,10 @@ abstract class AuthException(
                 }
 
                 is FirebaseAuthRecentLoginRequiredException -> {
+                    // `errorRecentLoginRequired` ships blank; the MFA string says the same thing.
                     InvalidCredentialsException(
                         message = stringProvider?.errorRecentLoginRequired.nonEmpty()
+                            ?: stringProvider?.mfaErrorRecentLoginRequired.nonEmpty()
                             ?: firebaseException.message
                             ?: "Recent login required for this operation",
                         cause = firebaseException
@@ -815,7 +866,8 @@ abstract class AuthException(
                         "ERROR_INVALID_MESSAGE_PAYLOAD",
                         "ERROR_INVALID_SENDER",
                         "ERROR_INVALID_RECIPIENT_EMAIL",
-                        // Host integration and project quota.
+                        // Host integration and project quota. ERROR_MISSING_ACTIVITY ships: it is
+                        // declared on the Recaptcha-activity exception, not in the SDK code table.
                         "ERROR_MISSING_ACTIVITY",
                         "ERROR_WEB_STORAGE_UNSUPPORTED",
                         "ERROR_QUOTA_EXCEEDED" -> MisconfigurationException(
@@ -850,15 +902,7 @@ abstract class AuthException(
                 is FirebaseException -> {
                     val msg = firebaseException.message ?: ""
                     if (msg.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
-                        val requirements = parsePasswordPolicyRequirements(msg)
-                        PasswordPolicyViolationException(
-                            message = requirements.joinToString("\n").ifEmpty {
-                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
-                                    ?: "Password does not meet policy requirements"
-                            },
-                            failingRequirements = requirements,
-                            cause = firebaseException
-                        )
+                        passwordPolicyViolation(msg, firebaseException, stringProvider)
                     } else {
                         NetworkException(
                             message = stringProvider?.errorNetworkGeneric.nonEmpty()
@@ -894,6 +938,89 @@ abstract class AuthException(
         }
 
         private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
+
+        /**
+         * Builds the [PasswordPolicyViolationException] for a GIdP password-policy rejection:
+         * `message` is localized one requirement sentence at a time, while `failingRequirements`
+         * keeps the backend's raw sentences.
+         */
+        private fun passwordPolicyViolation(
+            sourceText: String,
+            cause: Exception,
+            stringProvider: AuthUIStringProvider?
+        ): PasswordPolicyViolationException {
+            val requirements = parsePasswordPolicyRequirements(sourceText)
+            return PasswordPolicyViolationException(
+                message = requirements
+                    .joinToString("\n") { localizePasswordRequirement(it, stringProvider) ?: it }
+                    .ifEmpty {
+                        // `errorWeakPasswordGeneric` is the host's hook and ships blank.
+                        stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                            ?: stringProvider?.errorPasswordPolicyGeneric.nonEmpty()
+                            ?: "Password does not meet policy requirements"
+                    },
+                failingRequirements = requirements,
+                cause = cause
+            )
+        }
+
+        /**
+         * Translates one GIdP password-policy requirement sentence, or returns `null` when the
+         * sentence is not recognised.
+         *
+         * The sentences are the backend's own English, e.g. "Password must contain at least 10
+         * characters". On `null` the caller keeps that sentence verbatim, so a reworded or newly
+         * added requirement degrades to untranslated English rather than to a wrong message.
+         */
+        private fun localizePasswordRequirement(
+            requirement: String,
+            stringProvider: AuthUIStringProvider?
+        ): String? {
+            if (stringProvider == null) return null
+            // GIdP writes "upper case" and "lower case" as two words; one word is accepted too.
+            val text = requirement.lowercase(Locale.ROOT)
+            return when {
+                text.contains("upper case") || text.contains("uppercase") ->
+                    stringProvider.passwordMissingUppercase.nonEmpty()
+
+                text.contains("lower case") || text.contains("lowercase") ->
+                    stringProvider.passwordMissingLowercase.nonEmpty()
+
+                // "numeric" is a substring of "non-alphanumeric": the guard keeps the two arms
+                // disjoint regardless of the order they are tested in.
+                text.contains("numeric") && !text.contains("non-alphanumeric") ->
+                    stringProvider.passwordMissingDigit.nonEmpty()
+
+                // Unverified wording: the probe project had special characters disabled.
+                text.contains("non-alphanumeric") || text.contains("special character") ->
+                    stringProvider.passwordMissingSpecialCharacter.nonEmpty()
+
+                // The number is the project's own configured minimum, so it is read out of the
+                // sentence rather than assumed.
+                text.contains("at least") ->
+                    firstNumberIn(requirement)?.let {
+                        stringProvider.passwordTooShort(it).nonEmpty()
+                    }
+
+                // "fewer than N" is exclusive, so the maximum passwordTooLong states is N - 1.
+                // Unverified wording: the probe project left the maximum at its 4096 default.
+                text.contains("fewer than") ->
+                    firstNumberIn(requirement)?.let {
+                        stringProvider.passwordTooLong(it - 1).nonEmpty()
+                    }
+
+                // "at most N" and "no more than N" are inclusive, so N is the maximum as written.
+                text.contains("at most") || text.contains("no more than") ->
+                    firstNumberIn(requirement)?.let {
+                        stringProvider.passwordTooLong(it).nonEmpty()
+                    }
+
+                else -> null
+            }
+        }
+
+        private fun firstNumberIn(text: String): Int? =
+            Regex("\\d+").find(text)?.value?.toIntOrNull()
 
         // Finds the [...] content that immediately follows PASSWORD_DOES_NOT_MEET_REQUIREMENTS
         // in both FirebaseException and FirebaseAuthWeakPasswordException messages.
