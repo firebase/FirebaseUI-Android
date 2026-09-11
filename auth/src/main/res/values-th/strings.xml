@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">โปรดยืนยันที่อยู่อีเมลก่อนดำเนินการต่อ</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">วิธีการยืนยันนี้ตั้งค่าไว้ในบัญชีนี้แล้ว</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">คุณใช้วิธีการยืนยันถึงขีดจำกัดของบัญชีนี้แล้ว</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">รหัสผ่านของคุณไม่เป็นไปตามข้อกำหนด โปรดลองใช้รหัสผ่านอื่น</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">รหัสผ่านยาวเกินไป ความยาวสูงสุดคือ %1$d</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">ไม่พบพาสคีย์สำหรับบัญชีนี้ โปรดลงชื่อเข้าใช้ด้วยวิธีอื่น</string>
 </resources>

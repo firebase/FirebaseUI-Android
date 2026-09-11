@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Prieš tęsdami patvirtinkite savo el. pašto adresą.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Šis patvirtinimo būdas šioje paskyroje jau nustatytas.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Pasiekėte šios paskyros patvirtinimo būdų ribą.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Jūsų slaptažodis neatitinka reikalavimų. Išbandykite kitą.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Slaptažodis per ilgas. Didžiausias ilgis yra %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Nepavyko rasti šios paskyros prieigos rakto. Prisijunkite kitu būdu.</string>
 </resources>

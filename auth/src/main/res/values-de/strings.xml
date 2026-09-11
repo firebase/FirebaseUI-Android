@@ -203,4 +203,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Bestätigen Sie Ihre E-Mail-Adresse, bevor Sie fortfahren.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Diese Bestätigungsmethode ist für dieses Konto bereits eingerichtet.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Sie haben die maximale Anzahl an Bestätigungsmethoden für dieses Konto erreicht.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Ihr Passwort erfüllt die Anforderungen nicht. Versuchen Sie es mit einem anderen.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Das Passwort ist zu lang. Die maximale Länge beträgt %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Für dieses Konto wurde kein Passkey gefunden. Melden Sie sich auf andere Weise an.</string>
 </resources>

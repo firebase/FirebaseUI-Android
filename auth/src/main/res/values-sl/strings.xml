@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Preden nadaljujete, preverite svoj e-poštni naslov.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Ta način preverjanja je v tem računu že nastavljen.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Dosegli ste omejitev števila načinov preverjanja v tem računu.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Vaše geslo ne izpolnjuje zahtev. Poskusite z drugim.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Geslo je predolgo. Največja dolžina je %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Za ta račun nismo našli ključa za dostop. Prijavite se na drug način.</string>
 </resources>

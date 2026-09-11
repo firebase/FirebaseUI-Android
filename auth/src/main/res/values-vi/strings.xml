@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Hãy xác minh địa chỉ email của bạn trước khi tiếp tục.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Phương thức xác minh này đã được thiết lập trên tài khoản này.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Bạn đã đạt đến giới hạn số phương thức xác minh trên tài khoản này.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Mật khẩu của bạn không đáp ứng các yêu cầu. Hãy thử mật khẩu khác.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Mật khẩu quá dài. Độ dài tối đa là %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Không tìm thấy mã xác thực cho tài khoản này. Hãy đăng nhập bằng cách khác.</string>
 </resources>
