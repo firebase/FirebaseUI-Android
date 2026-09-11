@@ -517,7 +517,8 @@ class AuthExceptionTest {
             "ERROR_INVALID_MESSAGE_PAYLOAD",
             "ERROR_INVALID_SENDER",
             "ERROR_INVALID_RECIPIENT_EMAIL",
-            // Host integration and project quota.
+            // Host integration and project quota. The synthetic exception below pins the `when`
+            // arm; AuthExceptionRecoveryResolutionTest drives the SDK's own missing-activity type.
             "ERROR_MISSING_ACTIVITY",
             "ERROR_WEB_STORAGE_UNSUPPORTED",
             "ERROR_QUOTA_EXCEEDED",

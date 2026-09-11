@@ -184,6 +184,9 @@ interface AuthUIStringProvider {
     /** Error message when password doesn't meet minimum length requirement. Should support string formatting with minimum length parameter. */
     fun passwordTooShort(minimumLength: Int): String
 
+    /** Error message when the password is longer than the maximum length allowed. Should support string formatting with maximum length parameter. */
+    fun passwordTooLong(maximumLength: Int): String
+
     /** Error message when password is missing at least one uppercase letter (A-Z) */
     val passwordMissingUppercase: String
 
@@ -669,4 +672,21 @@ interface AuthUIStringProvider {
 
     /** Error when the account already has the maximum number of verification methods. */
     val errorMaximumSecondFactorCountExceeded: String get() = errorUnknownAuth
+
+    /**
+     * Error when the password fails the project's password policy and the server named no
+     * individual requirement. When the server does name them, each one is rendered through
+     * [passwordTooShort], [passwordTooLong], [passwordMissingUppercase],
+     * [passwordMissingLowercase], [passwordMissingDigit] and [passwordMissingSpecialCharacter]
+     * instead, and this string is not used.
+     */
+    val errorPasswordPolicyGeneric: String get() = errorWeakPasswordGeneric
+
+    /**
+     * Error when the account has no passkey enrolled and the user has to sign in another way.
+     *
+     * Defaults to [errorUnknownAuth], not [errorInvalidCredentials]: this message is shown for a
+     * non-recoverable error, so the dialog offers no retry and credential copy would contradict it.
+     */
+    val errorPasskeyNotFound: String get() = errorUnknownAuth
 }
