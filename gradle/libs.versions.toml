@@ -16,7 +16,7 @@ navigation3 = "1.1.7"
 # entry is auth's test-only `-json`; a higher one there would drag a higher core onto the test
 # classpath (Gradle resolves the highest), leaving the @Serializable round-trip test exercising the
 # key codegen at a version no consumer runs. Raise this only together with `navigation3`.
-kotlinx-serialization = "1.7.3"
+kotlinx-serialization = "1.11.0"
 coroutines = "1.11.0"
 zxing = "3.5.4"
 
