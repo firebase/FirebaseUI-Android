@@ -628,4 +628,45 @@ interface AuthUIStringProvider {
 
     /** Error when authentication is cancelled. Return empty to use the Firebase SDK message. */
     val errorAuthCancelled: String
+
+    // =============================================================================================
+    // AuthException messages selected by Firebase Auth error code
+    //
+    // Every member below has a default so that adding one is not a breaking change, and each
+    // default delegates to a coarser member rather than returning a hardcoded English literal —
+    // a host that has implemented this interface itself keeps getting its own translated copy.
+    // =============================================================================================
+
+    /** Error when sign-in fails and the server will not say whether the email or the password was wrong. */
+    val errorIncorrectEmailOrPassword: String get() = errorInvalidCredentials
+
+    /** Error when the SMS verification session is gone and a new code has to be requested. */
+    val errorInvalidVerificationId: String get() = errorInvalidCredentials
+
+    /** Error when phone verification did not complete and has to be retried. */
+    val errorRetryPhoneAuth: String get() = errorInvalidCredentials
+
+    /** Error when the supplied credentials belong to a different account than the one being confirmed. */
+    val errorUserMismatch: String get() = errorUnknownAuth
+
+    /** Error when the phone number is not set up as a verification method on the account. */
+    val errorPhoneNumberNotEnrolled: String get() = errorInvalidCredentials
+
+    /** Error when a sign-in or verification session has expired. */
+    val errorSessionExpired: String get() = errorInvalidCredentials
+
+    /** Error when the sign-in session expired part-way through two-step verification. */
+    val errorMultiFactorSessionExpired: String get() = errorSessionExpired
+
+    /** Error when an emailed sign-in or password reset link has expired or is malformed. */
+    val errorActionCodeInvalid: String get() = errorInvalidCredentials
+
+    /** Error when the account email has to be verified before the operation can continue. */
+    val errorUnverifiedEmail: String get() = errorUnknownAuth
+
+    /** Error when adding a verification method that is already set up on the account. */
+    val errorSecondFactorAlreadyEnrolled: String get() = errorUnknownAuth
+
+    /** Error when the account already has the maximum number of verification methods. */
+    val errorMaximumSecondFactorCountExceeded: String get() = errorUnknownAuth
 }

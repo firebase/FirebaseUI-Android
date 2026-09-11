@@ -143,16 +143,24 @@ internal fun getRecoveryMessage(
     stringProvider: AuthUIStringProvider
 ): String {
     return when (error) {
-        is AuthException.NetworkException -> stringProvider.networkErrorRecoveryMessage
+        // AuthException.from already puts generic translated copy on the message and keeps the
+        // raw diagnostic on the cause, so this arm is belt-and-braces: an instance constructed
+        // directly with a raw diagnostic still cannot leak it into the dialog.
+        is AuthException.MisconfigurationException -> stringProvider.unknownErrorRecoveryMessage
+        is AuthException.NetworkException ->
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.networkErrorRecoveryMessage
         is AuthException.InvalidCredentialsException -> {
-            // Use the actual error message from Firebase if available, otherwise fallback to generic message
-            error.message?.takeIf { it.isNotBlank() && it != "Invalid credentials provided" }
+            // AuthException.from now picks library-owned copy per Firebase error code, so the
+            // message is the specific one; the generic string is only the empty-message fallback.
+            error.message?.takeIf { it.isNotBlank() }
                 ?: stringProvider.invalidCredentialsRecoveryMessage
         }
-        is AuthException.UserNotFoundException -> stringProvider.userNotFoundRecoveryMessage
+        is AuthException.UserNotFoundException ->
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.userNotFoundRecoveryMessage
         is AuthException.WeakPasswordException -> {
             // Include specific reason if available
-            val baseMessage = stringProvider.weakPasswordRecoveryMessage
+            val baseMessage = error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.weakPasswordRecoveryMessage
             error.reason?.let { reason ->
                 "$baseMessage\n\nReason: $reason"
             } ?: baseMessage
@@ -165,18 +173,22 @@ internal fun getRecoveryMessage(
 
         is AuthException.EmailAlreadyInUseException -> {
             // Include email if available
-            val baseMessage = stringProvider.emailAlreadyInUseRecoveryMessage
+            val baseMessage = error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.emailAlreadyInUseRecoveryMessage
             error.email?.let { email ->
                 "$baseMessage ($email)"
             } ?: baseMessage
         }
 
-        is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
+        is AuthException.TooManyRequestsException ->
+            error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.tooManyRequestsRecoveryMessage
         is AuthException.PhoneVerificationCooldownException -> {
             // Use the custom message which includes remaining cooldown time
             error.message ?: stringProvider.unknownErrorRecoveryMessage
         }
-        is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
+        is AuthException.MfaRequiredException ->
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> {
             // Use the custom message which includes email and provider details
             error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
@@ -194,7 +206,8 @@ internal fun getRecoveryMessage(
             val providerName = error.providerName ?: stringProvider.emailProvider
             stringProvider.emailLinkCrossDeviceLinkingMessage(providerName)
         }
-        is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
+        is AuthException.AuthCancelledException ->
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.authCancelledRecoveryMessage
         is AuthException.UnknownException -> {
             // Use custom message if available (e.g., for configuration errors)
             error.message?.takeIf { it.isNotBlank() } ?: stringProvider.unknownErrorRecoveryMessage
@@ -262,6 +275,7 @@ internal fun isRecoverable(error: AuthException): Boolean {
         is AuthException.EmailLinkCrossDeviceLinkingException -> true
         is AuthException.EmailLinkWrongDeviceException -> true
         is AuthException.EmailLinkDifferentAnonymousUserException -> false
+        is AuthException.MisconfigurationException -> false // Retrying cannot fix project setup
         is AuthException.UnknownException -> true
         else -> true
     }
