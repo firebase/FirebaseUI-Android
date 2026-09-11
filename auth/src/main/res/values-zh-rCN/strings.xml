@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">电话号码已自动验证</string>
     <string name="fui_resend_code">重新发送验证码</string>
     <string name="fui_verify_phone_number">验证电话号码</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">使用其他电话号码</string>
     <string name="fui_sms_terms_of_service">您点按“%1$s”后，系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">点按“%1$s”即表示您接受我们的%2$s和%3$s。系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">身份验证错误</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">重试</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">需要额外的验证。请完成多重身份验证。</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">需要关联账户。请尝试其他登录方式。</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">身份验证已取消。准备好后请重试。</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">选择身份验证方法</string>
@@ -176,4 +176,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">多重身份验证当前已禁用</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">电子邮件地址或密码不正确</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">该验证会话已失效，请重新获取验证码。</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">电话号码验证未完成，请重试。</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">这些凭据属于其他帐号。</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">该电话号码未在此帐号中设置为验证方式。</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">您的登录会话已过期，请重新登录以继续。</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">该链接已失效，请重新获取。</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">请先验证您的电子邮件地址，然后再继续。</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">该验证方式已在此帐号中设置。</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">您已达到此帐号的验证方式数量上限。</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">您的密码不符合要求，请尝试其他密码。</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">密码过长。最大长度为 %1$d。</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">未找到此账号的通行密钥，请通过其他方式登录。</string>
 </resources>

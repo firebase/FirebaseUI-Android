@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Número de telefone verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Validar número de telefone</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Usar outro número de telefone</string>
     <string name="fui_sms_terms_of_service">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em “%1$s”, indica que aceita os %2$s e a %3$s. Pode gerar o envio de uma SMS. Podem aplicar-se tarifas de dados e de mensagens.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erro de autenticação</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tentar novamente</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verificação adicional necessária. Conclua a autenticação multifator.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A conta tem de ser associada. Experimente um método de início de sessão diferente.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A autenticação foi cancelada. Tente novamente quando estiver pronto.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Escolher método de autenticação</string>
@@ -194,4 +194,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">A autenticação multifator está atualmente desativada</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">O email ou a palavra-passe estão incorretos</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Esta sessão de validação já não é válida. Solicite um novo código.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">A validação do número de telefone não foi concluída. Tente novamente.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Estas credenciais pertencem a outra conta.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Este número de telefone não está configurado para validação nesta conta.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">A sua sessão terminou. Inicie sessão novamente para continuar.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Este link já não é válido. Solicite um novo.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Valide o seu endereço de email antes de continuar.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Este método de validação já está configurado nesta conta.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Atingiu o limite de métodos de validação nesta conta.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">A sua palavra-passe não cumpre os requisitos. Experimente outra.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">A palavra-passe é demasiado longa. O comprimento máximo é %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Não encontrámos uma chave de acesso para esta conta. Inicie sessão de outra forma.</string>
 </resources>
