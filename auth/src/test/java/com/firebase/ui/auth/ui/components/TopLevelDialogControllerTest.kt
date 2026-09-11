@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -100,6 +101,53 @@ class TopLevelDialogControllerTest {
         composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
 
         // Same Error instance again — must be a no-op, the de-dup set persists across calls.
+        composeTestRule.runOnIdle {
+            controller.showErrorDialog(exception = exception)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
+    }
+
+    @Test
+    fun `de-dup fallback reads the latest authState lambda, not the first composition's`() {
+        stringProvider = DefaultAuthUIStringProvider(ApplicationProvider.getApplicationContext())
+        val liveState = mutableStateOf<AuthState>(AuthState.Idle)
+        lateinit var controller: TopLevelDialogController
+
+        composeTestRule.setContent {
+            // Mirrors FirebaseAuthScreen, which reads the collected state into a local `val` and
+            // passes `{ authState }`: every recomposition hands the factory a *new* lambda that
+            // has captured that frame's value, so an unkeyed `remember` would pin the first one.
+            val authState = liveState.value
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                controller = rememberTopLevelDialogController { authState }
+                controller.CurrentDialog()
+            }
+        }
+
+        val error = AuthState.Error(Exception("boom"))
+        val exception = AuthException.from(error.exception, stringProvider)
+
+        // Recompose with the Error before showing anything, so the first composition's captured
+        // value (Idle) and the live one differ.
+        composeTestRule.runOnIdle { liveState.value = error }
+        composeTestRule.waitForIdle()
+
+        // No errorState argument, so `currentAuthState()` is the only path that can record the
+        // Error for de-duplication.
+        composeTestRule.runOnIdle {
+            controller.showErrorDialog(exception = exception)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+
+        composeTestRule.runOnIdle { controller.dismissDialog() }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
+
+        // Same Error still live, same exception instance: the fallback must have recorded it, so
+        // this repeat is a no-op. With a pinned first-composition lambda the fallback resolves to
+        // Idle, records nothing, and the dialog comes back.
         composeTestRule.runOnIdle {
             controller.showErrorDialog(exception = exception)
         }
