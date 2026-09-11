@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">استخدام رقم هاتف آخر</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على "%1$s" إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطأ في المصادقة</string>
@@ -175,4 +175,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">المصادقة متعددة العوامل معطلة حاليًا</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">البريد الإلكتروني أو كلمة المرور غير صحيحة</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">لم تعد جلسة التحقق هذه صالحة. اطلب رمزًا جديدًا.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">لم تكتمل عملية التحقق من رقم الهاتف. أعد المحاولة.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">بيانات الاعتماد هذه تخص حسابًا آخر.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">رقم الهاتف هذا غير مُعدّ للتحقق في هذا الحساب.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">انتهت صلاحية جلسة تسجيل الدخول. سجِّل الدخول مرة أخرى للمتابعة.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">لم يعد هذا الرابط صالحًا. اطلب رابطًا جديدًا.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">تحقَّق من عنوان بريدك الإلكتروني قبل المتابعة.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">طريقة التحقق هذه مُعدّة بالفعل في هذا الحساب.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">لقد وصلت إلى الحد الأقصى لطرق التحقق في هذا الحساب.</string>
 </resources>

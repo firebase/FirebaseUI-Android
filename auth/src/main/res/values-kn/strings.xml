@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">ಬೇರೆ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿ</string>
     <string name="fui_sms_terms_of_service">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %2$s ಮತ್ತು %3$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ. ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">ಪ್ರಮಾಣೀಕರಣ ದೋಷ</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">ಹೆಚ್ಚುವರಿ ಪರಿಶೀಲನೆ ಅಗತ್ಯವಿದೆ. ದಯವಿಟ್ಟು ಬಹು-ಅಂಶ ಪ್ರಮಾಣೀಕರಣವನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">ಖಾತೆಯನ್ನು ಲಿಂಕ್ ಮಾಡಬೇಕಾಗಿದೆ. ದಯವಿಟ್ಟು ಬೇರೆ ಸೈನ್ ಇನ್ ವಿಧಾನವನ್ನು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">ಪ್ರಮಾಣೀಕರಣವನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ. ನೀವು ಸಿದ್ಧರಾದಾಗ ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">ದೃಢೀಕರಣ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
@@ -176,4 +176,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">ಮಲ್ಟಿ-ಫ್ಯಾಕ್ಟರ್ ದೃಢೀಕರಣವು ಪ್ರಸ್ತುತ ನಿಷ್ಕ್ರಿಯಗೊಂಡಿದೆ</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">ಆ ಇಮೇಲ್ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ಸರಿಯಾಗಿಲ್ಲ</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">ಆ ಪರಿಶೀಲನಾ ಸೆಶನ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿಲ್ಲ. ಹೊಸ ಕೋಡ್‌ಗೆ ವಿನಂತಿಸಿ.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">ಫೋನ್ ಪರಿಶೀಲನೆ ಪೂರ್ಣಗೊಂಡಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">ಆ ರುಜುವಾತುಗಳು ಬೇರೆ ಖಾತೆಗೆ ಸೇರಿವೆ.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">ಆ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಈ ಖಾತೆಯಲ್ಲಿ ಪರಿಶೀಲನೆಗಾಗಿ ಹೊಂದಿಸಲಾಗಿಲ್ಲ.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">ನಿಮ್ಮ ಸೈನ್ ಇನ್ ಸೆಶನ್‌ನ ಅವಧಿ ಮುಗಿದಿದೆ. ಮುಂದುವರಿಸಲು ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">ಆ ಲಿಂಕ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿಲ್ಲ. ಹೊಸ ಲಿಂಕ್‌ಗೆ ವಿನಂತಿಸಿ.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">ಮುಂದುವರಿಯುವ ಮೊದಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">ಆ ಪರಿಶೀಲನಾ ವಿಧಾನವನ್ನು ಈ ಖಾತೆಯಲ್ಲಿ ಈಗಾಗಲೇ ಹೊಂದಿಸಲಾಗಿದೆ.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">ಈ ಖಾತೆಯಲ್ಲಿನ ಪರಿಶೀಲನಾ ವಿಧಾನಗಳ ಮಿತಿಯನ್ನು ನೀವು ತಲುಪಿದ್ದೀರಿ.</string>
 </resources>

@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Numărul de telefon este verificat automat</string>
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Folosiți alt număr de telefon</string>
     <string name="fui_sms_terms_of_service">Dacă atingeți „%1$s”, poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s", sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Eroare de autentificare</string>
@@ -175,4 +175,14 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Autentificarea cu mai mulți factori este dezactivată în prezent</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Adresa de e-mail sau parola nu este corectă</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Această sesiune de verificare nu mai este validă. Solicitați un cod nou.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Verificarea numărului de telefon nu a fost finalizată. Încercați din nou.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Aceste date de conectare aparțin altui cont.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Acest număr de telefon nu este configurat pentru verificare în acest cont.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Sesiunea de conectare a expirat. Conectați-vă din nou pentru a continua.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Acest link nu mai este valid. Solicitați unul nou.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Confirmați adresa de e-mail înainte de a continua.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Această metodă de verificare este deja configurată în acest cont.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Ați atins limita de metode de verificare pentru acest cont.</string>
 </resources>
