@@ -186,4 +186,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">ಮುಂದುವರಿಯುವ ಮೊದಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">ಆ ಪರಿಶೀಲನಾ ವಿಧಾನವನ್ನು ಈ ಖಾತೆಯಲ್ಲಿ ಈಗಾಗಲೇ ಹೊಂದಿಸಲಾಗಿದೆ.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">ಈ ಖಾತೆಯಲ್ಲಿನ ಪರಿಶೀಲನಾ ವಿಧಾನಗಳ ಮಿತಿಯನ್ನು ನೀವು ತಲುಪಿದ್ದೀರಿ.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯತೆಗಳನ್ನು ಪೂರೈಸುತ್ತಿಲ್ಲ. ಬೇರೊಂದನ್ನು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">ಪಾಸ್‌ವರ್ಡ್ ತುಂಬಾ ಉದ್ದವಾಗಿದೆ. ಗರಿಷ್ಠ ಉದ್ದ %1$d ಆಗಿದೆ.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">ಈ ಖಾತೆಗೆ ಪಾಸ್‌ಕೀ ಕಂಡುಬಂದಿಲ್ಲ. ಬೇರೆ ವಿಧಾನದಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
 </resources>

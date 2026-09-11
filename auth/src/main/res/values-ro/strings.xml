@@ -185,4 +185,7 @@
     <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Confirmați adresa de e-mail înainte de a continua.</string>
     <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Această metodă de verificare este deja configurată în acest cont.</string>
     <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Ați atins limita de metode de verificare pentru acest cont.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Parola nu îndeplinește cerințele. Încercați alta.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Parola este prea lungă. Lungimea maximă este %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Nu am găsit o cheie de acces pentru acest cont. Conectați-vă în alt mod.</string>
 </resources>
