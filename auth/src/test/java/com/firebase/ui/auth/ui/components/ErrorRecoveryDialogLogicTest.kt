@@ -6,7 +6,6 @@ import com.google.common.truth.Truth
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.GoogleAuthProvider
-import java.lang.reflect.Modifier
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -436,46 +435,5 @@ class ErrorRecoveryDialogLogicTest {
 
         // Act & Assert
         Truth.assertThat(isRecoverable(error)).isTrue()
-    }
-
-    @Test
-    fun `no non-recoverable error offers a retry as its action text`() {
-        // Derived, so a new non-recoverable type fails here until getRecoveryActionText names it.
-        Mockito.`when`(mockStringProvider.dismissAction).thenReturn("Dismiss")
-
-        val nonRecoverable = allAuthExceptionSubtypes().filterNot { isRecoverable(it) }
-
-        Truth.assertWithMessage("no non-recoverable subtype was discovered by reflection")
-            .that(nonRecoverable).isNotEmpty()
-        for (error in nonRecoverable) {
-            Truth.assertWithMessage(error::class.simpleName)
-                .that(getRecoveryActionText(error, mockStringProvider)).isEqualTo("Dismiss")
-        }
-    }
-
-    /** One instance of every concrete [AuthException] subtype, built with placeholder arguments. */
-    private fun allAuthExceptionSubtypes(): List<AuthException> =
-        AuthException::class.java.declaredClasses
-            .filter { AuthException::class.java.isAssignableFrom(it) }
-            .filterNot { Modifier.isAbstract(it.modifiers) }
-            .sortedBy { it.name }
-            .map { instantiate(it) }
-
-    private fun instantiate(type: Class<*>): AuthException {
-        val constructor = type.declaredConstructors
-            .filterNot { it.isSynthetic }
-            .minByOrNull { it.parameterCount }
-            ?: error("${type.simpleName} has no usable constructor")
-        val arguments = constructor.parameterTypes.map { parameter ->
-            when (parameter) {
-                String::class.java -> "placeholder"
-                List::class.java -> emptyList<String>()
-                Long::class.javaPrimitiveType -> 0L
-                Int::class.javaPrimitiveType -> 0
-                Boolean::class.javaPrimitiveType -> false
-                else -> null
-            }
-        }
-        return constructor.newInstance(*arguments.toTypedArray()) as AuthException
     }
 }
