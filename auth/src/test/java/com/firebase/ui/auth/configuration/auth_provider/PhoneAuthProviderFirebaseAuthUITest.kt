@@ -23,12 +23,15 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorSession
 import com.google.firebase.auth.PhoneAuthCredential
@@ -407,6 +410,75 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
     @Test
+    fun `verifyPhoneNumber - failure message comes from the configured string provider`() =
+        runTest {
+            // "The format of the phone number is incorrect", in Japanese.
+            val localizedMessage = "電話番号の形式が正しくありません"
+            val localizedConfig = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(
+                        AuthProvider.Phone(
+                            defaultNumber = null,
+                            defaultCountryCode = null,
+                            allowedCountries = null,
+                        )
+                    )
+                }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorInvalidCredentials: String = localizedMessage
+                }
+            }
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val phoneProvider = AuthProvider.Phone(
+                defaultNumber = null,
+                defaultCountryCode = null,
+                allowedCountries = null,
+                timeout = 60L,
+            )
+            val rejectingVerifier = object : AuthProvider.Phone.Verifier {
+                override fun verifyPhoneNumber(
+                    auth: FirebaseAuth,
+                    activity: Activity?,
+                    phoneNumber: String,
+                    timeout: Long,
+                    forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+                    multiFactorSession: MultiFactorSession?,
+                    isInstantVerificationEnabled: Boolean,
+                ): Flow<AuthProvider.Phone.VerifyPhoneNumberResult> = flow {
+                    throw FirebaseAuthInvalidCredentialsException(
+                        "ERROR_INVALID_PHONE_NUMBER",
+                        "The format of the phone number provided is incorrect."
+                    )
+                }
+            }
+
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(localizedConfig).verifyPhoneNumber(
+                    provider = phoneProvider,
+                    activity = null,
+                    phoneNumber = "not-a-number",
+                    verifier = rejectingVerifier
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            // Building the exception without the configured provider leaves Firebase's own English
+            // message on it, and the error dialog renders that verbatim.
+            assertThat(thrown).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            assertThat(thrown).hasMessageThat()
+                .isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
+
+    @Test
     fun `verifyPhoneNumber - cancellation does not clobber a newer unrelated state`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val deferred = startNeverResolvingVerifyPhoneNumber(instance)
@@ -607,4 +679,55 @@ class PhoneAuthProviderFirebaseAuthUITest {
         verify(anonymousUser).linkWithCredential(mockCredential)
     }
 
+    @Test
+    fun `submitVerificationCode - failure message comes from the configured string provider`() =
+        runTest {
+            // "The verification code is incorrect", in Japanese.
+            val localizedMessage = "確認コードが正しくありません"
+            // Raised while building the credential, which is submitVerificationCode's own work:
+            // everything after it is delegated to signInAndLinkWithCredential.
+            `when`(mockPhoneAuthCredentialProvider.getCredential("test-verification-id", "000000"))
+                .thenAnswer {
+                    throw FirebaseAuthInvalidCredentialsException(
+                        "ERROR_INVALID_VERIFICATION_CODE",
+                        "The sms verification code used to create the phone auth credential is invalid."
+                    )
+                }
+
+            val phoneProvider = AuthProvider.Phone(
+                defaultNumber = null,
+                defaultCountryCode = null,
+                allowedCountries = null,
+                timeout = 60L,
+            )
+            val localizedConfig = authUIConfiguration {
+                context = applicationContext
+                providers { provider(phoneProvider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorInvalidCredentials: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(localizedConfig).submitVerificationCode(
+                    applicationContext,
+                    verificationId = "test-verification-id",
+                    code = "000000",
+                    credentialProvider = mockPhoneAuthCredentialProvider
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
 }

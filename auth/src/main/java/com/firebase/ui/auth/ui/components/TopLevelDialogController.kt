@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 
 /**
  * CompositionLocal for accessing the top-level dialog controller from any composable.
@@ -40,7 +41,7 @@ val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?
  * **Usage:**
  * ```kotlin
  * // At the root of your auth flow (FirebaseAuthScreen):
- * val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
+ * val dialogController = rememberTopLevelDialogController { authState }
  *
  * CompositionLocalProvider(LocalTopLevelDialogController provides dialogController) {
  *     // Your auth screens...
@@ -64,12 +65,32 @@ val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?
  * }
  * ```
  *
+ * [CurrentDialog] resolves its strings from [LocalAuthUIStringProvider] at render time, so call
+ * it inside the `CompositionLocalProvider` that supplies that local.
+ *
  * @since 10.0.0
  */
 class TopLevelDialogController(
-    private val stringProvider: AuthUIStringProvider,
     private val currentAuthState: () -> AuthState
 ) {
+    /**
+     * Only ever set by the deprecated constructor below. A caller that passed a provider without
+     * also providing [LocalAuthUIStringProvider] still works, instead of trading a compile-time
+     * argument for a runtime `error("No AuthUIStringProvider provided")`.
+     */
+    private var explicitStringProvider: AuthUIStringProvider? = null
+
+    @Deprecated(
+        "The string provider is now read from LocalAuthUIStringProvider at render time.",
+        ReplaceWith("TopLevelDialogController(currentAuthState)")
+    )
+    constructor(
+        stringProvider: AuthUIStringProvider,
+        currentAuthState: () -> AuthState
+    ) : this(currentAuthState) {
+        explicitStringProvider = stringProvider
+    }
+
     private var dialogState by mutableStateOf<DialogState?>(null)
     private val shownErrorStates = mutableSetOf<AuthState.Error>()
 
@@ -125,11 +146,14 @@ class TopLevelDialogController(
     /**
      * Composable that renders the current dialog, if any.
      * This should be called once at the root level of your auth flow.
-     * 
-     * Uses the existing [ErrorRecoveryDialog] component.
+     *
+     * Uses the existing [ErrorRecoveryDialog] component. Strings come from
+     * [LocalAuthUIStringProvider], read here at render time, unless the controller was built
+     * through the deprecated constructor that takes one explicitly.
      */
     @Composable
     fun CurrentDialog() {
+        val stringProvider = explicitStringProvider ?: LocalAuthUIStringProvider.current
         val state = dialogState
         when (state) {
             is DialogState.ErrorDialog -> {
@@ -174,16 +198,37 @@ class TopLevelDialogController(
  * live auth state on every [TopLevelDialogController.showErrorDialog] call without being
  * recreated (and losing its de-duplication history) whenever the auth state changes.
  *
- * Keyed on [stringProvider] rather than left unkeyed: callers must pass a `remember`ed
- * [stringProvider] (stable across recompositions), otherwise the controller — and its
- * de-duplication history — would be recreated on every recomposition.
+ * The `remember` is deliberately unkeyed: the controller holds nothing that can go stale, and
+ * [TopLevelDialogController.CurrentDialog] resolves its strings from [LocalAuthUIStringProvider]
+ * at render time. Any key here would be a way to lose a dialog that was just shown.
  */
+@Composable
+fun rememberTopLevelDialogController(
+    authState: () -> AuthState
+): TopLevelDialogController {
+    return remember {
+        TopLevelDialogController(authState)
+    }
+}
+
+/**
+ * Creates and remembers a [TopLevelDialogController] bound to an explicit [stringProvider].
+ *
+ * Kept only for source compatibility. It still keys the `remember` on [stringProvider], so a
+ * caller whose provider is not stable across recompositions loses the controller's state — that
+ * is the reason to move to the single-argument overload above.
+ */
+@Deprecated(
+    "The string provider is now read from LocalAuthUIStringProvider at render time.",
+    ReplaceWith("rememberTopLevelDialogController(authState)")
+)
 @Composable
 fun rememberTopLevelDialogController(
     stringProvider: AuthUIStringProvider,
     authState: () -> AuthState
 ): TopLevelDialogController {
     return remember(stringProvider) {
+        @Suppress("DEPRECATION")
         TopLevelDialogController(stringProvider, authState)
     }
 }
