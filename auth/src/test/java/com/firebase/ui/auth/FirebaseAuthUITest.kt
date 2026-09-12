@@ -41,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.anyString
+import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mock
@@ -436,7 +437,6 @@ class FirebaseAuthUITest {
         val mockUser = mock(FirebaseUser::class.java)
         val mockUserInfo = mock(UserInfo::class.java)
         `when`(mockUserInfo.providerId).thenReturn("google.com")
-        `when`(mockUser.providerId).thenReturn("google.com")
         `when`(mockUser.providerData).thenReturn(listOf(mockUserInfo))
 
         // Setup mock auth
@@ -484,7 +484,6 @@ class FirebaseAuthUITest {
         val mockUser = mock(FirebaseUser::class.java)
         val mockUserInfo = mock(UserInfo::class.java)
         `when`(mockUserInfo.providerId).thenReturn("facebook.com")
-        `when`(mockUser.providerId).thenReturn("facebook.com")
         `when`(mockUser.providerData).thenReturn(listOf(mockUserInfo))
 
         // Setup mock auth
@@ -524,7 +523,6 @@ class FirebaseAuthUITest {
             val mockUser = mock(FirebaseUser::class.java)
             val mockUserInfo = mock(UserInfo::class.java)
             `when`(mockUserInfo.providerId).thenReturn("password")
-            `when`(mockUser.providerId).thenReturn("password")
             `when`(mockUser.providerData).thenReturn(listOf(mockUserInfo))
 
             // Setup mock auth
@@ -578,6 +576,87 @@ class FirebaseAuthUITest {
             assertThat(googleSignOutCalled).isFalse()
             assertThat(facebookSignOutCalled).isFalse()
             verify(mockAuth).signOut()
+        }
+
+    @Test
+    fun `signOut() calls Facebook sign out even though FirebaseAuth clears the user first`() =
+        runTest {
+            // Setup mock user with Facebook provider
+            val mockUser = mock(FirebaseUser::class.java)
+            val mockUserInfo = mock(UserInfo::class.java)
+            `when`(mockUserInfo.providerId).thenReturn("facebook.com")
+            `when`(mockUser.providerData).thenReturn(listOf(mockUserInfo))
+
+            // Setup mock auth that clears currentUser on signOut(), like the real FirebaseAuth
+            val mockAuth = mock(FirebaseAuth::class.java)
+            var signedOut = false
+            `when`(mockAuth.currentUser).thenAnswer { if (signedOut) null else mockUser }
+            doAnswer { signedOut = true; null }.`when`(mockAuth).signOut()
+
+            var facebookSignOutCalled = false
+            val mockLoginManagerProvider = object : AuthProvider.Facebook.LoginManagerProvider {
+                override fun getCredential(token: String): com.google.firebase.auth.AuthCredential {
+                    throw UnsupportedOperationException("Not used in this test")
+                }
+
+                override fun logOut() {
+                    facebookSignOutCalled = true
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+            instance.testLoginManagerProvider = mockLoginManagerProvider
+            val context = ApplicationProvider.getApplicationContext<Context>()
+
+            instance.signOut(context)
+
+            assertThat(facebookSignOutCalled).isTrue()
+            assertThat(mockAuth.currentUser).isNull()
+        }
+
+    @Test
+    fun `signOut() reads linked providers from providerData not FirebaseUser providerId`() =
+        runTest {
+            // The real FirebaseUser.providerId is always "firebase"; the per-provider ids live in
+            // providerData.
+            val mockUser = mock(FirebaseUser::class.java)
+            val mockUserInfo = mock(UserInfo::class.java)
+            `when`(mockUserInfo.providerId).thenReturn("google.com")
+            `when`(mockUser.providerId).thenReturn("firebase")
+            `when`(mockUser.providerData).thenReturn(listOf(mockUserInfo))
+
+            val mockAuth = mock(FirebaseAuth::class.java)
+            `when`(mockAuth.currentUser).thenReturn(mockUser)
+            doNothing().`when`(mockAuth).signOut()
+
+            var googleSignOutCalled = false
+            val mockCredentialManagerProvider =
+                object : AuthProvider.Google.CredentialManagerProvider {
+                    override suspend fun getGoogleCredential(
+                        context: Context,
+                        credentialManager: androidx.credentials.CredentialManager,
+                        serverClientId: String,
+                        filterByAuthorizedAccounts: Boolean,
+                        autoSelectEnabled: Boolean,
+                    ): AuthProvider.Google.GoogleSignInResult {
+                        throw UnsupportedOperationException("Not used in this test")
+                    }
+
+                    override suspend fun clearCredentialState(
+                        context: Context,
+                        credentialManager: androidx.credentials.CredentialManager,
+                    ) {
+                        googleSignOutCalled = true
+                    }
+                }
+
+            val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+            instance.testCredentialManagerProvider = mockCredentialManagerProvider
+            val context = ApplicationProvider.getApplicationContext<Context>()
+
+            instance.signOut(context)
+
+            assertThat(googleSignOutCalled).isTrue()
         }
 
     // =============================================================================================

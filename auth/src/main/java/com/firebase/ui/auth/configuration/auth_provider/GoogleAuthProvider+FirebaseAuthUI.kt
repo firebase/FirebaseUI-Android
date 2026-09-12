@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.google.firebase.auth.FirebaseAuth
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -214,19 +213,25 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
  * **Note:** This does not sign out from Firebase Auth itself. Call [com.firebase.ui.auth.FirebaseAuthUI.signOut]
  * separately if you need to sign out from Firebase.
  *
+ * Callers are responsible for deciding whether Google is involved at all — this function does not
+ * check the signed-in user, and [com.firebase.ui.auth.FirebaseAuthUI.signOut] has already cleared
+ * it by the time it calls here.
+ *
  * @param context Android context for Credential Manager
  */
 internal suspend fun signOutFromGoogle(
-    auth: FirebaseAuth,
     context: Context,
     credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider = AuthProvider.Google.DefaultCredentialManagerProvider(),
 ) {
     try {
-        if (Provider.fromId(auth.currentUser?.providerId) != Provider.GOOGLE) return
         credentialManagerProvider.clearCredentialState(
             context = context,
             credentialManager = CredentialManager.create(context)
         )
+    } catch (e: CancellationException) {
+        // Must not be swallowed: this suspends, so cancellation has to reach the caller for
+        // FirebaseAuthUI.signOut to report it rather than emitting Idle for a half-done sign-out.
+        throw e
     } catch (e: Exception) {
         Log.e("GoogleAuthProvider", "Error during Google sign out", e)
     }
