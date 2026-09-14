@@ -657,7 +657,7 @@ class EmailAuthRouteNavigationTest {
         }
 
         val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
-        val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
+        val dialogController = rememberTopLevelDialogController { authState }
 
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides configuration.stringProvider,

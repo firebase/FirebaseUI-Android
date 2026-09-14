@@ -172,7 +172,7 @@ class PhoneAuthScreenVerificationLifecycleTest {
      */
     private fun setScreenContent(withDialogs: Boolean = false) {
         composeTestRule.setContent {
-            val controller = rememberTopLevelDialogController(configuration.stringProvider) {
+            val controller = rememberTopLevelDialogController {
                 AuthState.Idle
             }
             CompositionLocalProvider(
@@ -202,8 +202,10 @@ class PhoneAuthScreenVerificationLifecycleTest {
                         flowState = flowState,
                     ) { state -> capturedState = state }
                 }
+                // Inside the provider, like FirebaseAuthScreen: CurrentDialog resolves its
+                // strings from LocalAuthUIStringProvider at render time.
+                if (withDialogs) controller.CurrentDialog()
             }
-            if (withDialogs) controller.CurrentDialog()
         }
         composeTestRule.waitForIdle()
     }
