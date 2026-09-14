@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Gebruik een ander telefoonnummer</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op "%1$s" tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authenticatiefout</string>
@@ -175,4 +175,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Multi-factorauthenticatie is momenteel uitgeschakeld</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Dat e-mailadres of wachtwoord is onjuist</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Deze verificatiesessie is niet meer geldig. Vraag een nieuwe code aan.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">De telefoonverificatie is niet voltooid. Probeer het opnieuw.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Deze inloggegevens horen bij een ander account.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Dat telefoonnummer is niet ingesteld voor verificatie op dit account.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Uw inlogsessie is vervallen. Log opnieuw in om door te gaan.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Deze link is niet meer geldig. Vraag een nieuwe aan.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Bevestig uw e-mailadres voordat u doorgaat.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Deze verificatiemethode is al ingesteld op dit account.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">U heeft de limiet voor verificatiemethoden op dit account bereikt.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Uw wachtwoord voldoet niet aan de vereisten. Probeer een ander wachtwoord.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Het wachtwoord is te lang. De maximale lengte is %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">We hebben geen toegangssleutel voor dit account gevonden. Log op een andere manier in.</string>
 </resources>
