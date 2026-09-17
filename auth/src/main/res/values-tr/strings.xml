@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Doğrulama e-postasını tekrar gönder</string>
     <string name="fui_secret_key_label">Gizli anahtar</string>
     <string name="fui_sign_out_action">Çıkış yap</string>
-    <string name="fui_signed_in_as">Şu kullanıcı olarak oturum açıldı</string>
+    <string name="fui_signed_in_as">%1$s olarak oturum açıldı</string>
     <string name="fui_skip_action">Atla</string>
     <string name="fui_use_different_method_action">Farklı bir yöntem kullan</string>
     <string name="fui_verification_code_label">Doğrulama kodu</string>

@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Skicka verifieringsmail igen</string>
     <string name="fui_secret_key_label">Hemlig nyckel</string>
     <string name="fui_sign_out_action">Logga ut</string>
-    <string name="fui_signed_in_as">Inloggad som</string>
+    <string name="fui_signed_in_as">Inloggad som %1$s</string>
     <string name="fui_skip_action">Hoppa över</string>
     <string name="fui_use_different_method_action">Använd en annan metod</string>
     <string name="fui_verification_code_label">Verifieringskod</string>
