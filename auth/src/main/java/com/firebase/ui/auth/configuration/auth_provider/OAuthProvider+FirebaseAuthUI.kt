@@ -49,7 +49,7 @@ internal fun AuthFlowScope.rememberOAuthSignInHandler(
                 emit(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
-                val authException = AuthException.from(e, context)
+                val authException = AuthException.from(e, config.stringProvider)
                 emit(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
@@ -191,7 +191,7 @@ internal suspend fun AuthFlowScope.signInWithProvider(
         throw e
 
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
