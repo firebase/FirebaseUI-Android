@@ -70,6 +70,11 @@ import com.firebaseui.android.demo.R
 import com.google.firebase.auth.actionCodeSettings
 
 class HighLevelApiDemoActivity : ComponentActivity() {
+    companion object {
+        /** Marks this demo's email links so MainActivity can route the return trip back here. */
+        const val EMAIL_LINK_ORIGIN = "highlevel"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -131,7 +136,9 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                             isEmailLinkForceSameDeviceEnabled = false,
                             isEmailLinkSignInEnabled = true,
                             emailLinkActionCodeSettings = actionCodeSettings {
-                                url = "https://flutterfire-e2e-tests.firebaseapp.com"
+                                // Trailing segment is what MainActivity routes the return trip on.
+                                url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
+                                        EMAIL_LINK_ORIGIN
                                 handleCodeInApp = true
                                 setAndroidPackageName(
                                     "com.firebaseui.android.demo",
