@@ -3,26 +3,26 @@
 
     <!-- Common -->
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading...</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_initializing" translation_description="Text shown while the auth UI is initializing">Initializing</string>
 
     <!-- Loading state messages shown in the progress dialog during auth operations -->
-    <string name="fui_loading_signing_in_anonymously" translation_description="Progress message while signing in as a guest">Signing in as guest...</string>
-    <string name="fui_loading_signing_in_with_google" translation_description="Progress message while signing in with Google">Signing in with Google...</string>
-    <string name="fui_loading_signing_in_with_facebook" translation_description="Progress message while signing in with Facebook">Signing in with Facebook...</string>
-    <string name="fui_loading_signing_in_with_provider" translation_description="Progress message while signing in with a named provider. %1$s is the provider name.">Signing in with <xliff:g example="Twitter" id="provider_name">%1$s</xliff:g>...</string>
-    <string name="fui_loading_verifying_phone_number" translation_description="Progress message while verifying the user\'s phone number">Verifying phone number...</string>
-    <string name="fui_loading_submitting_verification_code" translation_description="Progress message while submitting the SMS verification code">Submitting verification code...</string>
-    <string name="fui_loading_signing_in_with_phone" translation_description="Progress message while completing phone number sign-in">Signing in with phone...</string>
-    <string name="fui_loading_creating_user" translation_description="Progress message while creating a new user account">Creating account...</string>
-    <string name="fui_loading_signing_in" translation_description="Progress message while signing in with email and password">Signing in...</string>
-    <string name="fui_loading_linking_credential" translation_description="Progress message while linking a credential to the current account">Signing in...</string>
-    <string name="fui_loading_sending_email_link" translation_description="Progress message while sending the sign-in email link">Sending sign-in link...</string>
-    <string name="fui_loading_signing_in_with_email_link" translation_description="Progress message while completing email link sign-in">Signing in with email link...</string>
-    <string name="fui_loading_sending_password_reset" translation_description="Progress message while sending the password reset email">Sending password reset email...</string>
-    <string name="fui_loading_signing_out" translation_description="Progress message while signing the user out">Signing out...</string>
-    <string name="fui_loading_reauth_retrying" translation_description="Progress message shown after the user confirms their identity, while the action they originally asked for is retried">Finishing that action...</string>
-    <string name="fui_loading_deleting_account" translation_description="Progress message while deleting the user\'s account">Deleting account...</string>
+    <string name="fui_loading_signing_in_anonymously" translation_description="Progress message while signing in as a guest">Signing in as guest…</string>
+    <string name="fui_loading_signing_in_with_google" translation_description="Progress message while signing in with Google">Signing in with Google…</string>
+    <string name="fui_loading_signing_in_with_facebook" translation_description="Progress message while signing in with Facebook">Signing in with Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider" translation_description="Progress message while signing in with a named provider. %1$s is the provider name.">Signing in with <xliff:g example="Twitter" id="provider_name">%1$s</xliff:g>…</string>
+    <string name="fui_loading_verifying_phone_number" translation_description="Progress message while verifying the user\'s phone number">Verifying phone number…</string>
+    <string name="fui_loading_submitting_verification_code" translation_description="Progress message while submitting the SMS verification code">Submitting verification code…</string>
+    <string name="fui_loading_signing_in_with_phone" translation_description="Progress message while completing phone number sign-in">Signing in with phone…</string>
+    <string name="fui_loading_creating_user" translation_description="Progress message while creating a new user account">Creating account…</string>
+    <string name="fui_loading_signing_in" translation_description="Progress message while signing in with email and password">Signing in…</string>
+    <string name="fui_loading_linking_credential" translation_description="Progress message while linking a credential to the current account">Signing in…</string>
+    <string name="fui_loading_sending_email_link" translation_description="Progress message while sending the sign-in email link">Sending sign-in link…</string>
+    <string name="fui_loading_signing_in_with_email_link" translation_description="Progress message while completing email link sign-in">Signing in with email link…</string>
+    <string name="fui_loading_sending_password_reset" translation_description="Progress message while sending the password reset email">Sending password reset email…</string>
+    <string name="fui_loading_signing_out" translation_description="Progress message while signing the user out">Signing out…</string>
+    <string name="fui_loading_reauth_retrying" translation_description="Progress message shown after the user confirms their identity, while the action they originally asked for is retried">Finishing that action…</string>
+    <string name="fui_loading_deleting_account" translation_description="Progress message while deleting the user\'s account">Deleting account…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
@@ -132,13 +132,13 @@
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Enter your email address to continue</string>
     <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field. [CHAR_LIMIT=60]">Please enter a first and last name.</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts...</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
 
     <!-- Email sign up -->
     <string name="fui_title_register_email" translation_description="Title for signup form">Sign up</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">First &amp; last name</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Save</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up...</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up…</string>
     <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
         <item quantity="other" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
@@ -167,7 +167,7 @@
         You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
         You can connect your %2$s account with %1$s by signing in with email link below.\n\nFor this flow to successfully connect your %2$s account with this email, you have to open the link on the same device or browser.
     </string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in...</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
 
     <!-- Password recovery -->
@@ -177,7 +177,7 @@
         reset your password.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Follow the instructions sent to %1$s to recover your password.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending...</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">That email address doesn\'t match an existing account</string>
 
     <!-- Reauthentication error messages -->
@@ -194,7 +194,11 @@
 
     <!-- Password validation messages -->
     <string name="fui_passwords_do_not_match" translation_description="Error message when password don't match">Passwords do not match</string>
-    <string name="fui_error_password_too_short" translation_description="Error message when password is too short">Password must be at least %1$d characters long</string>
+    <!-- The plural form would need a singular reading of "at least 1 character" in all 61
+         locales. minimumPasswordLength is an unbounded Int, so 1 is reachable and would read
+         "at least 1 characters"; a policy of 1 is not worth 61 translations, and the check is
+         suppressed here rather than module-wide so it still guards every other string. -->
+    <string name="fui_error_password_too_short" tools:ignore="PluralsCandidate" translation_description="Error message when password is too short">Password must be at least %1$d characters long</string>
     <string name="fui_error_password_missing_uppercase" translation_description="Error message when password is missing uppercase letter">Password must contain at least one uppercase letter</string>
     <string name="fui_error_password_missing_lowercase" translation_description="Error message when password is missing lowercase letter">Password must contain at least one lowercase letter</string>
     <string name="fui_error_password_missing_digit" translation_description="Error message when password is missing digit">Password must contain at least one number</string>
@@ -230,7 +234,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in %1$s</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying...</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">This phone number has been used too many times</string>
     <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">There was a problem verifying your phone number</string>
@@ -252,20 +256,20 @@
     <!-- AuthException messages — override in your app's strings.xml to customise.
          Strings left empty fall back to the Firebase SDK error message. -->
     <string name="fui_error_user_disabled" translation_description="Error when a user account has been disabled by an administrator. Override to show a custom message.">User account has been disabled</string>
-    <string name="fui_error_invalid_credentials" translation_description="Error when provided credentials are invalid. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_user_not_found" translation_description="Error when the user account does not exist. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_user_account_generic" translation_description="Generic error for unexpected user account issues. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_weak_password_generic" translation_description="Error when the password is too weak. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_email_already_in_use" translation_description="Error when the email address is already registered. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_account_exists_different_credential" translation_description="Error when an account already exists with a different sign-in method. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_credential_already_in_use" translation_description="Error when a credential is already linked to another account. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_account_collision_generic" translation_description="Generic error for account collision issues. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_mfa_required_fallback" translation_description="Error when multi-factor authentication is required. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_recent_login_required" translation_description="Error when the operation requires a recent sign-in. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_too_many_requests" translation_description="Error when sign-in is blocked due to too many attempts. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_unknown_auth" translation_description="Generic unknown authentication error. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_network_generic" translation_description="Error for network failures during authentication. Leave empty to use the Firebase SDK message."></string>
-    <string name="fui_error_auth_cancelled" translation_description="Error when authentication is cancelled. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_invalid_credentials" translatable="false" translation_description="Error when provided credentials are invalid. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_user_not_found" translatable="false" translation_description="Error when the user account does not exist. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_user_account_generic" translatable="false" translation_description="Generic error for unexpected user account issues. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_weak_password_generic" translatable="false" translation_description="Error when the password is too weak. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_email_already_in_use" translatable="false" translation_description="Error when the email address is already registered. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_account_exists_different_credential" translatable="false" translation_description="Error when an account already exists with a different sign-in method. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_credential_already_in_use" translatable="false" translation_description="Error when a credential is already linked to another account. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_account_collision_generic" translatable="false" translation_description="Generic error for account collision issues. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_mfa_required_fallback" translatable="false" translation_description="Error when multi-factor authentication is required. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_recent_login_required" translatable="false" translation_description="Error when the operation requires a recent sign-in. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_too_many_requests" translatable="false" translation_description="Error when sign-in is blocked due to too many attempts. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_unknown_auth" translatable="false" translation_description="Generic unknown authentication error. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_network_generic" translatable="false" translation_description="Error for network failures during authentication. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_auth_cancelled" translatable="false" translation_description="Error when authentication is cancelled. Leave empty to use the Firebase SDK message."></string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Choose Authentication Method</string>

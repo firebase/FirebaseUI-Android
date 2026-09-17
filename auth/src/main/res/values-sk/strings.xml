@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Znova poslať overovací e-mail</string>
     <string name="fui_secret_key_label">Tajný kľúč</string>
     <string name="fui_sign_out_action">Odhlásiť sa</string>
-    <string name="fui_signed_in_as">Prihlásený ako</string>
+    <string name="fui_signed_in_as">Prihlásený ako %1$s</string>
     <string name="fui_skip_action">Preskočiť</string>
     <string name="fui_use_different_method_action">Použiť inú metódu</string>
     <string name="fui_verification_code_label">Overovací kód</string>

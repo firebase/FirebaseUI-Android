@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">ส่งอีเมลยืนยันอีกครั้ง</string>
     <string name="fui_secret_key_label">คีย์ลับ</string>
     <string name="fui_sign_out_action">ออกจากระบบ</string>
-    <string name="fui_signed_in_as">ลงชื่อเข้าใช้ในฐานะ</string>
+    <string name="fui_signed_in_as">ลงชื่อเข้าใช้ในฐานะ %1$s</string>
     <string name="fui_skip_action">ข้าม</string>
     <string name="fui_use_different_method_action">ใช้วิธีอื่น</string>
     <string name="fui_verification_code_label">รหัสยืนยัน</string>

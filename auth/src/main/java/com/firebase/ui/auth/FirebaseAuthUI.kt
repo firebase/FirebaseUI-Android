@@ -20,10 +20,12 @@ import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.firebase.ui.auth.ui.screens.reauth.toReauthConfiguration
+import com.firebase.ui.auth.util.ProviderAvailability
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.AuthResult
@@ -400,6 +402,11 @@ class FirebaseAuthUI private constructor(
      * to reflect the change. The operation is performed asynchronously and will emit
      * appropriate states during the process.
      *
+     * It also clears the session held by any social provider linked to the account, so the next
+     * sign-in starts clean: Google's saved credential state is cleared, meaning the account picker
+     * is shown again instead of silently re-selecting the previous account, and any Facebook
+     * session is logged out. Failures there are logged and do not fail the sign-out.
+     *
      * **Example:**
      * ```kotlin
      * val authUI = FirebaseAuthUI.getInstance()
@@ -431,21 +438,39 @@ class FirebaseAuthUI private constructor(
             // Update state to loading
             updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_out)))
 
+            // Capture the linked providers before signing out: `auth.signOut()` clears
+            // `currentUser`, and `FirebaseUser.providerId` is always "firebase" — the
+            // per-provider ids live in `providerData`.
+            val linkedProviderIds = auth.currentUser?.providerData
+                ?.map { it.providerId }
+                .orEmpty()
+
             // Sign out from Firebase Auth
             auth.signOut()
-                .also {
-                    signOutFromGoogle(
-                        auth = auth,
-                        context = context,
-                        credentialManagerProvider = testCredentialManagerProvider
-                            ?: AuthProvider.Google.DefaultCredentialManagerProvider(),
-                    )
-                    signOutFromFacebook(
-                        auth = auth,
-                        loginManagerProvider = testLoginManagerProvider
-                            ?: AuthProvider.Facebook.DefaultLoginManagerProvider(),
-                    )
-                }
+
+            // Clear the provider-side session for each provider linked to the account. This is
+            // the linked set rather than the provider used for this session, so it can clear a
+            // little more than strictly necessary — cheap either way, and it never leaves a
+            // provider session behind.
+            if (Provider.GOOGLE.id in linkedProviderIds) {
+                signOutFromGoogle(
+                    context = context,
+                    credentialManagerProvider = testCredentialManagerProvider
+                        ?: AuthProvider.Google.DefaultCredentialManagerProvider(),
+                )
+            }
+            // Facebook is a `compileOnly` dependency, so an app that doesn't offer Facebook
+            // sign-in has no Facebook SDK at runtime — and `providerData` can still carry
+            // `facebook.com` for an account linked on another platform. Touching the Facebook
+            // extensions at all links the SDK, so the classpath probe, not the account, decides.
+            if (Provider.FACEBOOK.id in linkedProviderIds &&
+                ProviderAvailability.IS_FACEBOOK_AVAILABLE
+            ) {
+                signOutFromFacebook(
+                    loginManagerProvider = testLoginManagerProvider
+                        ?: AuthProvider.Facebook.DefaultLoginManagerProvider(),
+                )
+            }
 
             // Update state to idle (user signed out)
             updateAuthState(AuthState.Idle)

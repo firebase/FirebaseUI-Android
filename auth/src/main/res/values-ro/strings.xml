@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Retrimite e-mailul de verificare</string>
     <string name="fui_secret_key_label">Cheie secretă</string>
     <string name="fui_sign_out_action">Deconectare</string>
-    <string name="fui_signed_in_as">Conectat ca</string>
+    <string name="fui_signed_in_as">Conectat ca %1$s</string>
     <string name="fui_skip_action">Omite</string>
     <string name="fui_use_different_method_action">Folosiți o altă metodă</string>
     <string name="fui_verification_code_label">Cod de verificare</string>
