@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -64,6 +65,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import androidx.credentials.PasswordCredential as AndroidPasswordCredential
+
+private const val SIGN_OUT_BUTTON_LABEL = "SIGN OUT"
 
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
@@ -334,6 +337,100 @@ class EmailAuthScreenTest {
         assertThat(authUI.auth.currentUser).isNotNull()
         assertThat(authUI.auth.currentUser!!.isEmailVerified).isEqualTo(true)
         assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+    }
+
+    @Test
+    fun `sign out from the authenticated screen clears the Firebase session`() {
+        val email = "signout-test-${System.currentTimeMillis()}@example.com"
+        val password = "test123"
+
+        val user = ensureFreshUser(authUI, email, password)
+        requireNotNull(user) { "Failed to create user" }
+
+        try {
+            verifyEmailInEmulator(authUI, emulatorApi, user)
+        } catch (e: Exception) {
+            Assume.assumeTrue(
+                "Skipping test: Firebase Auth Emulator OOB codes endpoint not available. " +
+                        "Ensure emulator is running on localhost:9099. Error: ${e.message}",
+                false
+            )
+        }
+
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+        }
+
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeAndroidTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    authUI = authUI,
+                    onSignInSuccess = { },
+                    onSignInFailure = { },
+                    onSignInCancelled = { },
+                    // Drive FirebaseAuthUI.signOut() through the production callback rather than
+                    // FirebaseAuth.signOut(): this module has no Facebook SDK on its classpath, so
+                    // it also pins that signing out an email-only user touches no Facebook types.
+                    authenticatedContent = { _, uiContext ->
+                        Button(onClick = uiContext.onSignOut) {
+                            Text(SIGN_OUT_BUTTON_LABEL)
+                        }
+                    }
+                )
+            }
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        assertDirectEmailStart()
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performScrollTo()
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.Success
+        }
+        shadowOf(Looper.getMainLooper()).idle()
+
+        composeAndroidTestRule.onNodeWithText(SIGN_OUT_BUTTON_LABEL)
+            .assertIsDisplayed()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.Idle
+        }
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
+        assertThat(authUI.auth.currentUser).isNull()
     }
 
     @Test
