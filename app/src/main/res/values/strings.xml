@@ -1,10 +1,19 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">FirebaseUI Demo</string>
 
     <string name="firebase_web_host" translatable="false">CHANGE-HERE</string>
 
-    <!-- Facebook SDK Configuration -->
-    <string name="facebook_application_id" translatable="false">APP-ID</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP-ID</string>
-    <string name="facebook_client_token" translatable="false">CHANGE-HERE</string>
+    <!-- One row of the paging demos: %1$s is the player name, %2$d their score. -->
+    <string name="demo_score_row">%1$s  —  score: %2$d</string>
+
+    <!--
+        The Facebook SDK reads these through the auth module's manifest and provider
+        validation, so lint cannot see them being used from this module.
+    -->
+    <string name="facebook_application_id" translatable="false"
+        tools:ignore="UnusedResources">APP-ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false"
+        tools:ignore="UnusedResources">fbAPP-ID</string>
+    <string name="facebook_client_token" translatable="false"
+        tools:ignore="UnusedResources">CHANGE-HERE</string>
 </resources>
