@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Номер телефону підтверджено автоматично</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Використати інший номер телефону</string>
     <string name="fui_sms_terms_of_service">Коли ви торкнетесь опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Торкаючись кнопки “%1$s”, ви приймаєте такі документи: %2$s і %3$s. Вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Помилка автентифікації</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторити спробу</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потрібне додаткове підтвердження. Виконайте багатофакторну автентифікацію.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Обліковий запис потрібно зв\'язати. Спробуйте інший спосіб входу.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Автентифікацію скасовано. Повторіть спробу, коли будете готові.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Виберіть спосіб автентифікації</string>
@@ -176,4 +176,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Багатофакторна автентифікація наразі вимкнена</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Неправильна електронна адреса або пароль</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Цей сеанс підтвердження більше не дійсний. Запросіть новий код.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Не вдалося завершити підтвердження номера телефону. Повторіть спробу.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Ці облікові дані належать іншому обліковому запису.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Цей номер телефону не налаштовано для підтвердження в цьому обліковому записі.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Сеанс входу закінчився. Увійдіть знову, щоб продовжити.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Це посилання більше не дійсне. Запросіть нове.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Підтвердьте свою електронну адресу, перш ніж продовжити.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Цей спосіб підтвердження вже налаштовано в цьому обліковому записі.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Ви досягли ліміту способів підтвердження для цього облікового запису.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Пароль не відповідає вимогам. Спробуйте інший.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Пароль задовгий. Максимальна довжина – %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Не вдалося знайти ключ доступу для цього облікового запису. Увійдіть іншим способом.</string>
 </resources>
