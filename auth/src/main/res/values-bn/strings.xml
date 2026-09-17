@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">যাচাইকরণ ইমেল পুনরায় পাঠান</string>
     <string name="fui_secret_key_label">গোপন কী</string>
     <string name="fui_sign_out_action">সাইন আউট</string>
-    <string name="fui_signed_in_as">হিসাবে সাইন ইন করা হয়েছে</string>
+    <string name="fui_signed_in_as">%1$s হিসাবে সাইন ইন করা হয়েছে</string>
     <string name="fui_skip_action">এড়িয়ে যান</string>
     <string name="fui_use_different_method_action">একটি ভিন্ন পদ্ধতি ব্যবহার করুন</string>
     <string name="fui_verification_code_label">যাচাইকরণ কোড</string>

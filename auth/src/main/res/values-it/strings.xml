@@ -47,7 +47,7 @@
     <string name="fui_name_hint">Nome e cognome</string>
     <string name="fui_button_text_save">Salva</string>
     <string name="fui_progress_dialog_signing_up">Registrazione in corso…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
+    <plurals name="fui_error_weak_password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="many">La password non è abbastanza efficace. Utilizza almeno %1$d di caratteri e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
     <string name="fui_email_account_creation_error">Registrazione account di posta elettronica non riuscita</string>
     <string name="fui_terms_of_service">Termini di servizio</string>
     <string name="fui_privacy_policy">Norme sulla privacy</string>
@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Invia nuovamente email di verifica</string>
     <string name="fui_secret_key_label">Chiave segreta</string>
     <string name="fui_sign_out_action">Esci</string>
-    <string name="fui_signed_in_as">Connesso come</string>
+    <string name="fui_signed_in_as">Connesso come %1$s</string>
     <string name="fui_skip_action">Salta</string>
     <string name="fui_use_different_method_action">Usa un metodo diverso</string>
     <string name="fui_verification_code_label">Codice di verifica</string>

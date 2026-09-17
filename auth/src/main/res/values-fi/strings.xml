@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Lähetä vahvistussähköposti uudelleen</string>
     <string name="fui_secret_key_label">Salainen avain</string>
     <string name="fui_sign_out_action">Kirjaudu ulos</string>
-    <string name="fui_signed_in_as">Kirjautuneena nimellä</string>
+    <string name="fui_signed_in_as">Kirjautuneena nimellä %1$s</string>
     <string name="fui_skip_action">Ohita</string>
     <string name="fui_use_different_method_action">Käytä eri menetelmää</string>
     <string name="fui_verification_code_label">Vahvistuskoodi</string>

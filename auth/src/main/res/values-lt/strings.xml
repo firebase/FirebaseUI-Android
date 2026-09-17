@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Siųsti patvirtinimo el. laišką iš naujo</string>
     <string name="fui_secret_key_label">Slaptasis raktas</string>
     <string name="fui_sign_out_action">Atsijungti</string>
-    <string name="fui_signed_in_as">Prisijungta kaip</string>
+    <string name="fui_signed_in_as">Prisijungta kaip %1$s</string>
     <string name="fui_skip_action">Praleisti</string>
     <string name="fui_use_different_method_action">Naudoti kitą metodą</string>
     <string name="fui_verification_code_label">Patvirtinimo kodas</string>

@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Изпращане на имейл за потвърждение отново</string>
     <string name="fui_secret_key_label">Таен ключ</string>
     <string name="fui_sign_out_action">Изход</string>
-    <string name="fui_signed_in_as">Влезли сте като</string>
+    <string name="fui_signed_in_as">Влезли сте като %1$s</string>
     <string name="fui_skip_action">Пропускане</string>
     <string name="fui_use_different_method_action">Използване на друг метод</string>
     <string name="fui_verification_code_label">Код за потвърждение</string>

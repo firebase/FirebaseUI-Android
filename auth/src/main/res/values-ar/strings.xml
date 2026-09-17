@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">إعادة إرسال بريد التحقق</string>
     <string name="fui_secret_key_label">المفتاح السري</string>
     <string name="fui_sign_out_action">تسجيل الخروج</string>
-    <string name="fui_signed_in_as">مسجل الدخول باسم</string>
+    <string name="fui_signed_in_as">مسجل الدخول باسم %1$s</string>
     <string name="fui_skip_action">تخطي</string>
     <string name="fui_use_different_method_action">استخدم طريقة أخرى</string>
     <string name="fui_verification_code_label">رمز التحقق</string>

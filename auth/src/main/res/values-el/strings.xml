@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Επαναποστολή email επαλήθευσης</string>
     <string name="fui_secret_key_label">Μυστικό κλειδί</string>
     <string name="fui_sign_out_action">Αποσύνδεση</string>
-    <string name="fui_signed_in_as">Συνδεδεμένος ως</string>
+    <string name="fui_signed_in_as">Συνδεδεμένος ως %1$s</string>
     <string name="fui_skip_action">Παράλειψη</string>
     <string name="fui_use_different_method_action">Χρήση διαφορετικής μεθόδου</string>
     <string name="fui_verification_code_label">Κωδικός επαλήθευσης</string>

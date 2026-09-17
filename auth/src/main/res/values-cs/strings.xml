@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Znovu odeslat ověřovací e-mail</string>
     <string name="fui_secret_key_label">Tajný klíč</string>
     <string name="fui_sign_out_action">Odhlásit se</string>
-    <string name="fui_signed_in_as">Přihlášen jako</string>
+    <string name="fui_signed_in_as">Přihlášen jako %1$s</string>
     <string name="fui_skip_action">Přeskočit</string>
     <string name="fui_use_different_method_action">Použít jinou metodu</string>
     <string name="fui_verification_code_label">Ověřovací kód</string>

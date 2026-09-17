@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">重新发送验证邮件</string>
     <string name="fui_secret_key_label">密钥</string>
     <string name="fui_sign_out_action">退出</string>
-    <string name="fui_signed_in_as">登录身份</string>
+    <string name="fui_signed_in_as">登录身份：%1$s</string>
     <string name="fui_skip_action">跳过</string>
     <string name="fui_use_different_method_action">使用其他方式</string>
     <string name="fui_verification_code_label">验证码</string>

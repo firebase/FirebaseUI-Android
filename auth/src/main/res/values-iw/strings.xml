@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">שלח שוב אימייל אימות</string>
     <string name="fui_secret_key_label">מפתח סודי</string>
     <string name="fui_sign_out_action">התנתק</string>
-    <string name="fui_signed_in_as">מחובר בתור</string>
+    <string name="fui_signed_in_as">מחובר בתור %1$s</string>
     <string name="fui_skip_action">דלג</string>
     <string name="fui_use_different_method_action">השתמש בשיטה אחרת</string>
     <string name="fui_verification_code_label">קוד אימות</string>

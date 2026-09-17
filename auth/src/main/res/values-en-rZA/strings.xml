@@ -158,7 +158,7 @@
     <string name="fui_resend_verification_email_action">Resend verification email</string>
     <string name="fui_secret_key_label">Secret key</string>
     <string name="fui_sign_out_action">Sign out</string>
-    <string name="fui_signed_in_as">Signed in as</string>
+    <string name="fui_signed_in_as">Signed in as %1$s</string>
     <string name="fui_skip_action">Skip</string>
     <string name="fui_use_different_method_action">Use a different method</string>
     <string name="fui_verification_code_label">Verification code</string>
