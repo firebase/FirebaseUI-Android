@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड करत आहे…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">अतिथी म्हणून साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_google">Google ने साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook ने साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s ने साइन इन करत आहे…</string>
+    <string name="fui_loading_verifying_phone_number">फोन नंबरची पडताळणी करत आहे…</string>
+    <string name="fui_loading_submitting_verification_code">पडताळणी कोड पाठवत आहे…</string>
+    <string name="fui_loading_signing_in_with_phone">फोनने साइन इन करत आहे…</string>
+    <string name="fui_loading_creating_user">खाते तयार करत आहे…</string>
+    <string name="fui_loading_signing_in">साइन इन करत आहे…</string>
+    <string name="fui_loading_linking_credential">साइन इन करत आहे…</string>
+    <string name="fui_loading_sending_email_link">साइन इन लिंक पाठवत आहे…</string>
+    <string name="fui_loading_signing_in_with_email_link">ईमेल लिंक वापरून साइन इन करत आहे…</string>
+    <string name="fui_loading_sending_password_reset">पासवर्ड रीसेट ईमेल पाठवत आहे…</string>
+    <string name="fui_loading_signing_out">साइन आउट करत आहे…</string>
+    <string name="fui_loading_reauth_retrying">क्रिया पूर्ण करत आहे…</string>
+    <string name="fui_loading_deleting_account">खाते हटवत आहे…</string>
     <string name="fui_sign_in_default">साइन इन करा</string>
     <string name="fui_continue">सुरू ठेवा</string>
     <string name="fui_tos_and_pp">पुढे सुरू ठेवून, तुम्ही सूचित करता की तुम्ही आमचे %1$s आणि %2$s स्वीकारता.</string>

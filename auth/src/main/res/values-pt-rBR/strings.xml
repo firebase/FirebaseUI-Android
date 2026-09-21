@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Carregando…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Fazendo login como convidado…</string>
+    <string name="fui_loading_signing_in_with_google">Fazendo login com o Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Fazendo login com o Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Fazendo login com %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Confirmando o número de telefone…</string>
+    <string name="fui_loading_submitting_verification_code">Enviando o código de verificação…</string>
+    <string name="fui_loading_signing_in_with_phone">Fazendo login com o telefone…</string>
+    <string name="fui_loading_creating_user">Criando a conta…</string>
+    <string name="fui_loading_signing_in">Fazendo login…</string>
+    <string name="fui_loading_linking_credential">Fazendo login…</string>
+    <string name="fui_loading_sending_email_link">Enviando o link de login…</string>
+    <string name="fui_loading_signing_in_with_email_link">Fazendo login com link de e-mail…</string>
+    <string name="fui_loading_sending_password_reset">Enviando o e-mail de redefinição de senha…</string>
+    <string name="fui_loading_signing_out">Saindo…</string>
+    <string name="fui_loading_reauth_retrying">Concluindo a ação…</string>
+    <string name="fui_loading_deleting_account">Excluindo a conta…</string>
     <string name="fui_sign_in_default">Fazer login</string>
     <string name="fui_continue">Continuar</string>
     <string name="fui_tos_and_pp">Ao continuar, você concorda com nossos %1$s e a %2$s.</string>

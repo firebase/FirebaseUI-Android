@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">กำลังโหลด…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">กำลังลงชื่อเข้าใช้ในฐานะผู้เข้าร่วม…</string>
+    <string name="fui_loading_signing_in_with_google">กำลังลงชื่อเข้าใช้ด้วย Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">กำลังลงชื่อเข้าใช้ด้วย Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">กำลังลงชื่อเข้าใช้ด้วย %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">กำลังยืนยันหมายเลขโทรศัพท์…</string>
+    <string name="fui_loading_submitting_verification_code">กำลังส่งรหัสยืนยัน…</string>
+    <string name="fui_loading_signing_in_with_phone">กำลังลงชื่อเข้าใช้ด้วยโทรศัพท์…</string>
+    <string name="fui_loading_creating_user">กำลังสร้างบัญชี…</string>
+    <string name="fui_loading_signing_in">กำลังลงชื่อเข้าใช้…</string>
+    <string name="fui_loading_linking_credential">กำลังลงชื่อเข้าใช้…</string>
+    <string name="fui_loading_sending_email_link">กำลังส่งลิงก์ลงชื่อเข้าใช้…</string>
+    <string name="fui_loading_signing_in_with_email_link">กำลังลงชื่อเข้าใช้ด้วยลิงก์อีเมล…</string>
+    <string name="fui_loading_sending_password_reset">กำลังส่งอีเมลรีเซ็ตรหัสผ่าน…</string>
+    <string name="fui_loading_signing_out">กำลังออกจากระบบ…</string>
+    <string name="fui_loading_reauth_retrying">กำลังดำเนินการให้เสร็จสิ้น…</string>
+    <string name="fui_loading_deleting_account">กำลังลบบัญชี…</string>
     <string name="fui_sign_in_default">ลงชื่อเข้าใช้</string>
     <string name="fui_continue">ต่อไป</string>
     <string name="fui_tos_and_pp">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s และ %2$s</string>

@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Учитава се…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Пријављивање као гост…</string>
+    <string name="fui_loading_signing_in_with_google">Пријављивање помоћу Google-а…</string>
+    <string name="fui_loading_signing_in_with_facebook">Пријављивање помоћу Facebook-а…</string>
+    <string name="fui_loading_signing_in_with_provider">Пријављивање помоћу %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Верификује се број телефона…</string>
+    <string name="fui_loading_submitting_verification_code">Шаље се кôд за верификацију…</string>
+    <string name="fui_loading_signing_in_with_phone">Пријављивање помоћу телефона…</string>
+    <string name="fui_loading_creating_user">Прави се налог…</string>
+    <string name="fui_loading_signing_in">Пријављивање…</string>
+    <string name="fui_loading_linking_credential">Пријављивање…</string>
+    <string name="fui_loading_sending_email_link">Шаље се линк за пријављивање…</string>
+    <string name="fui_loading_signing_in_with_email_link">Пријављивање помоћу имејл линка…</string>
+    <string name="fui_loading_sending_password_reset">Шаље се имејл за ресетовање лозинке…</string>
+    <string name="fui_loading_signing_out">Одјављивање…</string>
+    <string name="fui_loading_reauth_retrying">Довршава се радња…</string>
+    <string name="fui_loading_deleting_account">Брише се налог…</string>
     <string name="fui_sign_in_default">Пријави ме</string>
     <string name="fui_continue">Настави</string>
     <string name="fui_tos_and_pp">Ако наставите, потврђујете да прихватате документе %1$s и %2$s.</string>

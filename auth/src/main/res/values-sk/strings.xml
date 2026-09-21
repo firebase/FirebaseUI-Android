@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítava sa…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Prihlasovanie ako hosť…</string>
+    <string name="fui_loading_signing_in_with_google">Prihlasovanie účtom Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Prihlasovanie účtom Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Prihlasovanie účtom %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Overuje sa telefónne číslo…</string>
+    <string name="fui_loading_submitting_verification_code">Odosiela sa overovací kód…</string>
+    <string name="fui_loading_signing_in_with_phone">Prihlasovanie telefónom…</string>
+    <string name="fui_loading_creating_user">Vytvára sa účet…</string>
+    <string name="fui_loading_signing_in">Prihlasovanie…</string>
+    <string name="fui_loading_linking_credential">Prihlasovanie…</string>
+    <string name="fui_loading_sending_email_link">Odosiela sa odkaz na prihlásenie…</string>
+    <string name="fui_loading_signing_in_with_email_link">Prihlasovanie pomocou e-mailového odkazu…</string>
+    <string name="fui_loading_sending_password_reset">Odosiela sa e-mail na obnovenie hesla…</string>
+    <string name="fui_loading_signing_out">Odhlasovanie…</string>
+    <string name="fui_loading_reauth_retrying">Dokončuje sa akcia…</string>
+    <string name="fui_loading_deleting_account">Odstraňuje sa účet…</string>
     <string name="fui_sign_in_default">Prihlásiť sa</string>
     <string name="fui_continue">Pokračovať</string>
     <string name="fui_tos_and_pp">Pokračovaním vyjadrujete súhlas s dokumentmi %1$s a %2$s.</string>

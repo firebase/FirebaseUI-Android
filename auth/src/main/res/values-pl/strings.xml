@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wczytuję…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Loguję jako gość…</string>
+    <string name="fui_loading_signing_in_with_google">Loguję przez Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Loguję przez Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Loguję przez %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Weryfikuję numer telefonu…</string>
+    <string name="fui_loading_submitting_verification_code">Wysyłam kod weryfikacyjny…</string>
+    <string name="fui_loading_signing_in_with_phone">Loguję przez telefon…</string>
+    <string name="fui_loading_creating_user">Tworzę konto…</string>
+    <string name="fui_loading_signing_in">Loguję…</string>
+    <string name="fui_loading_linking_credential">Loguję…</string>
+    <string name="fui_loading_sending_email_link">Wysyłam link logowania…</string>
+    <string name="fui_loading_signing_in_with_email_link">Loguję za pomocą linku e-mail…</string>
+    <string name="fui_loading_sending_password_reset">Wysyłam e-mail resetujący hasło…</string>
+    <string name="fui_loading_signing_out">Wylogowuję…</string>
+    <string name="fui_loading_reauth_retrying">Kończę działanie…</string>
+    <string name="fui_loading_deleting_account">Usuwam konto…</string>
     <string name="fui_sign_in_default">Zaloguj się</string>
     <string name="fui_continue">Dalej</string>
     <string name="fui_tos_and_pp">Kontynuując, potwierdzasz, że akceptujesz te dokumenty: %1$s i %2$s.</string>

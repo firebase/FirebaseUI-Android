@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laster inn…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Logger på som gjest…</string>
+    <string name="fui_loading_signing_in_with_google">Logger på med Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Logger på med Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Logger på med %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Bekrefter telefonnummeret…</string>
+    <string name="fui_loading_submitting_verification_code">Sender bekreftelseskoden…</string>
+    <string name="fui_loading_signing_in_with_phone">Logger på med telefon…</string>
+    <string name="fui_loading_creating_user">Oppretter konto…</string>
+    <string name="fui_loading_signing_in">Logger på…</string>
+    <string name="fui_loading_linking_credential">Logger på…</string>
+    <string name="fui_loading_sending_email_link">Sender påloggingslenke…</string>
+    <string name="fui_loading_signing_in_with_email_link">Logger på med e-postlenke…</string>
+    <string name="fui_loading_sending_password_reset">Sender e-post for tilbakestilling av passord…</string>
+    <string name="fui_loading_signing_out">Logger av…</string>
+    <string name="fui_loading_reauth_retrying">Fullfører handlingen…</string>
+    <string name="fui_loading_deleting_account">Sletter kontoen…</string>
     <string name="fui_sign_in_default">Logg på</string>
     <string name="fui_continue">Fortsett</string>
     <string name="fui_tos_and_pp">Ved å fortsette godtar du %1$s og %2$s våre.</string>

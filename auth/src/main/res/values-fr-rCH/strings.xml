@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Chargement…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Connexion en tant qu\'invité…</string>
+    <string name="fui_loading_signing_in_with_google">Connexion avec Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Connexion avec Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Connexion avec %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Validation du numéro de téléphone…</string>
+    <string name="fui_loading_submitting_verification_code">Envoi du code de validation…</string>
+    <string name="fui_loading_signing_in_with_phone">Connexion par téléphone…</string>
+    <string name="fui_loading_creating_user">Création du compte…</string>
+    <string name="fui_loading_signing_in">Connexion…</string>
+    <string name="fui_loading_linking_credential">Connexion…</string>
+    <string name="fui_loading_sending_email_link">Envoi du lien de connexion…</string>
+    <string name="fui_loading_signing_in_with_email_link">Connexion avec le lien e-mail…</string>
+    <string name="fui_loading_sending_password_reset">Envoi de l\'e-mail de réinitialisation du mot de passe…</string>
+    <string name="fui_loading_signing_out">Déconnexion…</string>
+    <string name="fui_loading_reauth_retrying">Finalisation de l\'action…</string>
+    <string name="fui_loading_deleting_account">Suppression du compte…</string>
     <string name="fui_sign_in_default">Se connecter</string>
     <string name="fui_continue">Continuer</string>
     <string name="fui_tos_and_pp">En continuant, vous acceptez les %1$s et les %2$s.</string>

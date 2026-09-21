@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Notiek ielāde…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Notiek pierakstīšanās kā viesim…</string>
+    <string name="fui_loading_signing_in_with_google">Notiek pierakstīšanās ar Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Notiek pierakstīšanās ar Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Notiek pierakstīšanās ar %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Notiek tālruņa numura verifikācija…</string>
+    <string name="fui_loading_submitting_verification_code">Notiek verifikācijas koda nosūtīšana…</string>
+    <string name="fui_loading_signing_in_with_phone">Notiek pierakstīšanās ar tālruni…</string>
+    <string name="fui_loading_creating_user">Notiek konta izveide…</string>
+    <string name="fui_loading_signing_in">Notiek pierakstīšanās…</string>
+    <string name="fui_loading_linking_credential">Notiek pierakstīšanās…</string>
+    <string name="fui_loading_sending_email_link">Notiek pierakstīšanās saites nosūtīšana…</string>
+    <string name="fui_loading_signing_in_with_email_link">Notiek pierakstīšanās ar e-pasta saiti…</string>
+    <string name="fui_loading_sending_password_reset">Notiek paroles atiestatīšanas e-pasta nosūtīšana…</string>
+    <string name="fui_loading_signing_out">Notiek izrakstīšanās…</string>
+    <string name="fui_loading_reauth_retrying">Notiek darbības pabeigšana…</string>
+    <string name="fui_loading_deleting_account">Notiek konta dzēšana…</string>
     <string name="fui_sign_in_default">Pierakstīties</string>
     <string name="fui_continue">Tālāk</string>
     <string name="fui_tos_and_pp">Turpinot jūs norādāt, ka piekrītat šādiem dokumentiem: %1$s un %2$s.</string>

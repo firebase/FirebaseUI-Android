@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">درحال بارگیری…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">درحال ورود به سیستم به‌عنوان مهمان…</string>
+    <string name="fui_loading_signing_in_with_google">درحال ورود به سیستم با Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">درحال ورود به سیستم با Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">درحال ورود به سیستم با %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">درحال تأیید شماره تلفن…</string>
+    <string name="fui_loading_submitting_verification_code">درحال ارسال کد تأیید…</string>
+    <string name="fui_loading_signing_in_with_phone">درحال ورود به سیستم با تلفن…</string>
+    <string name="fui_loading_creating_user">درحال ایجاد حساب…</string>
+    <string name="fui_loading_signing_in">درحال ورود به سیستم…</string>
+    <string name="fui_loading_linking_credential">درحال ورود به سیستم…</string>
+    <string name="fui_loading_sending_email_link">درحال ارسال پیوند ورود…</string>
+    <string name="fui_loading_signing_in_with_email_link">درحال ورود با پیوند ایمیل…</string>
+    <string name="fui_loading_sending_password_reset">درحال ارسال ایمیل بازنشانی گذرواژه…</string>
+    <string name="fui_loading_signing_out">درحال خروج…</string>
+    <string name="fui_loading_reauth_retrying">درحال تکمیل عملیات…</string>
+    <string name="fui_loading_deleting_account">درحال حذف حساب…</string>
     <string name="fui_sign_in_default">ورود به سیستم</string>
     <string name="fui_continue">ادامه</string>
     <string name="fui_tos_and_pp">درصورت ادامه‌دادن، موافقتتان را با %1$s و %2$s اعلام می‌کنید.</string>

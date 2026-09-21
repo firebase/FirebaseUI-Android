@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">טוען…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">נכנס כאורח…</string>
+    <string name="fui_loading_signing_in_with_google">נכנס באמצעות Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">נכנס באמצעות Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">נכנס באמצעות %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">מאמת את מספר הטלפון…</string>
+    <string name="fui_loading_submitting_verification_code">שולח את קוד האימות…</string>
+    <string name="fui_loading_signing_in_with_phone">נכנס באמצעות טלפון…</string>
+    <string name="fui_loading_creating_user">יוצר חשבון…</string>
+    <string name="fui_loading_signing_in">נכנס…</string>
+    <string name="fui_loading_linking_credential">נכנס…</string>
+    <string name="fui_loading_sending_email_link">שולח קישור כניסה…</string>
+    <string name="fui_loading_signing_in_with_email_link">נכנס באמצעות קישור אימייל…</string>
+    <string name="fui_loading_sending_password_reset">שולח אימייל לאיפוס הסיסמה…</string>
+    <string name="fui_loading_signing_out">מתנתק…</string>
+    <string name="fui_loading_reauth_retrying">משלים את הפעולה…</string>
+    <string name="fui_loading_deleting_account">מוחק את החשבון…</string>
     <string name="fui_sign_in_default">כניסה</string>
     <string name="fui_continue">המשך</string>
     <string name="fui_tos_and_pp">המשך התהליך יפורש כהסכמתך ל%1$s ול%2$s.</string>

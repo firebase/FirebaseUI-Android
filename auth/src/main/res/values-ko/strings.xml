@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">로드 중…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">게스트로 로그인 중…</string>
+    <string name="fui_loading_signing_in_with_google">Google 계정으로 로그인 중…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook 계정으로 로그인 중…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s 계정으로 로그인 중…</string>
+    <string name="fui_loading_verifying_phone_number">전화번호 인증 중…</string>
+    <string name="fui_loading_submitting_verification_code">인증 코드 전송 중…</string>
+    <string name="fui_loading_signing_in_with_phone">전화번호로 로그인 중…</string>
+    <string name="fui_loading_creating_user">계정 생성 중…</string>
+    <string name="fui_loading_signing_in">로그인 중…</string>
+    <string name="fui_loading_linking_credential">로그인 중…</string>
+    <string name="fui_loading_sending_email_link">로그인 링크 전송 중…</string>
+    <string name="fui_loading_signing_in_with_email_link">이메일 링크로 로그인 중…</string>
+    <string name="fui_loading_sending_password_reset">비밀번호 재설정 이메일 전송 중…</string>
+    <string name="fui_loading_signing_out">로그아웃 중…</string>
+    <string name="fui_loading_reauth_retrying">작업 완료 중…</string>
+    <string name="fui_loading_deleting_account">계정 삭제 중…</string>
     <string name="fui_sign_in_default">로그인</string>
     <string name="fui_continue">계속</string>
     <string name="fui_tos_and_pp">계속 진행하면 %1$s 및 %2$s에 동의하는 것으로 간주됩니다.</string>

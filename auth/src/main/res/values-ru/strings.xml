@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Загрузка…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Выполняется вход в качестве гостя…</string>
+    <string name="fui_loading_signing_in_with_google">Выполняется вход через Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Выполняется вход через Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Выполняется вход через %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Проверка номера телефона…</string>
+    <string name="fui_loading_submitting_verification_code">Отправка кода подтверждения…</string>
+    <string name="fui_loading_signing_in_with_phone">Выполняется вход по номеру телефона…</string>
+    <string name="fui_loading_creating_user">Создание аккаунта…</string>
+    <string name="fui_loading_signing_in">Выполняется вход…</string>
+    <string name="fui_loading_linking_credential">Выполняется вход…</string>
+    <string name="fui_loading_sending_email_link">Отправка ссылки для входа…</string>
+    <string name="fui_loading_signing_in_with_email_link">Выполняется вход по ссылке из письма…</string>
+    <string name="fui_loading_sending_password_reset">Отправка письма для сброса пароля…</string>
+    <string name="fui_loading_signing_out">Выполняется выход…</string>
+    <string name="fui_loading_reauth_retrying">Завершение действия…</string>
+    <string name="fui_loading_deleting_account">Удаление аккаунта…</string>
     <string name="fui_sign_in_default">Войти</string>
     <string name="fui_continue">Продолжить</string>
     <string name="fui_tos_and_pp">Продолжая, вы принимаете %1$s и %2$s.</string>
