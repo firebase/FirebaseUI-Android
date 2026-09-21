@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Thiết lập xác minh qua SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Thiết lập ứng dụng xác thực</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Xác minh mã của bạn</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Quản lý xác thực hai yếu tố</string>
+    <string name="fui_mfa_manage_factors_description">Thêm hoặc xoá phương thức xác thực cho tài khoản của bạn</string>
+    <string name="fui_mfa_active_methods_title">Phương thức đang hoạt động</string>
+    <string name="fui_mfa_add_new_method_title">Thêm phương thức mới</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Đã đăng ký tất cả phương thức xác thực hiện có</string>
+    <string name="fui_mfa_label_sms_authentication">Xác thực bằng SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Ứng dụng xác thực</string>
+    <string name="fui_mfa_label_unknown_method">Phương thức không xác định</string>
+    <string name="fui_mfa_enrolled_on">Đã đăng ký vào %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Quét mã QR hoặc nhập khoá bí mật trong ứng dụng xác thực của bạn</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Chọn phương thức xác thực thứ hai để bảo mật tài khoản của bạn</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Nhập số điện thoại của bạn để nhận mã xác minh</string>

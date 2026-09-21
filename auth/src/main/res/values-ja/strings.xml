@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS認証を設定</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">認証アプリを設定</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">コードを確認</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">2段階認証を管理</string>
+    <string name="fui_mfa_manage_factors_description">アカウントの認証方法を追加または削除します</string>
+    <string name="fui_mfa_active_methods_title">有効な方法</string>
+    <string name="fui_mfa_add_new_method_title">新しい方法を追加</string>
+    <string name="fui_mfa_all_methods_enrolled_message">利用可能なすべての認証方法が登録されています</string>
+    <string name="fui_mfa_label_sms_authentication">SMS認証</string>
+    <string name="fui_mfa_label_totp_authentication">認証アプリ</string>
+    <string name="fui_mfa_label_unknown_method">不明な方法</string>
+    <string name="fui_mfa_enrolled_on">%1$s に登録</string>
+    <string name="fui_mfa_setup_authenticator_description">QRコードをスキャンするか、認証アプリにシークレットキーを入力してください</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">アカウントを保護するため、2つ目の認証方法を選択してください</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">確認コードを受け取るために電話番号を入力してください</string>

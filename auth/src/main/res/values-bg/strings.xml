@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Настройте SMS проверка</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Настройте приложение за удостоверяване</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Потвърдете кода си</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Управление на двуфакторното удостоверяване</string>
+    <string name="fui_mfa_manage_factors_description">Добавяне или премахване на методи за удостоверяване за профила ви</string>
+    <string name="fui_mfa_active_methods_title">Активни методи</string>
+    <string name="fui_mfa_add_new_method_title">Добавяне на нов метод</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Всички налични методи за удостоверяване са регистрирани</string>
+    <string name="fui_mfa_label_sms_authentication">Удостоверяване чрез SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Приложение за удостоверяване</string>
+    <string name="fui_mfa_label_unknown_method">Неизвестен метод</string>
+    <string name="fui_mfa_enrolled_on">Регистриран на %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Сканирайте QR кода или въведете секретния ключ в приложението си за удостоверяване</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Изберете втори метод за удостоверяване, за да защитите акаунта си</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Въведете телефонния си номер, за да получавате кодове за проверка</string>

@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Set Up SMS Verification</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Set Up Authenticator App</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verify Your Code</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Manage two-factor authentication</string>
+    <string name="fui_mfa_manage_factors_description">Add or remove authentication methods for your account</string>
+    <string name="fui_mfa_active_methods_title">Active methods</string>
+    <string name="fui_mfa_add_new_method_title">Add new method</string>
+    <string name="fui_mfa_all_methods_enrolled_message">All available authentication methods are enrolled</string>
+    <string name="fui_mfa_label_sms_authentication">SMS authentication</string>
+    <string name="fui_mfa_label_totp_authentication">Authenticator app</string>
+    <string name="fui_mfa_label_unknown_method">Unknown method</string>
+    <string name="fui_mfa_enrolled_on">Enrolled on %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scan the QR code or enter the secret key in your authenticator app</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Select a second authentication method to secure your account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Enter your phone number to receive verification codes</string>

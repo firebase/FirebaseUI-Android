@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekreftelse</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekreft koden din</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Administrer tofaktorautentisering</string>
+    <string name="fui_mfa_manage_factors_description">Legg til eller fjern autentiseringsmetoder for kontoen din</string>
+    <string name="fui_mfa_active_methods_title">Aktive metoder</string>
+    <string name="fui_mfa_add_new_method_title">Legg til ny metode</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alle tilgjengelige autentiseringsmetoder er registrert</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-autentisering</string>
+    <string name="fui_mfa_label_totp_authentication">Autentiseringsapp</string>
+    <string name="fui_mfa_label_unknown_method">Ukjent metode</string>
+    <string name="fui_mfa_enrolled_on">Registrert %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skann QR-koden eller skriv inn den hemmelige nøkkelen i autentiseringsappen din</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Velg en andre autentiseringsmetode for å sikre kontoen din</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Skriv inn telefonnummeret ditt for å motta bekreftelseskoder</string>

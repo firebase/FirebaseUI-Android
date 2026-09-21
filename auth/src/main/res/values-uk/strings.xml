@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Налаштувати підтвердження через SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Налаштувати додаток автентифікації</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Підтвердіть свій код</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Керування двофакторною автентифікацією</string>
+    <string name="fui_mfa_manage_factors_description">Додайте або видаліть способи автентифікації для свого облікового запису</string>
+    <string name="fui_mfa_active_methods_title">Активні способи</string>
+    <string name="fui_mfa_add_new_method_title">Додати новий спосіб</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Усі доступні способи автентифікації зареєстровано</string>
+    <string name="fui_mfa_label_sms_authentication">Автентифікація через SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Додаток для автентифікації</string>
+    <string name="fui_mfa_label_unknown_method">Невідомий спосіб</string>
+    <string name="fui_mfa_enrolled_on">Зареєстровано %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Скануйте QR-код або введіть секретний ключ у додатку для автентифікації</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Виберіть другий спосіб автентифікації для захисту облікового запису</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Введіть номер телефону для отримання кодів підтвердження</string>

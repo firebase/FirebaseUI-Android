@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-Bestätigung iirichte</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-App iirichte</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code bestätige</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Zwei-Faktor-Authentifizierig verwalte</string>
+    <string name="fui_mfa_manage_factors_description">Authentifizierigsmethode für dis Konto hinzuefüege oder entferne</string>
+    <string name="fui_mfa_active_methods_title">Aktivi Methode</string>
+    <string name="fui_mfa_add_new_method_title">Neui Methode hinzuefüege</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alli verfüegbare Authentifizierigsmethode sind registriert</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-Authentifizierig</string>
+    <string name="fui_mfa_label_totp_authentication">Authentifizierigs-App</string>
+    <string name="fui_mfa_label_unknown_method">Unbekannti Methode</string>
+    <string name="fui_mfa_enrolled_on">Registriert am %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scann de QR-Code oder gib de gheimi Schlüssel i dinere Authentifizierigs-App i</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wähle Sie e zweiti Authentifizierungsmethode us, zum Ihres Konto z schütze</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Gäbe Sie Ihri Telefonnummer ii, zum Bestätigungscodes z erhalte</string>

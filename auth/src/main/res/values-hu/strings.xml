@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-ellenőrzés beállítása</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Hitelesítő alkalmazás beállítása</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Kód ellenőrzése</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Kétfaktoros hitelesítés kezelése</string>
+    <string name="fui_mfa_manage_factors_description">Hitelesítési módszerek hozzáadása vagy eltávolítása a fiókjához</string>
+    <string name="fui_mfa_active_methods_title">Aktív módszerek</string>
+    <string name="fui_mfa_add_new_method_title">Új módszer hozzáadása</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Az összes elérhető hitelesítési módszer regisztrálva van</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-hitelesítés</string>
+    <string name="fui_mfa_label_totp_authentication">Hitelesítő alkalmazás</string>
+    <string name="fui_mfa_label_unknown_method">Ismeretlen módszer</string>
+    <string name="fui_mfa_enrolled_on">Regisztrálva: %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Olvassa be a QR-kódot, vagy adja meg a titkos kulcsot a hitelesítő alkalmazásban</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Válasszon második hitelesítési módszert fiókja védelme érdekében</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Adja meg telefonszámát az ellenőrző kódok fogadásához</string>

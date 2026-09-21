@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">设置短信验证</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">设置身份验证器应用</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">验证代码</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">管理双重验证</string>
+    <string name="fui_mfa_manage_factors_description">添加或移除账号的身份验证方式</string>
+    <string name="fui_mfa_active_methods_title">已启用的方式</string>
+    <string name="fui_mfa_add_new_method_title">添加新方式</string>
+    <string name="fui_mfa_all_methods_enrolled_message">所有可用的身份验证方式均已注册</string>
+    <string name="fui_mfa_label_sms_authentication">短信验证</string>
+    <string name="fui_mfa_label_totp_authentication">身份验证器应用</string>
+    <string name="fui_mfa_label_unknown_method">未知方式</string>
+    <string name="fui_mfa_enrolled_on">注册时间：%1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">扫描二维码或在身份验证器应用中输入密钥</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">选择第二种身份验证方法以保护您的帐号</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">输入您的电话号码以接收验证码</string>

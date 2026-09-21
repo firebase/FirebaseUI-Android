@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS சரிபார்ப்பை அமைக்கவும்</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">அங்கீகரிப்பு ஆப்ஸை அமைக்கவும்</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">உங்கள் குறியீட்டைச் சரிபார்க்கவும்</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">இரு-காரணி அங்கீகாரத்தை நிர்வகி</string>
+    <string name="fui_mfa_manage_factors_description">உங்கள் கணக்கிற்கான அங்கீகார முறைகளைச் சேர்க்கவும் அல்லது அகற்றவும்</string>
+    <string name="fui_mfa_active_methods_title">செயலில் உள்ள முறைகள்</string>
+    <string name="fui_mfa_add_new_method_title">புதிய முறையைச் சேர்</string>
+    <string name="fui_mfa_all_methods_enrolled_message">கிடைக்கக்கூடிய அனைத்து அங்கீகார முறைகளும் பதிவு செய்யப்பட்டுள்ளன</string>
+    <string name="fui_mfa_label_sms_authentication">SMS அங்கீகாரம்</string>
+    <string name="fui_mfa_label_totp_authentication">அங்கீகார பயன்பாடு</string>
+    <string name="fui_mfa_label_unknown_method">தெரியாத முறை</string>
+    <string name="fui_mfa_enrolled_on">%1$s அன்று பதிவு செய்யப்பட்டது</string>
+    <string name="fui_mfa_setup_authenticator_description">QR குறியீட்டை ஸ்கேன் செய்யவும் அல்லது உங்கள் அங்கீகார பயன்பாட்டில் ரகசிய விசையை உள்ளிடவும்</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">உங்கள் கணக்கைப் பாதுகாக்க இரண்டாவது அங்கீகார முறையைத் தேர்ந்தெடுக்கவும்</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">சரிபார்ப்புக் குறியீடுகளைப் பெற உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்</string>

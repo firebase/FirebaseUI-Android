@@ -130,6 +130,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS 인증 설정</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">인증 앱 설정</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">코드 확인</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">2단계 인증 관리</string>
+    <string name="fui_mfa_manage_factors_description">계정의 인증 방법 추가 또는 삭제</string>
+    <string name="fui_mfa_active_methods_title">사용 중인 방법</string>
+    <string name="fui_mfa_add_new_method_title">새 방법 추가</string>
+    <string name="fui_mfa_all_methods_enrolled_message">사용 가능한 모든 인증 방법이 등록되었습니다</string>
+    <string name="fui_mfa_label_sms_authentication">SMS 인증</string>
+    <string name="fui_mfa_label_totp_authentication">인증 앱</string>
+    <string name="fui_mfa_label_unknown_method">알 수 없는 방법</string>
+    <string name="fui_mfa_enrolled_on">%1$s에 등록됨</string>
+    <string name="fui_mfa_setup_authenticator_description">QR 코드를 스캔하거나 인증 앱에 비밀 키를 입력하세요</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">계정을 보호하기 위해 두 번째 인증 방법을 선택하세요</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">인증 코드를 받을 전화번호를 입력하세요</string>

@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Sediakan Pengesahan SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Sediakan Aplikasi Pengesah</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Sahkan Kod Anda</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Urus pengesahan dua faktor</string>
+    <string name="fui_mfa_manage_factors_description">Tambah atau alih keluar kaedah pengesahan untuk akaun anda</string>
+    <string name="fui_mfa_active_methods_title">Kaedah aktif</string>
+    <string name="fui_mfa_add_new_method_title">Tambah kaedah baharu</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Semua kaedah pengesahan yang tersedia telah didaftarkan</string>
+    <string name="fui_mfa_label_sms_authentication">Pengesahan SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Apl pengesahan</string>
+    <string name="fui_mfa_label_unknown_method">Kaedah tidak diketahui</string>
+    <string name="fui_mfa_enrolled_on">Didaftarkan pada %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Imbas kod QR atau masukkan kunci rahsia dalam apl pengesahan anda</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pilih kaedah pengesahan kedua untuk melindungi akaun anda</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Masukkan nombor telefon anda untuk menerima kod pengesahan</string>

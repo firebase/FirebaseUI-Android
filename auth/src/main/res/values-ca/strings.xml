@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configureu la verificació per SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configureu l\'aplicació d\'autenticació</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiqueu el codi</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Gestiona l\'autenticació de dos factors</string>
+    <string name="fui_mfa_manage_factors_description">Afegeix o elimina mètodes d\'autenticació per al teu compte</string>
+    <string name="fui_mfa_active_methods_title">Mètodes actius</string>
+    <string name="fui_mfa_add_new_method_title">Afegeix un mètode nou</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Tots els mètodes d\'autenticació disponibles estan registrats</string>
+    <string name="fui_mfa_label_sms_authentication">Autenticació per SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Aplicació d\'autenticació</string>
+    <string name="fui_mfa_label_unknown_method">Mètode desconegut</string>
+    <string name="fui_mfa_enrolled_on">Registrat el %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Escaneja el codi QR o introdueix la clau secreta a la teva aplicació d\'autenticació</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleccioneu un segon mètode d\'autenticació per protegir el vostre compte</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduïu el vostre número de telèfon per rebre codis de verificació</string>

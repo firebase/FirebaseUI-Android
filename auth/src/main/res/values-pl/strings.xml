@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Skonfiguruj weryfikację SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Skonfiguruj aplikację uwierzytelniającą</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Zweryfikuj kod</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Zarządzaj uwierzytelnianiem dwuskładnikowym</string>
+    <string name="fui_mfa_manage_factors_description">Dodaj lub usuń metody uwierzytelniania dla swojego konta</string>
+    <string name="fui_mfa_active_methods_title">Aktywne metody</string>
+    <string name="fui_mfa_add_new_method_title">Dodaj nową metodę</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Wszystkie dostępne metody uwierzytelniania są zarejestrowane</string>
+    <string name="fui_mfa_label_sms_authentication">Uwierzytelnianie SMS-em</string>
+    <string name="fui_mfa_label_totp_authentication">Aplikacja uwierzytelniająca</string>
+    <string name="fui_mfa_label_unknown_method">Nieznana metoda</string>
+    <string name="fui_mfa_enrolled_on">Zarejestrowano %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Zeskanuj kod QR lub wpisz tajny klucz w aplikacji uwierzytelniającej</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wybierz drugą metodę uwierzytelniania, aby zabezpieczyć swoje konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Wprowadź numer telefonu, aby otrzymywać kody weryfikacyjne</string>

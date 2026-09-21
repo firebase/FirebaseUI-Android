@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-verificatie instellen</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-app instellen</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code verifiëren</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Tweefactorauthenticatie beheren</string>
+    <string name="fui_mfa_manage_factors_description">Authenticatiemethoden voor je account toevoegen of verwijderen</string>
+    <string name="fui_mfa_active_methods_title">Actieve methoden</string>
+    <string name="fui_mfa_add_new_method_title">Nieuwe methode toevoegen</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alle beschikbare authenticatiemethoden zijn geregistreerd</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-authenticatie</string>
+    <string name="fui_mfa_label_totp_authentication">Authenticatie-app</string>
+    <string name="fui_mfa_label_unknown_method">Onbekende methode</string>
+    <string name="fui_mfa_enrolled_on">Geregistreerd op %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scan de QR-code of voer de geheime sleutel in je authenticatie-app in</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selecteer een tweede authenticatiemethode om je account te beveiligen</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Voer je telefoonnummer in om verificatiecodes te ontvangen</string>

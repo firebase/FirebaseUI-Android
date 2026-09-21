@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">I-set Up ang SMS Verification</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">I-set Up ang Authenticator App</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">I-verify ang Iyong Code</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Pamahalaan ang two-factor authentication</string>
+    <string name="fui_mfa_manage_factors_description">Magdagdag o mag-alis ng mga paraan ng authentication para sa iyong account</string>
+    <string name="fui_mfa_active_methods_title">Mga aktibong paraan</string>
+    <string name="fui_mfa_add_new_method_title">Magdagdag ng bagong paraan</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Naka-enroll na ang lahat ng available na paraan ng authentication</string>
+    <string name="fui_mfa_label_sms_authentication">Pag-authenticate gamit ang SMS</string>
+    <string name="fui_mfa_label_totp_authentication">App ng authenticator</string>
+    <string name="fui_mfa_label_unknown_method">Hindi kilalang paraan</string>
+    <string name="fui_mfa_enrolled_on">Na-enroll noong %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">I-scan ang QR code o ilagay ang lihim na key sa iyong authenticator app</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pumili ng pangalawang paraan ng authentication para protektahan ang iyong account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ilagay ang iyong numero ng telepono para makatanggap ng mga verification code</string>

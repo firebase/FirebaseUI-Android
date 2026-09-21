@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">إعداد التحقق بالرسائل القصيرة</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">إعداد تطبيق المصادقة</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">تحقق من الرمز</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">إدارة المصادقة الثنائية</string>
+    <string name="fui_mfa_manage_factors_description">إضافة طرق مصادقة إلى حسابك أو إزالتها</string>
+    <string name="fui_mfa_active_methods_title">الطرق النشطة</string>
+    <string name="fui_mfa_add_new_method_title">إضافة طريقة جديدة</string>
+    <string name="fui_mfa_all_methods_enrolled_message">تم تسجيل جميع طرق المصادقة المتاحة</string>
+    <string name="fui_mfa_label_sms_authentication">المصادقة عبر الرسائل النصية</string>
+    <string name="fui_mfa_label_totp_authentication">تطبيق المصادقة</string>
+    <string name="fui_mfa_label_unknown_method">طريقة غير معروفة</string>
+    <string name="fui_mfa_enrolled_on">تم التسجيل في %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">امسح رمز الاستجابة السريعة أو أدخل المفتاح السري في تطبيق المصادقة</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اختر طريقة مصادقة ثانية لتأمين حسابك</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">أدخل رقم هاتفك لتلقي رموز التحقق</string>

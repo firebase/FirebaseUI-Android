@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS ચકાસણી સેટ કરો</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">પ્રમાણીકરણ ઍપ સેટ કરો</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">તમારો કોડ ચકાસો</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">બે-પરિબળ પ્રમાણીકરણ સંચાલિત કરો</string>
+    <string name="fui_mfa_manage_factors_description">તમારા એકાઉન્ટ માટે પ્રમાણીકરણ પદ્ધતિઓ ઉમેરો અથવા દૂર કરો</string>
+    <string name="fui_mfa_active_methods_title">સક્રિય પદ્ધતિઓ</string>
+    <string name="fui_mfa_add_new_method_title">નવી પદ્ધતિ ઉમેરો</string>
+    <string name="fui_mfa_all_methods_enrolled_message">બધી ઉપલબ્ધ પ્રમાણીકરણ પદ્ધતિઓ નોંધાયેલી છે</string>
+    <string name="fui_mfa_label_sms_authentication">SMS પ્રમાણીકરણ</string>
+    <string name="fui_mfa_label_totp_authentication">પ્રમાણીકરણ એપ</string>
+    <string name="fui_mfa_label_unknown_method">અજાણી પદ્ધતિ</string>
+    <string name="fui_mfa_enrolled_on">%1$s ના રોજ નોંધાયેલ</string>
+    <string name="fui_mfa_setup_authenticator_description">QR કોડ સ્કેન કરો અથવા તમારી પ્રમાણીકરણ એપમાં ગુપ્ત કી દાખલ કરો</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">તમારા એકાઉન્ટને સુરક્ષિત કરવા બીજી પ્રમાણીકરણ પદ્ધતિ પસંદ કરો</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ચકાસણી કોડ મેળવવા તમારો ફોન નંબર દાખલ કરો</string>

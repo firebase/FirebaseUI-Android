@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Määritä tekstiviestivahvistus</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Määritä todennussovellus</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Vahvista koodisi</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Hallinnoi kaksivaiheista todennusta</string>
+    <string name="fui_mfa_manage_factors_description">Lisää tai poista tilisi todennustapoja</string>
+    <string name="fui_mfa_active_methods_title">Aktiiviset tavat</string>
+    <string name="fui_mfa_add_new_method_title">Lisää uusi tapa</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Kaikki käytettävissä olevat todennustavat on rekisteröity</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-todennus</string>
+    <string name="fui_mfa_label_totp_authentication">Todennussovellus</string>
+    <string name="fui_mfa_label_unknown_method">Tuntematon tapa</string>
+    <string name="fui_mfa_enrolled_on">Rekisteröity %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skannaa QR-koodi tai anna salainen avain todennussovelluksessasi</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Valitse toinen todennusmenetelmä tilisi suojaamiseksi</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Anna puhelinnumerosi vastaanottaaksesi vahvistuskoodit</string>

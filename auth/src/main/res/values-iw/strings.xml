@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">הגדר אימות SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">הגדר אפליקציית מאמת</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">אמת את הקוד שלך</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">ניהול אימות דו-שלבי</string>
+    <string name="fui_mfa_manage_factors_description">הוספה או הסרה של שיטות אימות לחשבון שלך</string>
+    <string name="fui_mfa_active_methods_title">שיטות פעילות</string>
+    <string name="fui_mfa_add_new_method_title">הוספת שיטה חדשה</string>
+    <string name="fui_mfa_all_methods_enrolled_message">כל שיטות האימות הזמינות רשומות</string>
+    <string name="fui_mfa_label_sms_authentication">אימות באמצעות SMS</string>
+    <string name="fui_mfa_label_totp_authentication">אפליקציית אימות</string>
+    <string name="fui_mfa_label_unknown_method">שיטה לא ידועה</string>
+    <string name="fui_mfa_enrolled_on">נרשם בתאריך %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">סרוק את קוד ה-QR או הזן את המפתח הסודי באפליקציית האימות שלך</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">בחר שיטת אימות שנייה כדי לאבטח את החשבון שלך</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">הזן את מספר הטלפון שלך כדי לקבל קודי אימות</string>

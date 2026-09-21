@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurera SMS-verifiering</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurera autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiera din kod</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Hantera tvåfaktorsautentisering</string>
+    <string name="fui_mfa_manage_factors_description">Lägg till eller ta bort autentiseringsmetoder för ditt konto</string>
+    <string name="fui_mfa_active_methods_title">Aktiva metoder</string>
+    <string name="fui_mfa_add_new_method_title">Lägg till ny metod</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alla tillgängliga autentiseringsmetoder är registrerade</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-autentisering</string>
+    <string name="fui_mfa_label_totp_authentication">Autentiseringsapp</string>
+    <string name="fui_mfa_label_unknown_method">Okänd metod</string>
+    <string name="fui_mfa_enrolled_on">Registrerad %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skanna QR-koden eller ange den hemliga nyckeln i din autentiseringsapp</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Välj en andra autentiseringsmetod för att skydda ditt konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ange ditt telefonnummer för att ta emot verifieringskoder</string>

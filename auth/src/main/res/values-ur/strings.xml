@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS تصدیق سیٹ اپ کریں</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">تصدیقی ایپ سیٹ اپ کریں</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">اپنا کوڈ تصدیق کریں</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">دو عنصری توثیق کا نظم کریں</string>
+    <string name="fui_mfa_manage_factors_description">اپنے اکاؤنٹ کے لیے توثیق کے طریقے شامل کریں یا ہٹائیں</string>
+    <string name="fui_mfa_active_methods_title">فعال طریقے</string>
+    <string name="fui_mfa_add_new_method_title">نیا طریقہ شامل کریں</string>
+    <string name="fui_mfa_all_methods_enrolled_message">تمام دستیاب توثیقی طریقے رجسٹرڈ ہیں</string>
+    <string name="fui_mfa_label_sms_authentication">SMS توثیق</string>
+    <string name="fui_mfa_label_totp_authentication">تصدیقی ایپ</string>
+    <string name="fui_mfa_label_unknown_method">نامعلوم طریقہ</string>
+    <string name="fui_mfa_enrolled_on">%1$s کو رجسٹر کیا گیا</string>
+    <string name="fui_mfa_setup_authenticator_description">QR کوڈ اسکین کریں یا اپنی تصدیقی ایپ میں خفیہ کلید درج کریں</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اپنے اکاؤنٹ کو محفوظ بنانے کے لیے دوسرا تصدیقی طریقہ منتخب کریں</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">تصدیقی کوڈز وصول کرنے کے لیے اپنا فون نمبر درج کریں</string>

@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastavite preverjanje prek SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastavite aplikacijo za preverjanje pristnosti</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Preverite svojo kodo</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Upravljanje dvofaktorskega preverjanja</string>
+    <string name="fui_mfa_manage_factors_description">Dodajte ali odstranite načine preverjanja pristnosti za svoj račun</string>
+    <string name="fui_mfa_active_methods_title">Aktivni načini</string>
+    <string name="fui_mfa_add_new_method_title">Dodaj nov način</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Vsi razpoložljivi načini preverjanja pristnosti so registrirani</string>
+    <string name="fui_mfa_label_sms_authentication">Preverjanje pristnosti s SMS-om</string>
+    <string name="fui_mfa_label_totp_authentication">Aplikacija za preverjanje pristnosti</string>
+    <string name="fui_mfa_label_unknown_method">Neznan način</string>
+    <string name="fui_mfa_enrolled_on">Registrirano %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skenirajte QR-kodo ali vnesite skrivni ključ v aplikaciji za preverjanje pristnosti</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Izberite drug način preverjanja pristnosti za zaščito računa</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Vnesite telefonsko številko za prejemanje kod za preverjanje</string>

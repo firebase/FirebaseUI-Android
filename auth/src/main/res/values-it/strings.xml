@@ -131,6 +131,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configura verifica SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configura app di autenticazione</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifica il codice</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Gestisci autenticazione a due fattori</string>
+    <string name="fui_mfa_manage_factors_description">Aggiungi o rimuovi metodi di autenticazione per il tuo account</string>
+    <string name="fui_mfa_active_methods_title">Metodi attivi</string>
+    <string name="fui_mfa_add_new_method_title">Aggiungi nuovo metodo</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Tutti i metodi di autenticazione disponibili sono registrati</string>
+    <string name="fui_mfa_label_sms_authentication">Autenticazione tramite SMS</string>
+    <string name="fui_mfa_label_totp_authentication">App di autenticazione</string>
+    <string name="fui_mfa_label_unknown_method">Metodo sconosciuto</string>
+    <string name="fui_mfa_enrolled_on">Registrato il %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scansiona il codice QR o inserisci la chiave segreta nella tua app di autenticazione</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleziona un secondo metodo di autenticazione per proteggere il tuo account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Inserisci il tuo numero di telefono per ricevere i codici di verifica</string>

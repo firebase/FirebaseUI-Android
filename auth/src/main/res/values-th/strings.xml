@@ -132,6 +132,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">ตั้งค่าการยืนยัน SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">ตั้งค่าแอปตรวจสอบสิทธิ์</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">ยืนยันรหัสของคุณ</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">จัดการการยืนยันตัวตนแบบสองปัจจัย</string>
+    <string name="fui_mfa_manage_factors_description">เพิ่มหรือนำวิธีการยืนยันตัวตนออกจากบัญชีของคุณ</string>
+    <string name="fui_mfa_active_methods_title">วิธีการที่ใช้งานอยู่</string>
+    <string name="fui_mfa_add_new_method_title">เพิ่มวิธีการใหม่</string>
+    <string name="fui_mfa_all_methods_enrolled_message">ลงทะเบียนวิธีการยืนยันตัวตนที่มีอยู่ทั้งหมดแล้ว</string>
+    <string name="fui_mfa_label_sms_authentication">การยืนยันตัวตนด้วย SMS</string>
+    <string name="fui_mfa_label_totp_authentication">แอปยืนยันตัวตน</string>
+    <string name="fui_mfa_label_unknown_method">วิธีการที่ไม่รู้จัก</string>
+    <string name="fui_mfa_enrolled_on">ลงทะเบียนเมื่อ %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">สแกนรหัส QR หรือป้อนคีย์ลับในแอปยืนยันตัวตนของคุณ</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">เลือกวิธีการตรวจสอบสิทธิ์ที่สองเพื่อรักษาความปลอดภัยบัญชีของคุณ</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ป้อนหมายเลขโทรศัพท์ของคุณเพื่อรับรหัสยืนยัน</string>
