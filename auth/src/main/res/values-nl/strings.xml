@@ -133,6 +133,7 @@
     <!-- Re-authentication dialog -->
     <string name="fui_reauth_dialog_title">Verifieer je identiteit</string>
     <string name="fui_reauth_dialog_message">Voer voor je veiligheid je wachtwoord opnieuw in om door te gaan.</string>
+    <!-- Identical to English: "account" is the word in this language. -->
     <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
     <string name="fui_reauth_generic_error">Authenticatie mislukt. Probeer het opnieuw.</string>
     <string name="fui_reauth_password_required_notice">Het bevestigen van je identiteit vereist hier het wachtwoord van dit account. Als je inlogt met een e-maillink in plaats van een wachtwoord, kan dit account niet met een wachtwoord worden bevestigd.</string>

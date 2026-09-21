@@ -133,6 +133,7 @@
     <!-- Re-authentication dialog -->
     <string name="fui_reauth_dialog_title">Verifica la tua identità</string>
     <string name="fui_reauth_dialog_message">Per la tua sicurezza, inserisci di nuovo la password per continuare.</string>
+    <!-- Identical to English: "account" is the word in this language. -->
     <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
     <string name="fui_reauth_generic_error">Autenticazione non riuscita. Riprova.</string>
     <string name="fui_reauth_password_required_notice">Per confermare la tua identità qui è necessaria la password di questo account. Se accedi con un link email anziché con una password, questo account non può essere confermato con una password.</string>

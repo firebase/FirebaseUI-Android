@@ -4,7 +4,7 @@
     <string name="fui_initializing">Sinisimulan</string>
     <string name="fui_verification_code_digit_description">Digit %1$d ng %2$d ng verification code</string>
     <string name="fui_enter_totp_code">Ilagay ang TOTP code</string>
-    <string name="fui_text_field_read_only">Read-only lang</string>
+    <string name="fui_text_field_read_only">Hindi mae-edit</string>
     <string name="fui_error_user_disabled">Na-disable ang user account</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Nagsa-sign in bilang bisita…</string>
@@ -133,6 +133,7 @@
     <!-- Re-authentication dialog -->
     <string name="fui_reauth_dialog_title">I-verify ang iyong pagkakakilanlan</string>
     <string name="fui_reauth_dialog_message">Para sa iyong seguridad, ilagay muli ang iyong password upang magpatuloy.</string>
+    <!-- Identical to English: "account" is the word in this language. -->
     <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
     <string name="fui_reauth_generic_error">Nabigo ang pag-authenticate. Subukan muli.</string>
     <string name="fui_reauth_password_required_notice">Kailangan ang password ng account na ito upang kumpirmahin ang iyong pagkakakilanlan dito. Kung nag-sign in ka gamit ang email link sa halip na password, hindi makukumpirma ang account na ito gamit ang password.</string>

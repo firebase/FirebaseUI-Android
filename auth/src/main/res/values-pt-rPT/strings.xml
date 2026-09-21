@@ -2,7 +2,7 @@
     <string name="fui_progress_dialog_loading">A carregar…</string>
     <!-- Misc UI strings -->
     <string name="fui_initializing">A inicializar</string>
-    <string name="fui_verification_code_digit_description">Dígito %1$d de %2$d do código de validação</string>
+    <string name="fui_verification_code_digit_description">Dígito %1$d de %2$d do código de verificação</string>
     <string name="fui_enter_totp_code">Introduza o código TOTP</string>
     <string name="fui_text_field_read_only">Apenas leitura</string>
     <string name="fui_error_user_disabled">A conta de utilizador foi desativada</string>
@@ -12,7 +12,7 @@
     <string name="fui_loading_signing_in_with_facebook">A iniciar sessão com o Facebook…</string>
     <string name="fui_loading_signing_in_with_provider">A iniciar sessão com %1$s…</string>
     <string name="fui_loading_verifying_phone_number">A validar o número de telefone…</string>
-    <string name="fui_loading_submitting_verification_code">A enviar o código de validação…</string>
+    <string name="fui_loading_submitting_verification_code">A enviar o código de verificação…</string>
     <string name="fui_loading_signing_in_with_phone">A iniciar sessão com o telefone…</string>
     <string name="fui_loading_creating_user">A criar a conta…</string>
     <string name="fui_loading_signing_in">A iniciar sessão…</string>

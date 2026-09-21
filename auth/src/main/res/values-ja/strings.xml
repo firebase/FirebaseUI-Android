@@ -3,7 +3,7 @@
     <!-- Misc UI strings -->
     <string name="fui_initializing">初期化しています</string>
     <string name="fui_verification_code_digit_description">確認コードの %2$d 桁中 %1$d 桁目</string>
-    <string name="fui_enter_totp_code">TOTP コードを入力</string>
+    <string name="fui_enter_totp_code">TOTPコードを入力</string>
     <string name="fui_text_field_read_only">読み取り専用</string>
     <string name="fui_error_user_disabled">ユーザー アカウントは無効になっています</string>
     <!-- Loading state messages shown during auth operations -->
