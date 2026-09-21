@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Пријави ме</string>
     <string name="fui_continue">Настави</string>
     <string name="fui_tos_and_pp">Ако наставите, потврђујете да прихватате документе %1$s и %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Дошло је до мрежне грешке, проверите интернет везу.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Ово поље не може да буде празно.</string>
     <string name="fui_invalid_email_address">Имејл адреса није тачна</string>
     <string name="fui_missing_email_address">Унесите имејл адресу да бисте наставили</string>
-    <string name="fui_missing_first_and_last_name">Унесите име и презиме.</string>
-    <string name="fui_progress_dialog_checking_accounts">Траже се постојећи налози…</string>
     <string name="fui_title_register_email">Региструјте се</string>
     <string name="fui_name_hint">Име и презиме</string>
     <string name="fui_button_text_save">Сачувај</string>
-    <string name="fui_progress_dialog_signing_up">Регистрација је у току…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Лозинка није довољно јака. Користите бар %1$d знак, уз комбинацију бројева и слова</item> <item quantity="few">Лозинка није довољно јака. Користите бар %1$d знака, уз комбинацију бројева и слова</item> <item quantity="other">Лозинка није довољно јака. Користите бар %1$d знакова, уз комбинацију бројева и слова</item> </plurals>
     <string name="fui_email_account_creation_error">Регистрација налога преко имејла није успела</string>
     <string name="fui_terms_of_service">Услови коришћења услуге</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Већ имате налог</string>
     <string name="fui_welcome_back_email_header">Добро дошли поново!</string>
     <string name="fui_welcome_back_email_link_header">Већ имате налог\n</string>
-    <string name="fui_welcome_back_idp_prompt">Већ сте користили адресу %1$s. Пријавите се преко %2$s-а да бисте наставили.</string>
-    <string name="fui_welcome_back_password_prompt_body">Већ сте користили адресу %1$s за пријављивање. Унесите лозинку за тај налог.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Већ сте употребили %1$s. Можете да повежете %2$s налог са имејлом %1$s тако што ћете се пријавити путем линка у имејлу испод.\n\nДа би се тим путем повезао %2$s налог са овим имејлом, треба да отворите линк на истом уређају или из истог прегледача.</string>
-    <string name="fui_progress_dialog_signing_in">Пријављивање…</string>
     <string name="fui_trouble_signing_in">Имате проблема при пријављивању?</string>
     <string name="fui_title_recover_password_activity">Повратите лозинку</string>
     <string name="fui_title_confirm_recover_password">Проверите имејл</string>
     <string name="fui_password_recovery_body">На овај имејл ћете добити упутства како да ресетујете лозинку.</string>
     <string name="fui_button_text_send">Пошаљи</string>
     <string name="fui_confirm_recovery_body">Пратите упутства која су вам послана на %1$s да бисте повратили лозинку.</string>
-    <string name="fui_progress_dialog_sending">Шаље се…</string>
     <string name="fui_error_email_does_not_exist">Имејл адреса не одговара ни једном налогу</string>
     <string name="fui_error_unknown">Дошло је до непознате грешке.</string>
     <string name="fui_error_invalid_password">Лозинка није тачна.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Унесите важећи број телефона</string>
     <string name="fui_enter_confirmation_code">Унесите 6-цифрени кôд који смо послали на</string>
     <string name="fui_resend_code_in">Кôд ће бити поново послат за %1$s</string>
-    <string name="fui_verify_your_phone_title">Верификујте број телефона</string>
     <string name="fui_verifying">Верификује се…</string>
     <string name="fui_incorrect_code_dialog_body">Кôд није тачан. Пробајте поново.</string>
     <string name="fui_error_too_many_attempts">Овај број телефона је употребљен превише пута</string>
-    <string name="fui_error_quota_exceeded">Дошло је до проблема при верификацији броја телефона</string>
     <string name="fui_error_session_expired">Тај кôд више не важи</string>
-    <string name="fui_sign_in_with_phone_number">Пријавите се помоћу броја телефона</string>
-    <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
     <string name="fui_change_phone_number">Користи други број телефона</string>
     <string name="fui_sms_terms_of_service">Ако додирнете „%1$s“, можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ако додирнете „%1$s“, потврђујете да прихватате документе %2$s и %3$s. Можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Грешка при аутентификацији</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Пробајте поново</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Идентитет је верификован. Покушајте поново своју радњу.</string>
     <string name="fui_manage_mfa_action">Управљај двофакторском аутентификацијом</string>
     <string name="fui_incorrect_password_error">Нетачна лозинка</string>
-    <string name="fui_mfa_choose_method_instruction">Изаберите метод верификације</string>
-    <string name="fui_mfa_enrollment_instruction">Додајте додатни слој безбедности</string>
-    <string name="fui_mfa_method_sms">СМС</string>
-    <string name="fui_mfa_method_totp">Апликација за аутентификацију</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Овај број телефона је повезан са другим налогом</string>
-    <string name="fui_mfa_second_factor_required_error">Потребна је верификација</string>
-    <string name="fui_mfa_setup_instruction">Скенирајте QR код апликацијом за аутентификацију</string>
-    <string name="fui_mfa_totp_already_exists_error">Апликација за аутентификацију је већ подешена</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Да ли сте сигурни да желите да уклоните овај метод?</string>
-    <string name="fui_mfa_unenrollment_error">Не може се уклонити метод</string>
-    <string name="fui_mfa_unenrollment_success_message">Метод је уклоњен</string>
-    <string name="fui_mfa_verification_instruction">Унесите код за верификацију</string>
-    <string name="fui_profile_update_error">Не може се ажурирати профил</string>
-    <string name="fui_profile_update_success_message">Профил је ажуриран</string>
-    <string name="fui_reauth_instruction">Потврдите свој идентитет да бисте наставили</string>
-    <string name="fui_reauth_required_error">Потребна је поновна аутентификација</string>
-    <string name="fui_reauth_success_message">Поновна аутентификација је успешна</string>
-    <string name="fui_reauthenticate_action">Поновна аутентификација</string>
     <string name="fui_remove_action">Уклони</string>
     <string name="fui_resend_verification_email_action">Поново пошаљи имејл за верификацију</string>
     <string name="fui_secret_key_label">Тајни кључ</string>

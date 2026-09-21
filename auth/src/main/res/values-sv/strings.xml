@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Logga in</string>
     <string name="fui_continue">Fortsätt</string>
     <string name="fui_tos_and_pp">Genom att fortsätta godkänner du våra %1$s och vår %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Nätverksfel, kontrollera din internetanslutning.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Du måste fylla i det här fältet.</string>
     <string name="fui_invalid_email_address">E-postadressen är ogiltig</string>
     <string name="fui_missing_email_address">Ange din e-postadress om du vill fortsätta</string>
-    <string name="fui_missing_first_and_last_name">Ange för- och efternamn.</string>
-    <string name="fui_progress_dialog_checking_accounts">Söker efter befintliga konton…</string>
     <string name="fui_title_register_email">Registrera dig</string>
     <string name="fui_name_hint">För- och efternamn</string>
     <string name="fui_button_text_save">Spara</string>
-    <string name="fui_progress_dialog_signing_up">Registrerar…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> </plurals>
     <string name="fui_email_account_creation_error">Det gick inte att registrera e-postkontot</string>
     <string name="fui_terms_of_service">användarvillkoren</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Du har redan ett konto</string>
     <string name="fui_welcome_back_email_header">Välkommen tillbaka!</string>
     <string name="fui_welcome_back_email_link_header">Du har redan ett konto\n</string>
-    <string name="fui_welcome_back_idp_prompt">Du har redan använt %1$s. Logga in med %2$s om du vill fortsätta.</string>
-    <string name="fui_welcome_back_password_prompt_body">Du har redan loggat in med %1$s. Ange lösenordet för det kontot.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Du har redan använt %1$s. Du kan ansluta %2$s-kontot med %1$s genom att logga in via länken nedan.\n\nDu måste öppna länken på samma enhet eller i samma webbläsare för att %2$s-kontot ska anslutas med den här e-postadressen.</string>
-    <string name="fui_progress_dialog_signing_in">Loggar in…</string>
     <string name="fui_trouble_signing_in">Har du problem med att logga in?</string>
     <string name="fui_title_recover_password_activity">Återställa lösenord</string>
     <string name="fui_title_confirm_recover_password">Kolla dina e-postmeddelanden</string>
     <string name="fui_password_recovery_body">Få ett e-postmeddelande med anvisningar för hur du återställer lösenordet.</string>
     <string name="fui_button_text_send">Skicka</string>
     <string name="fui_confirm_recovery_body">Följ anvisningarna som har skickats till %1$s för att återställa ditt lösenord.</string>
-    <string name="fui_progress_dialog_sending">Skickar…</string>
     <string name="fui_error_email_does_not_exist">E-postadressen matchar inget befintligt konto</string>
     <string name="fui_error_unknown">Ett okänt fel uppstod.</string>
     <string name="fui_error_invalid_password">Felaktigt lösenord.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Ange ett giltigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Ange den sexsiffriga koden vi skickade till</string>
     <string name="fui_resend_code_in">Skicka kod igen om %1$s</string>
-    <string name="fui_verify_your_phone_title">Verifiera ditt telefonnummer</string>
     <string name="fui_verifying">Verifierar …</string>
     <string name="fui_incorrect_code_dialog_body">Fel kod. Försök igen.</string>
     <string name="fui_error_too_many_attempts">Det här telefonnumret har använts för många gånger</string>
-    <string name="fui_error_quota_exceeded">Det gick inte att verifiera telefonnumret</string>
     <string name="fui_error_session_expired">Koden är inte längre giltig</string>
-    <string name="fui_sign_in_with_phone_number">Logga in med telefonnummer</string>
-    <string name="fui_auto_verified">Telefonnumret verifierades automatiskt</string>
     <string name="fui_resend_code">Skicka koden igen</string>
     <string name="fui_verify_phone_number">Verifiera telefonnummer</string>
     <string name="fui_change_phone_number">Använd ett annat telefonnummer</string>
     <string name="fui_sms_terms_of_service">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Genom att trycka på %1$s godkänner du våra %2$s och vår %3$s. Ett sms kan skickas. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentiseringsfel</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Försök igen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Identitet verifierad. Försök din åtgärd igen.</string>
     <string name="fui_manage_mfa_action">Hantera tvåfaktorsautentisering</string>
     <string name="fui_incorrect_password_error">Felaktigt lösenord</string>
-    <string name="fui_mfa_choose_method_instruction">Välj en verifieringsmetod</string>
-    <string name="fui_mfa_enrollment_instruction">Lägg till ett extra säkerhetslager</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Autentiseringsapp</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Detta telefonnummer är kopplat till ett annat konto</string>
-    <string name="fui_mfa_second_factor_required_error">Verifiering krävs</string>
-    <string name="fui_mfa_setup_instruction">Skanna QR-koden med din autentiseringsapp</string>
-    <string name="fui_mfa_totp_already_exists_error">Autentiseringsapp är redan konfigurerad</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Är du säker på att du vill ta bort denna metod?</string>
-    <string name="fui_mfa_unenrollment_error">Kan inte ta bort metoden</string>
-    <string name="fui_mfa_unenrollment_success_message">Metod borttagen</string>
-    <string name="fui_mfa_verification_instruction">Ange verifieringskod</string>
-    <string name="fui_profile_update_error">Kan inte uppdatera profil</string>
-    <string name="fui_profile_update_success_message">Profil uppdaterad</string>
-    <string name="fui_reauth_instruction">Bekräfta din identitet för att fortsätta</string>
-    <string name="fui_reauth_required_error">Omautentisering krävs</string>
-    <string name="fui_reauth_success_message">Omautentisering lyckades</string>
-    <string name="fui_reauthenticate_action">Omautentisera</string>
     <string name="fui_remove_action">Ta bort</string>
     <string name="fui_resend_verification_email_action">Skicka verifieringsmail igen</string>
     <string name="fui_secret_key_label">Hemlig nyckel</string>

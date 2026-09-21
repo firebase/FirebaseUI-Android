@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">உள்நுழைக</string>
     <string name="fui_continue">தொடர்க</string>
     <string name="fui_tos_and_pp">தொடர்வதன் மூலம், எங்கள் %1$s மற்றும் %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">நெட்வொர்க் பிழை, உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
     <string name="fui_invalid_email_address">மின்னஞ்சல் முகவரி தவறாக உள்ளது</string>
     <string name="fui_missing_email_address">தொடர, மின்னஞ்சல் முகவரியை உள்ளிடவும்</string>
-    <string name="fui_missing_first_and_last_name">பெயரின் முற்பகுதியையும் பிற்பகுதியையும் உள்ளிடவும்.</string>
-    <string name="fui_progress_dialog_checking_accounts">ஏற்கனவே உள்ள கணக்குகளைச் சரிபார்க்கிறது…</string>
     <string name="fui_title_register_email">பதிவு செய்க</string>
     <string name="fui_name_hint">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>
     <string name="fui_button_text_save">சேமி</string>
-    <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
     <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
     <string name="fui_terms_of_service">சேவை விதிமுறைகள்</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">ஏற்கனவே உங்களிடம் கணக்கு உள்ளது</string>
     <string name="fui_welcome_back_email_header">மீண்டும் வரவேற்கிறோம்!</string>
     <string name="fui_welcome_back_email_link_header">உங்களிடம் ஏற்கனவே ஒரு கணக்கு உள்ளது\n</string>
-    <string name="fui_welcome_back_idp_prompt">ஏற்கனவே %1$sஐப் பயன்படுத்தியுள்ளீர்கள். தொடர, %2$s மூலம் உள்நுழையவும்.</string>
-    <string name="fui_welcome_back_password_prompt_body">ஏற்கனவே %1$sஐப் பயன்படுத்தி உள்நுழைந்திருக்கிறீர்கள். அந்தக் கணக்கிற்கான கடவுச்சொல்லை உள்ளிடவும்.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">நீங்கள் ஏற்கனவே %1$s என்ற மின்னஞ்சல் முகவரியைப் பயன்படுத்தியுள்ளீர்கள். கீழேயுள்ள இணைப்பில் உள்நுழைவதன் மூலம் உங்கள் %2$s கணக்கை %1$s உடன் இணைக்கலாம்.\n\nஇந்த மின்னஞ்சலுடன் %2$s கணக்கை இணைப்பதற்கான இந்தச் செயல்முறையை நிறைவு செய்ய, நீங்கள் அதே சாதனம் அல்லது உலாவியில் இணைப்பைத் திறக்க வேண்டும்.</string>
-    <string name="fui_progress_dialog_signing_in">உள்நுழைகிறீர்கள்…</string>
     <string name="fui_trouble_signing_in">உள்நுழைவதில் சிக்கலா?</string>
     <string name="fui_title_recover_password_activity">கடவுச்சொல்லை மீட்டெடு</string>
     <string name="fui_title_confirm_recover_password">உங்கள் மின்னஞ்சலைப் பார்க்கவும்</string>
     <string name="fui_password_recovery_body">கடவுச்சொல்லை மீட்டமைப்பது தொடர்பான வழிமுறைகளை இந்த மின்னஞ்சலில் பார்க்கவும்.</string>
     <string name="fui_button_text_send">அனுப்பு</string>
     <string name="fui_confirm_recovery_body">கடவுச்சொல்லை மீட்டெடுக்க, %1$sக்கு அனுப்பிய வழிமுறைகளைப் பின்பற்றவும்.</string>
-    <string name="fui_progress_dialog_sending">அனுப்புகிறது…</string>
     <string name="fui_error_email_does_not_exist">மின்னஞ்சல் முகவரி தற்போதைய கணக்குடன் பொருந்தவில்லை</string>
     <string name="fui_error_unknown">அறியப்படாத பிழை ஏற்பட்டது.</string>
     <string name="fui_error_invalid_password">தவறான கடவுச்சொல்.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>
     <string name="fui_resend_code_in">குறியீட்டை %1$s நேரத்தில் மீண்டும் அனுப்பவும்</string>
-    <string name="fui_verify_your_phone_title">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_verifying">சரிபார்க்கிறது…</string>
     <string name="fui_incorrect_code_dialog_body">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
     <string name="fui_error_too_many_attempts">இந்த ஃபோன் எண் பலமுறை பயன்படுத்தப்பட்டுள்ளது</string>
-    <string name="fui_error_quota_exceeded">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
     <string name="fui_error_session_expired">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
-    <string name="fui_sign_in_with_phone_number">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
-    <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_change_phone_number">வேறு ஃபோன் எண்ணைப் பயன்படுத்து</string>
     <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” என்பதைத் தட்டுவதன் மூலம், எங்கள் %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள். SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">அங்கீகாரப் பிழை</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">மீண்டும் முயலவும்</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">அடையாளம் சரிபார்க்கப்பட்டது. உங்கள் செயலை மீண்டும் முயற்சிக்கவும்.</string>
     <string name="fui_manage_mfa_action">இரு-காரணி அங்கீகாரத்தை நிர்வகி</string>
     <string name="fui_incorrect_password_error">தவறான கடவுச்சொல்</string>
-    <string name="fui_mfa_choose_method_instruction">சரிபார்ப்பு முறையைத் தேர்ந்தெடுக்கவும்</string>
-    <string name="fui_mfa_enrollment_instruction">கூடுதல் பாதுகாப்பு அடுக்கைச் சேர்க்கவும்</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">அங்கீகார பயன்பாடு</string>
-    <string name="fui_mfa_phone_number_already_exists_error">இந்த தொலைபேசி எண் மற்றொரு கணக்குடன் தொடர்புடையது</string>
-    <string name="fui_mfa_second_factor_required_error">சரிபார்ப்பு தேவை</string>
-    <string name="fui_mfa_setup_instruction">உங்கள் அங்கீகார பயன்பாட்டில் QR குறியீட்டை ஸ்கேன் செய்யவும்</string>
-    <string name="fui_mfa_totp_already_exists_error">அங்கீகார பயன்பாடு ஏற்கனவே அமைக்கப்பட்டுள்ளது</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">இந்த முறையை அகற்ற விரும்புகிறீர்களா?</string>
-    <string name="fui_mfa_unenrollment_error">முறையை அகற்ற முடியவில்லை</string>
-    <string name="fui_mfa_unenrollment_success_message">முறை அகற்றப்பட்டது</string>
-    <string name="fui_mfa_verification_instruction">சரிபார்ப்பு குறியீட்டை உள்ளிடவும்</string>
-    <string name="fui_profile_update_error">சுயவிவரத்தைப் புதுப்பிக்க முடியவில்லை</string>
-    <string name="fui_profile_update_success_message">சுயவிவரம் புதுப்பிக்கப்பட்டது</string>
-    <string name="fui_reauth_instruction">தொடர உங்கள் அடையாளத்தை உறுதிப்படுத்தவும்</string>
-    <string name="fui_reauth_required_error">மீண்டும் அங்கீகாரம் தேவை</string>
-    <string name="fui_reauth_success_message">மீண்டும் அங்கீகாரம் வெற்றிகரமாக</string>
-    <string name="fui_reauthenticate_action">மீண்டும் அங்கீகரி</string>
     <string name="fui_remove_action">அகற்று</string>
     <string name="fui_resend_verification_email_action">சரிபார்ப்பு மின்னஞ்சலை மீண்டும் அனுப்பு</string>
     <string name="fui_secret_key_label">ரகசிய திறவுகோல்</string>

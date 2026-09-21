@@ -112,9 +112,10 @@ class UntranslatedResourceDetector : ResourceXmlDetector() {
     /**
      * Whether [text] contains anything a translator could change.
      *
-     * `fui_tos_and_pp_footer` is two format specifiers separated by non-breaking spaces, so it
-     * is necessarily identical in all 84 locale folders that define it. Strings made only of
-     * placeholders, punctuation and whitespace have no words to translate.
+     * Strings made only of placeholders, punctuation and whitespace have no words to translate,
+     * so they are necessarily identical in every locale folder that defines them. No base string
+     * is placeholder-only today; the last one, `fui_tos_and_pp_footer`, went with the unreferenced
+     * resources, so this guard is currently exercised only by its own test.
      *
      * Escape sequences are stripped first because they are spelled with letters. A non-breaking
      * space is written in these files as a backslash followed by u00A0, and the u and the A in
@@ -144,20 +145,12 @@ class UntranslatedResourceDetector : ResourceXmlDetector() {
          * does make a regression invisible: if a locale ever replaced one with a mistranslation,
          * nothing here would report it. `values-fil` and `values-tl` already carry `Fecebook`
          * for `fui_idp_name_facebook`, a pre-existing typo this exemption would hide.
-         *
-         * `fui_mfa_method_sms` is a **provisional** exemption and not the same kind of entry.
-         * "SMS" is genuinely translated in several locales (`رسالة نصية` in `ar`, `短信` in `zh`,
-         * `СМС` in `sr`), so the 70 folders that carry the bare English acronym are real hits
-         * this silences. It is exempted only because the string is unreferenced dead copy that
-         * CPRN-445 is expected to delete; when that lands, drop this entry rather than keeping
-         * it.
          */
         private val ALLOWED = setOf(
             "fui_idp_name_facebook",
             "fui_idp_name_github",
             "fui_idp_name_google",
-            "fui_idp_name_twitter",
-            "fui_mfa_method_sms"
+            "fui_idp_name_twitter"
         )
 
         val UNTRANSLATED_RESOURCE = Issue.create(

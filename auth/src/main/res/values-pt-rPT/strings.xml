@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Iniciar sessão</string>
     <string name="fui_continue">Continuar</string>
     <string name="fui_tos_and_pp">Ao continuar, indica que aceita os %1$s e a %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Erro de rede. Verifique a sua ligação à Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Não pode deixar este campo em branco.</string>
     <string name="fui_invalid_email_address">O endereço de email não está correto</string>
     <string name="fui_missing_email_address">Introduza o endereço de email para continuar</string>
-    <string name="fui_missing_first_and_last_name">Introduza um nome próprio e um apelido.</string>
-    <string name="fui_progress_dialog_checking_accounts">A verificar a existência de contas…</string>
     <string name="fui_title_register_email">Inscrever-se</string>
     <string name="fui_name_hint">Nome próprio e apelido</string>
     <string name="fui_button_text_save">Guardar</string>
-    <string name="fui_progress_dialog_signing_up">A realizar a inscrição…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caráter e uma combinação de letras e números</item> <item quantity="many">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d de caracteres e uma combinação de letras e números</item> <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> </plurals>
     <string name="fui_email_account_creation_error">O registo da conta de email não foi bem-sucedido</string>
     <string name="fui_terms_of_service">Termos de Utilização</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Já tem uma conta</string>
     <string name="fui_welcome_back_email_header">Bem-vindo de volta!</string>
     <string name="fui_welcome_back_email_link_header">Já possui uma conta\n</string>
-    <string name="fui_welcome_back_idp_prompt">Já utilizou %1$s. Inicie sessão com %2$s para continuar.</string>
-    <string name="fui_welcome_back_password_prompt_body">Já utilizou %1$s para iniciar sessão. Introduza a palavra-passe da conta em questão.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Já utilizou o endereço %1$s. Pode associar a sua conta do %2$s ao endereço %1$s ao iniciar sessão com o link de email abaixo.\n\nPara que este fluxo associe com sucesso a sua conta do %2$s a este email, tem de abrir o link no mesmo dispositivo ou navegador.</string>
-    <string name="fui_progress_dialog_signing_in">A iniciar sessão…</string>
     <string name="fui_trouble_signing_in">Está com problemas ao iniciar sessão?</string>
     <string name="fui_title_recover_password_activity">Recuperar a palavra-passe</string>
     <string name="fui_title_confirm_recover_password">Verifique o seu email</string>
     <string name="fui_password_recovery_body">Utilize este endereço de email para obter instruções que explicam como repor a palavra-passe.</string>
     <string name="fui_button_text_send">Enviar</string>
     <string name="fui_confirm_recovery_body">Siga as instruções enviadas para %1$s para recuperar a palavra-passe.</string>
-    <string name="fui_progress_dialog_sending">A enviar…</string>
     <string name="fui_error_email_does_not_exist">O endereço de email introduzido não corresponde a uma conta existente</string>
     <string name="fui_error_unknown">Ocorreu um erro desconhecido.</string>
     <string name="fui_error_invalid_password">Palavra-passe incorreta.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>
     <string name="fui_resend_code_in">Reenviar código em %1$s</string>
-    <string name="fui_verify_your_phone_title">Validar o número de telefone</string>
     <string name="fui_verifying">A validar…</string>
     <string name="fui_incorrect_code_dialog_body">Código errado. Tente novamente.</string>
     <string name="fui_error_too_many_attempts">Este número de telefone foi utilizado demasiadas vezes</string>
-    <string name="fui_error_quota_exceeded">Ocorreu um problema ao validar o número de telefone</string>
     <string name="fui_error_session_expired">Este código já não é válido</string>
-    <string name="fui_sign_in_with_phone_number">Iniciar sessão com o número de telefone</string>
-    <string name="fui_auto_verified">Número de telefone verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Validar número de telefone</string>
     <string name="fui_change_phone_number">Usar outro número de telefone</string>
     <string name="fui_sms_terms_of_service">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em “%1$s”, indica que aceita os %2$s e a %3$s. Pode gerar o envio de uma SMS. Podem aplicar-se tarifas de dados e de mensagens.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erro de autenticação</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tentar novamente</string>
@@ -173,24 +159,6 @@
     <string name="fui_verify_action">Verificar</string>
     <string name="fui_verify_email_instruction">Verifique %1$s para continuar.</string>
 
-    <string name="fui_mfa_choose_method_instruction">Escolha um método de verificação</string>
-    <string name="fui_mfa_enrollment_instruction">Adicione uma camada extra de segurança</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Aplicativo autenticador</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Este número de telefone está associado a outra conta</string>
-    <string name="fui_mfa_second_factor_required_error">Verificação necessária</string>
-    <string name="fui_mfa_setup_instruction">Escaneie o código QR com seu aplicativo autenticador</string>
-    <string name="fui_mfa_totp_already_exists_error">O aplicativo autenticador já está configurado</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Tem certeza de que deseja remover este método?</string>
-    <string name="fui_mfa_unenrollment_error">Não foi possível remover o método</string>
-    <string name="fui_mfa_unenrollment_success_message">Método removido</string>
-    <string name="fui_mfa_verification_instruction">Insira o código de verificação</string>
-    <string name="fui_profile_update_error">Não foi possível atualizar o perfil</string>
-    <string name="fui_profile_update_success_message">Perfil atualizado</string>
-    <string name="fui_reauth_instruction">Confirme sua identidade para continuar</string>
-    <string name="fui_reauth_required_error">Reautenticação necessária</string>
-    <string name="fui_reauth_success_message">Reautenticação bem-sucedida</string>
-    <string name="fui_reauthenticate_action">Reautenticar</string>
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">A autenticação multifator está atualmente desativada</string>
