@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Завантаження…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Виконується вхід як гість…</string>
+    <string name="fui_loading_signing_in_with_google">Виконується вхід через Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Виконується вхід через Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Виконується вхід через %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Підтвердження номера телефону…</string>
+    <string name="fui_loading_submitting_verification_code">Надсилання коду підтвердження…</string>
+    <string name="fui_loading_signing_in_with_phone">Виконується вхід за номером телефону…</string>
+    <string name="fui_loading_creating_user">Створення облікового запису…</string>
+    <string name="fui_loading_signing_in">Виконується вхід…</string>
+    <string name="fui_loading_linking_credential">Виконується вхід…</string>
+    <string name="fui_loading_sending_email_link">Надсилання посилання для входу…</string>
+    <string name="fui_loading_signing_in_with_email_link">Виконується вхід за посиланням з електронного листа…</string>
+    <string name="fui_loading_sending_password_reset">Надсилання листа для скидання пароля…</string>
+    <string name="fui_loading_signing_out">Виконується вихід…</string>
+    <string name="fui_loading_reauth_retrying">Завершення дії…</string>
+    <string name="fui_loading_deleting_account">Видалення облікового запису…</string>
     <string name="fui_sign_in_default">Увійти</string>
     <string name="fui_continue">Продовжити</string>
     <string name="fui_tos_and_pp">Продовжуючи, ви приймаєте такі документи: %1$s і %2$s.</string>

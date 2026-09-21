@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">લોડ કરી રહ્યું છે…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">અતિથિ તરીકે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in_with_google">Google વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_verifying_phone_number">ફોન નંબર ચકાસી રહ્યાં છીએ…</string>
+    <string name="fui_loading_submitting_verification_code">ચકાસણી કોડ મોકલી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in_with_phone">ફોન વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_creating_user">એકાઉન્ટ બનાવી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in">સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_linking_credential">સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_sending_email_link">સાઇન ઇન લિંક મોકલી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_in_with_email_link">ઇમેઇલ લિંક વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_sending_password_reset">પાસવર્ડ રીસેટ ઇમેઇલ મોકલી રહ્યાં છીએ…</string>
+    <string name="fui_loading_signing_out">સાઇન આઉટ કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_reauth_retrying">ક્રિયા પૂર્ણ કરી રહ્યાં છીએ…</string>
+    <string name="fui_loading_deleting_account">એકાઉન્ટ ડિલીટ કરી રહ્યાં છીએ…</string>
     <string name="fui_sign_in_default">સાઇન ઇન કરો</string>
     <string name="fui_continue">આગળ વધો</string>
     <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>

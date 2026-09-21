@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Učitavanje…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Prijava kao gost…</string>
+    <string name="fui_loading_signing_in_with_google">Prijava putem Googlea…</string>
+    <string name="fui_loading_signing_in_with_facebook">Prijava putem Facebooka…</string>
+    <string name="fui_loading_signing_in_with_provider">Prijava putem %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Potvrđivanje telefonskog broja…</string>
+    <string name="fui_loading_submitting_verification_code">Slanje koda za potvrdu…</string>
+    <string name="fui_loading_signing_in_with_phone">Prijava putem telefona…</string>
+    <string name="fui_loading_creating_user">Izrada računa…</string>
+    <string name="fui_loading_signing_in">Prijava…</string>
+    <string name="fui_loading_linking_credential">Prijava…</string>
+    <string name="fui_loading_sending_email_link">Slanje poveznice za prijavu…</string>
+    <string name="fui_loading_signing_in_with_email_link">Prijava pomoću poveznice e-pošte…</string>
+    <string name="fui_loading_sending_password_reset">Slanje e-poruke za ponovno postavljanje zaporke…</string>
+    <string name="fui_loading_signing_out">Odjava…</string>
+    <string name="fui_loading_reauth_retrying">Dovršavanje radnje…</string>
+    <string name="fui_loading_deleting_account">Brisanje računa…</string>
     <string name="fui_sign_in_default">Prijava</string>
     <string name="fui_continue">Nastavi</string>
     <string name="fui_tos_and_pp">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrže %1$s i %2$s.</string>

@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">読み込んでいます…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">ゲストとしてログインしています…</string>
+    <string name="fui_loading_signing_in_with_google">Google でログインしています…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook でログインしています…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s でログインしています…</string>
+    <string name="fui_loading_verifying_phone_number">電話番号を確認しています…</string>
+    <string name="fui_loading_submitting_verification_code">確認コードを送信しています…</string>
+    <string name="fui_loading_signing_in_with_phone">電話番号でログインしています…</string>
+    <string name="fui_loading_creating_user">アカウントを作成しています…</string>
+    <string name="fui_loading_signing_in">ログインしています…</string>
+    <string name="fui_loading_linking_credential">ログインしています…</string>
+    <string name="fui_loading_sending_email_link">ログインリンクを送信しています…</string>
+    <string name="fui_loading_signing_in_with_email_link">メールリンクでログインしています…</string>
+    <string name="fui_loading_sending_password_reset">パスワード再設定メールを送信しています…</string>
+    <string name="fui_loading_signing_out">ログアウトしています…</string>
+    <string name="fui_loading_reauth_retrying">操作を完了しています…</string>
+    <string name="fui_loading_deleting_account">アカウントを削除しています…</string>
     <string name="fui_sign_in_default">ログイン</string>
     <string name="fui_continue">続行</string>
     <string name="fui_tos_and_pp">続行すると、%1$s と %2$s に同意したことになります。</string>

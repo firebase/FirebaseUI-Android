@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">正在加载…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">正在以访客身份登录…</string>
+    <string name="fui_loading_signing_in_with_google">正在使用 Google 登录…</string>
+    <string name="fui_loading_signing_in_with_facebook">正在使用 Facebook 登录…</string>
+    <string name="fui_loading_signing_in_with_provider">正在使用 %1$s 登录…</string>
+    <string name="fui_loading_verifying_phone_number">正在验证电话号码…</string>
+    <string name="fui_loading_submitting_verification_code">正在提交验证码…</string>
+    <string name="fui_loading_signing_in_with_phone">正在使用电话号码登录…</string>
+    <string name="fui_loading_creating_user">正在创建帐号…</string>
+    <string name="fui_loading_signing_in">正在登录…</string>
+    <string name="fui_loading_linking_credential">正在登录…</string>
+    <string name="fui_loading_sending_email_link">正在发送登录链接…</string>
+    <string name="fui_loading_signing_in_with_email_link">正在使用电子邮件链接登录…</string>
+    <string name="fui_loading_sending_password_reset">正在发送密码重置电子邮件…</string>
+    <string name="fui_loading_signing_out">正在退出…</string>
+    <string name="fui_loading_reauth_retrying">正在完成该操作…</string>
+    <string name="fui_loading_deleting_account">正在删除帐号…</string>
     <string name="fui_sign_in_default">登录</string>
     <string name="fui_continue">继续</string>
     <string name="fui_tos_and_pp">继续即表示您接受我们的%1$s和%2$s。</string>

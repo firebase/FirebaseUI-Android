@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wird geladen…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Anmeldung als Gast wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_google">Anmeldung über Google wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_facebook">Anmeldung über Facebook wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_provider">Anmeldung über %1$s wird durchgeführt…</string>
+    <string name="fui_loading_verifying_phone_number">Telefonnummer wird bestätigt…</string>
+    <string name="fui_loading_submitting_verification_code">Bestätigungscode wird gesendet…</string>
+    <string name="fui_loading_signing_in_with_phone">Anmeldung per Telefon wird durchgeführt…</string>
+    <string name="fui_loading_creating_user">Konto wird erstellt…</string>
+    <string name="fui_loading_signing_in">Anmeldung wird durchgeführt…</string>
+    <string name="fui_loading_linking_credential">Anmeldung wird durchgeführt…</string>
+    <string name="fui_loading_sending_email_link">Anmeldelink wird gesendet…</string>
+    <string name="fui_loading_signing_in_with_email_link">Anmeldung mit E-Mail-Link wird durchgeführt…</string>
+    <string name="fui_loading_sending_password_reset">E-Mail zum Zurücksetzen des Passworts wird gesendet…</string>
+    <string name="fui_loading_signing_out">Abmeldung wird durchgeführt…</string>
+    <string name="fui_loading_reauth_retrying">Aktion wird abgeschlossen…</string>
+    <string name="fui_loading_deleting_account">Konto wird gelöscht…</string>
     <string name="fui_sign_in_default">Anmelden</string>
     <string name="fui_continue">Weiter</string>
     <string name="fui_tos_and_pp">Indem Sie fortfahren, stimmen Sie unseren %1$s und unserer %2$s zu.</string>

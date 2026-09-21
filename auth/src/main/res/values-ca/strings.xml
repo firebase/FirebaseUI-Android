@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">S\'està carregant…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">S\'està iniciant la sessió com a convidat…</string>
+    <string name="fui_loading_signing_in_with_google">S\'està iniciant la sessió amb Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">S\'està iniciant la sessió amb Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">S\'està iniciant la sessió amb %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">S\'està verificant el número de telèfon…</string>
+    <string name="fui_loading_submitting_verification_code">S\'està enviant el codi de verificació…</string>
+    <string name="fui_loading_signing_in_with_phone">S\'està iniciant la sessió amb el telèfon…</string>
+    <string name="fui_loading_creating_user">S\'està creant el compte…</string>
+    <string name="fui_loading_signing_in">S\'està iniciant la sessió…</string>
+    <string name="fui_loading_linking_credential">S\'està iniciant la sessió…</string>
+    <string name="fui_loading_sending_email_link">S\'està enviant l\'enllaç d\'inici de sessió…</string>
+    <string name="fui_loading_signing_in_with_email_link">S\'està iniciant la sessió amb l\'enllaç de correu electrònic…</string>
+    <string name="fui_loading_sending_password_reset">S\'està enviant el correu de restabliment de la contrasenya…</string>
+    <string name="fui_loading_signing_out">S\'està tancant la sessió…</string>
+    <string name="fui_loading_reauth_retrying">S\'està completant l\'acció…</string>
+    <string name="fui_loading_deleting_account">S\'està suprimint el compte…</string>
     <string name="fui_sign_in_default">Inicia la sessió</string>
     <string name="fui_continue">Continua</string>
     <string name="fui_tos_and_pp">En continuar, acceptes les nostres %1$s i la nostra %2$s.</string>

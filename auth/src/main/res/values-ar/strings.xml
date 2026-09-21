@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">جارٍ التحميل…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">جارٍ تسجيل الدخول كضيف…</string>
+    <string name="fui_loading_signing_in_with_google">جارٍ تسجيل الدخول عبر Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">جارٍ تسجيل الدخول عبر Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">جارٍ تسجيل الدخول عبر %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">جارٍ التحقق من رقم الهاتف…</string>
+    <string name="fui_loading_submitting_verification_code">جارٍ إرسال رمز التحقق…</string>
+    <string name="fui_loading_signing_in_with_phone">جارٍ تسجيل الدخول بالهاتف…</string>
+    <string name="fui_loading_creating_user">جارٍ إنشاء الحساب…</string>
+    <string name="fui_loading_signing_in">جارٍ تسجيل الدخول…</string>
+    <string name="fui_loading_linking_credential">جارٍ تسجيل الدخول…</string>
+    <string name="fui_loading_sending_email_link">جارٍ إرسال رابط تسجيل الدخول…</string>
+    <string name="fui_loading_signing_in_with_email_link">جارٍ تسجيل الدخول باستخدام رابط البريد الإلكتروني…</string>
+    <string name="fui_loading_sending_password_reset">جارٍ إرسال رسالة إعادة تعيين كلمة المرور…</string>
+    <string name="fui_loading_signing_out">جارٍ تسجيل الخروج…</string>
+    <string name="fui_loading_reauth_retrying">جارٍ إكمال الإجراء…</string>
+    <string name="fui_loading_deleting_account">جارٍ حذف الحساب…</string>
     <string name="fui_sign_in_default">تسجيل الدخول</string>
     <string name="fui_continue">متابعة</string>
     <string name="fui_tos_and_pp">تشير المتابعة إلى موافقتك على %1$s و%2$s.</string>

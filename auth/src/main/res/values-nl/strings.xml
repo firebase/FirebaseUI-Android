@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laden…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Inloggen als gast…</string>
+    <string name="fui_loading_signing_in_with_google">Inloggen met Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Inloggen met Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Inloggen met %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Telefoonnummer verifiëren…</string>
+    <string name="fui_loading_submitting_verification_code">Verificatiecode verzenden…</string>
+    <string name="fui_loading_signing_in_with_phone">Inloggen met telefoon…</string>
+    <string name="fui_loading_creating_user">Account maken…</string>
+    <string name="fui_loading_signing_in">Inloggen…</string>
+    <string name="fui_loading_linking_credential">Inloggen…</string>
+    <string name="fui_loading_sending_email_link">Inloglink verzenden…</string>
+    <string name="fui_loading_signing_in_with_email_link">Inloggen met e-maillink…</string>
+    <string name="fui_loading_sending_password_reset">E-mail voor wachtwoordherstel verzenden…</string>
+    <string name="fui_loading_signing_out">Uitloggen…</string>
+    <string name="fui_loading_reauth_retrying">Actie voltooien…</string>
+    <string name="fui_loading_deleting_account">Account verwijderen…</string>
     <string name="fui_sign_in_default">Inloggen</string>
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>

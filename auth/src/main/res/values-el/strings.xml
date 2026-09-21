@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Γίνεται φόρτωση…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Γίνεται σύνδεση ως επισκέπτης…</string>
+    <string name="fui_loading_signing_in_with_google">Γίνεται σύνδεση μέσω Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Γίνεται σύνδεση μέσω Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Γίνεται σύνδεση μέσω %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Γίνεται επαλήθευση αριθμού τηλεφώνου…</string>
+    <string name="fui_loading_submitting_verification_code">Γίνεται αποστολή κωδικού επαλήθευσης…</string>
+    <string name="fui_loading_signing_in_with_phone">Γίνεται σύνδεση μέσω τηλεφώνου…</string>
+    <string name="fui_loading_creating_user">Γίνεται δημιουργία λογαριασμού…</string>
+    <string name="fui_loading_signing_in">Γίνεται σύνδεση…</string>
+    <string name="fui_loading_linking_credential">Γίνεται σύνδεση…</string>
+    <string name="fui_loading_sending_email_link">Γίνεται αποστολή συνδέσμου σύνδεσης…</string>
+    <string name="fui_loading_signing_in_with_email_link">Γίνεται σύνδεση με σύνδεσμο email…</string>
+    <string name="fui_loading_sending_password_reset">Γίνεται αποστολή email επαναφοράς κωδικού πρόσβασης…</string>
+    <string name="fui_loading_signing_out">Γίνεται αποσύνδεση…</string>
+    <string name="fui_loading_reauth_retrying">Γίνεται ολοκλήρωση της ενέργειας…</string>
+    <string name="fui_loading_deleting_account">Γίνεται διαγραφή λογαριασμού…</string>
     <string name="fui_sign_in_default">Σύνδεση</string>
     <string name="fui_continue">Συνέχεια</string>
     <string name="fui_tos_and_pp">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s και την %2$s.</string>

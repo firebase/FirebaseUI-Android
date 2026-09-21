@@ -1,5 +1,22 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Indlæser…</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Logger ind som gæst…</string>
+    <string name="fui_loading_signing_in_with_google">Logger ind med Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Logger ind med Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Logger ind med %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Bekræfter telefonnummer…</string>
+    <string name="fui_loading_submitting_verification_code">Sender bekræftelseskode…</string>
+    <string name="fui_loading_signing_in_with_phone">Logger ind med telefon…</string>
+    <string name="fui_loading_creating_user">Opretter konto…</string>
+    <string name="fui_loading_signing_in">Logger ind…</string>
+    <string name="fui_loading_linking_credential">Logger ind…</string>
+    <string name="fui_loading_sending_email_link">Sender login-link…</string>
+    <string name="fui_loading_signing_in_with_email_link">Logger ind med maillink…</string>
+    <string name="fui_loading_sending_password_reset">Sender mail til nulstilling af adgangskode…</string>
+    <string name="fui_loading_signing_out">Logger ud…</string>
+    <string name="fui_loading_reauth_retrying">Fuldfører handlingen…</string>
+    <string name="fui_loading_deleting_account">Sletter konto…</string>
     <string name="fui_sign_in_default">Log ind</string>
     <string name="fui_continue">Fortsæt</string>
     <string name="fui_tos_and_pp">Ved at fortsætte indikerer du, at du accepterer vores %1$s og %2$s.</string>
