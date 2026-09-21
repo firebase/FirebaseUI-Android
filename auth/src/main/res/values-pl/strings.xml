@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Zaloguj się</string>
     <string name="fui_continue">Dalej</string>
     <string name="fui_tos_and_pp">Kontynuując, potwierdzasz, że akceptujesz te dokumenty: %1$s i %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Błąd sieci. Sprawdź połączenie z internetem.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Nie możesz zostawić tego pola pustego.</string>
     <string name="fui_invalid_email_address">Nieprawidłowy adres e-mail</string>
     <string name="fui_missing_email_address">Aby kontynuować, wpisz adres e-mail</string>
-    <string name="fui_missing_first_and_last_name">Wpisz imię i nazwisko.</string>
-    <string name="fui_progress_dialog_checking_accounts">Szukam istniejących kont…</string>
     <string name="fui_title_register_email">Rejestracja</string>
     <string name="fui_name_hint">Imię i nazwisko</string>
     <string name="fui_button_text_save">Zapisz</string>
-    <string name="fui_progress_dialog_signing_up">Rejestruję…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item> <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item> <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item> <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item> </plurals>
     <string name="fui_email_account_creation_error">Rejestracja konta e-mail nie powiodła się</string>
     <string name="fui_terms_of_service">Warunki korzystania z usługi</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Masz już konto</string>
     <string name="fui_welcome_back_email_header">Witamy z powrotem</string>
     <string name="fui_welcome_back_email_link_header">Masz już konto\n</string>
-    <string name="fui_welcome_back_idp_prompt">Adres %1$s został już przez Ciebie użyty. Aby kontynuować, zaloguj się przez: %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Adres %1$s został już przez Ciebie użyty do logowania. Wpisz hasło tego konta.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Adres %1$s został już użyty. Możesz połączyć swoje konto w serwisie %2$s z adresem %1$s, logując się poniżej za pomocą e-maila z linkiem.\n\nAby procedura łączenia konta w serwisie %2$s z tym adresem powiodła się, link musisz otworzyć na tym samym urządzeniu i w tej samej przeglądarce.</string>
-    <string name="fui_progress_dialog_signing_in">Loguję…</string>
     <string name="fui_trouble_signing_in">Masz problem z zalogowaniem się?</string>
     <string name="fui_title_recover_password_activity">Odzyskiwanie hasła</string>
     <string name="fui_title_confirm_recover_password">Sprawdź pocztę</string>
     <string name="fui_password_recovery_body">Na ten adres e-mail zostaną wysłane instrukcje wyjaśniające, jak zresetować hasło.</string>
     <string name="fui_button_text_send">Wyślij</string>
     <string name="fui_confirm_recovery_body">Aby odzyskać hasło, wykonaj instrukcje, które wysłaliśmy Ci na adres %1$s.</string>
-    <string name="fui_progress_dialog_sending">Wysyłam…</string>
     <string name="fui_error_email_does_not_exist">Nie istnieje konto, do którego pasuje ten adres e-mail.</string>
     <string name="fui_error_unknown">Wystąpił nieznany błąd.</string>
     <string name="fui_error_invalid_password">Nieprawidłowe hasło.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Wpisz prawidłowy numer telefonu</string>
     <string name="fui_enter_confirmation_code">Wpisz sześciocyfrowy kod, który wysłaliśmy na numer</string>
     <string name="fui_resend_code_in">Kod można ponownie wysłać za %1$s</string>
-    <string name="fui_verify_your_phone_title">Zweryfikuj swój numer telefonu</string>
     <string name="fui_verifying">Weryfikuję…</string>
     <string name="fui_incorrect_code_dialog_body">Nieprawidłowy kod. Spróbuj jeszcze raz.</string>
     <string name="fui_error_too_many_attempts">Ten numer telefonu został użyty zbyt wiele razy.</string>
-    <string name="fui_error_quota_exceeded">Podczas weryfikacji Twojego numeru telefonu wystąpił problem.</string>
     <string name="fui_error_session_expired">Ten kod stracił ważność.</string>
-    <string name="fui_sign_in_with_phone_number">Zaloguj się z użyciem numeru telefonu</string>
-    <string name="fui_auto_verified">Numer telefonu został automatycznie zweryfikowany</string>
     <string name="fui_resend_code">Wyślij kod ponownie</string>
     <string name="fui_verify_phone_number">Zweryfikuj numer telefonu</string>
     <string name="fui_change_phone_number">Użyj innego numeru telefonu</string>
     <string name="fui_sms_terms_of_service">Gdy klikniesz „%1$s”, może zostać wysłany SMS. Może to skutkować pobraniem opłaty za przesłanie wiadomości i danych.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klikając „%1$s", potwierdzasz, że akceptujesz te dokumenty: %2$s i %3$s. Może zostać wysłany SMS. Może to skutkować pobraniem opłat za przesłanie wiadomości i danych.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Błąd uwierzytelniania</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Spróbuj ponownie</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Wymagana dodatkowa weryfikacja. Proszę ukończyć uwierzytelnianie wieloskładnikowe.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Tożsamość zweryfikowana. Spróbuj ponownie wykonać czynność.</string>
     <string name="fui_manage_mfa_action">Zarządzaj uwierzytelnianiem dwuskładnikowym</string>
     <string name="fui_incorrect_password_error">Nieprawidłowe hasło</string>
-    <string name="fui_mfa_choose_method_instruction">Wybierz metodę weryfikacji</string>
-    <string name="fui_mfa_enrollment_instruction">Dodaj dodatkową warstwę zabezpieczeń</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Aplikacja uwierzytelniająca</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Ten numer telefonu jest powiązany z innym kontem</string>
-    <string name="fui_mfa_second_factor_required_error">Wymagana weryfikacja</string>
-    <string name="fui_mfa_setup_instruction">Zeskanuj kod QR za pomocą aplikacji uwierzytelniającej</string>
-    <string name="fui_mfa_totp_already_exists_error">Aplikacja uwierzytelniająca jest już skonfigurowana</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Czy na pewno chcesz usunąć tę metodę?</string>
-    <string name="fui_mfa_unenrollment_error">Nie można usunąć metody</string>
-    <string name="fui_mfa_unenrollment_success_message">Metoda usunięta</string>
-    <string name="fui_mfa_verification_instruction">Wprowadź kod weryfikacyjny</string>
-    <string name="fui_profile_update_error">Nie można zaktualizować profilu</string>
-    <string name="fui_profile_update_success_message">Profil zaktualizowany</string>
-    <string name="fui_reauth_instruction">Potwierdź swoją tożsamość, aby kontynuować</string>
-    <string name="fui_reauth_required_error">Wymagane ponowne uwierzytelnienie</string>
-    <string name="fui_reauth_success_message">Ponowne uwierzytelnienie zakończone sukcesem</string>
-    <string name="fui_reauthenticate_action">Uwierzytelnij ponownie</string>
     <string name="fui_remove_action">Usuń</string>
     <string name="fui_resend_verification_email_action">Wyślij ponownie e-mail weryfikacyjny</string>
     <string name="fui_secret_key_label">Tajny klucz</string>
