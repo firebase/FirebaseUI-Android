@@ -21,8 +21,8 @@ private fun continueUrlOf(uri: Uri): Uri? {
 /**
  * Which demo sent [link], or null when it says nothing about where it came from.
  *
- * Each demo tags the last path segment of its continue URL — a path rather than a query because
- * `ContinueUrlBuilder` appends "?" and would corrupt a query string that was already there.
+ * Each demo tags the last path segment of its continue URL, which the library leaves alone while
+ * appending its own session parameters to the query.
  */
 internal fun emailLinkOrigin(link: String?): String? =
     link?.takeIf { it.isNotEmpty() }
