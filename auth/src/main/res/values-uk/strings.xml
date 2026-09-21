@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторити спробу</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потрібне додаткове підтвердження. Виконайте багатофакторну автентифікацію.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Обліковий запис потрібно зв\'язати. Спробуйте інший спосіб входу.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Жоден із доступних способів входу не зв\'язаний з вашим обліковим записом.</string>
+    <string name="fui_error_reauth_incomplete">Не вдалося підтвердити вашу особу для цього облікового запису. Повторіть спробу.</string>
+    <string name="fui_error_reauth_interrupted">Підтвердження вашої особи було перервано. Повторіть дію.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Ви не можете створити новий обліковий запис під час підтвердження особи.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Автентифікацію скасовано. Повторіть спробу, коли будете готові.</string>
 
     <!-- MFA Enrollment -->

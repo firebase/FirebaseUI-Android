@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Försök igen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontot måste länkas. Försök med en annan inloggningsmetod.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Ingen av de tillgängliga inloggningsmetoderna är länkad till ditt konto.</string>
+    <string name="fui_error_reauth_incomplete">Din identitet bekräftades inte för det här kontot. Försök igen.</string>
+    <string name="fui_error_reauth_interrupted">Bekräftelsen av din identitet avbröts. Försök din åtgärd igen.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Du kan inte skapa ett nytt konto medan du bekräftar din identitet.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentisering avbröts. Försök igen när du är redo.</string>
 
     <!-- MFA Enrollment -->

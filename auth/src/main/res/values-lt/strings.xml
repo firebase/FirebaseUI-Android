@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Bandykite dar kartą</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Reikalingas papildomas patvirtinimas. Užbaikite kelių veiksnių autentifikavimą.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Paskyrą reikia susieti. Išbandykite kitą prisijungimo būdą.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Nė vienas iš galimų prisijungimo būdų nesusietas su jūsų paskyra.</string>
+    <string name="fui_error_reauth_incomplete">Jūsų tapatybė šiai paskyrai nepatvirtinta. Bandykite dar kartą.</string>
+    <string name="fui_error_reauth_interrupted">Jūsų tapatybės patvirtinimas nutrauktas. Bandykite dar kartą.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Negalite sukurti naujos paskyros, kol patvirtinate tapatybę.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikavimas buvo atšauktas. Kai būsite pasirengę, bandykite dar kartą.</string>
 
     <!-- MFA Enrollment -->

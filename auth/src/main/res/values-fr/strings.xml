@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Réessayer</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vérification supplémentaire requise. Veuillez compléter l\'authentification à plusieurs facteurs.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Le compte doit être lié. Veuillez essayer une méthode de connexion différente.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Aucune des méthodes de connexion disponibles n\'est associée à votre compte.</string>
+    <string name="fui_error_reauth_incomplete">Votre identité n\'a pas été confirmée pour ce compte. Veuillez réessayer.</string>
+    <string name="fui_error_reauth_interrupted">La confirmation de votre identité a été interrompue. Veuillez réessayer votre action.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Vous ne pouvez pas créer de compte pendant la confirmation de votre identité.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">L\'authentification a été annulée. Veuillez réessayer quand vous serez prêt.</string>
 
     <!-- MFA Enrollment -->

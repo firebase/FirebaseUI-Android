@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">נסה שוב</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">נדרש אימות נוסף. יש להשלים אימות רב-שלבי.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">יש לקשר את החשבון. יש לנסות שיטת כניסה אחרת.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">אף אחת משיטות הכניסה הזמינות אינה מקושרת לחשבון שלך.</string>
+    <string name="fui_error_reauth_incomplete">זהותך לא אומתה עבור חשבון זה. יש לנסות שוב.</string>
+    <string name="fui_error_reauth_interrupted">אימות הזהות שלך הופסק. יש לנסות שוב את הפעולה.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">לא ניתן ליצור חשבון חדש בזמן אימות הזהות.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">האימות בוטל. יש לנסות שוב כשתהיו מוכנים.</string>
 
     <!-- MFA Enrollment -->

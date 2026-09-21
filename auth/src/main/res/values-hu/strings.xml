@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Próbáld újra</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A fiókot össze kell kapcsolni. Próbáljon meg egy másik bejelentkezési módot.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Az elérhető bejelentkezési módok egyike sincs összekapcsolva a fiókjával.</string>
+    <string name="fui_error_reauth_incomplete">Személyazonossága nem lett megerősítve ehhez a fiókhoz. Próbálja újra.</string>
+    <string name="fui_error_reauth_interrupted">Személyazonosságának megerősítése megszakadt. Próbálja újra a műveletet.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Nem hozhat létre új fiókot a személyazonosság megerősítése közben.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A hitelesítés megszakadt. Próbálja újra, amikor készen áll.</string>
 
     <!-- MFA Enrollment -->

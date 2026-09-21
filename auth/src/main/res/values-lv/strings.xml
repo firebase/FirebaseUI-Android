@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Mēģiniet vēlreiz</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Nepieciešama papildu verifikācija. Lūdzu, pabeidziet vairāku faktoru autentifikāciju.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konts ir jāsaista. Lūdzu, izmēģiniet citu pierakstīšanās metodi.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Neviena no pieejamajām pierakstīšanās metodēm nav saistīta ar jūsu kontu.</string>
+    <string name="fui_error_reauth_incomplete">Jūsu identitāte netika apstiprināta šim kontam. Mēģiniet vēlreiz.</string>
+    <string name="fui_error_reauth_interrupted">Jūsu identitātes apstiprināšana tika pārtraukta. Mēģiniet vēlreiz.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Identitātes apstiprināšanas laikā nevarat izveidot jaunu kontu.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikācija tika atcelta. Lūdzu, mēģiniet vēlreiz, kad būsiet gatavs.</string>
 
     <!-- MFA Enrollment -->

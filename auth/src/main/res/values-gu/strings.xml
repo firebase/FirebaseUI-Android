@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ફરી પ્રયાસ કરો</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">વધારાની ચકાસણી જરૂરી છે. કૃપા કરીને મલ્ટિ-ફૅક્ટર પ્રમાણીકરણ પૂર્ણ કરો.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">એકાઉન્ટ લિંક કરવાની જરૂર છે. કૃપા કરીને કોઈ અલગ સાઇન ઇન પદ્ધતિ અજમાવો.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">ઉપલબ્ધ સાઇન ઇન પદ્ધતિઓમાંથી કોઈ પણ તમારા એકાઉન્ટ સાથે લિંક નથી.</string>
+    <string name="fui_error_reauth_incomplete">આ એકાઉન્ટ માટે તમારી ઓળખની પુષ્ટિ થઈ નથી. ફરી પ્રયાસ કરો.</string>
+    <string name="fui_error_reauth_interrupted">તમારી ઓળખની પુષ્ટિ કરવામાં વિક્ષેપ આવ્યો. તમારી ક્રિયા ફરી પ્રયાસ કરો.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">ઓળખની પુષ્ટિ કરતી વખતે તમે નવું એકાઉન્ટ બનાવી શકતા નથી.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">પ્રમાણીકરણ રદ કરવામાં આવ્યું. તમે તૈયાર હો ત્યારે ફરી પ્રયાસ કરો.</string>
 
     <!-- MFA Enrollment -->

@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">أعد المحاولة</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">مطلوب تحقق إضافي. يرجى إكمال المصادقة متعددة العوامل.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">يجب ربط الحساب. جرب طريقة تسجيل دخول مختلفة.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">لا ترتبط أي من طرق تسجيل الدخول المتاحة بحسابك.</string>
+    <string name="fui_error_reauth_incomplete">لم يتم تأكيد هويتك لهذا الحساب. أعد المحاولة.</string>
+    <string name="fui_error_reauth_interrupted">تمت مقاطعة تأكيد هويتك. أعد محاولة الإجراء.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">لا يمكنك إنشاء حساب جديد أثناء تأكيد هويتك.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تم إلغاء المصادقة. أعد المحاولة عندما تكون جاهزاً.</string>
 
     <!-- MFA Enrollment -->

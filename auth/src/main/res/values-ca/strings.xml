@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Torna-ho a provar</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Cal una verificació addicional. Completeu l\'autenticació multifactor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Cal enllaçar el compte. Proveu un altre mètode d\'inici de sessió.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Cap dels mètodes d\'inici de sessió disponibles no està enllaçat amb el teu compte.</string>
+    <string name="fui_error_reauth_incomplete">Això no ha confirmat la teva identitat per a aquest compte. Torna-ho a provar.</string>
+    <string name="fui_error_reauth_interrupted">La confirmació de la teva identitat s\'ha interromput. Torna a provar la teva acció.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">No pots crear un compte nou mentre confirmes la teva identitat.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">L\'autenticació s\'ha cancel·lat. Torneu-ho a provar quan estigueu a punt.</string>
 
     <!-- MFA Enrollment -->

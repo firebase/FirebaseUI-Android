@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Erneut versuchen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Zusätzliche Verifizierung erforderlich. Bitte schließen Sie die Multi-Faktor-Authentifizierung ab.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Das Konto muss verknüpft werden. Bitte versuchen Sie eine andere Anmeldemethode.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Keine der verfügbaren Anmeldemethoden ist mit Ihrem Konto verknüpft.</string>
+    <string name="fui_error_reauth_incomplete">Ihre Identität wurde für dieses Konto nicht bestätigt. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_error_reauth_interrupted">Die Bestätigung Ihrer Identität wurde unterbrochen. Bitte versuchen Sie Ihre Aktion erneut.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Sie können kein neues Konto erstellen, während Sie Ihre Identität bestätigen.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Die Authentifizierung wurde abgebrochen. Bitte versuchen Sie es erneut, wenn Sie bereit sind.</string>
 
     <!-- MFA Enrollment -->

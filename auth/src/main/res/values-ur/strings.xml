@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوبارہ کوشش کریں</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">اضافی تصدیق درکار ہے۔ براہ کرم کثیر عنصری تصدیق مکمل کریں۔</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">اکاؤنٹ کو لنک کرنے کی ضرورت ہے۔ براہ کرم مختلف سائن ان طریقہ آزمائیں۔</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">دستیاب سائن ان طریقوں میں سے کوئی بھی آپ کے اکاؤنٹ سے لنک نہیں ہے۔</string>
+    <string name="fui_error_reauth_incomplete">اس اکاؤنٹ کے لیے آپ کی شناخت کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_error_reauth_interrupted">آپ کی شناخت کی تصدیق میں خلل آیا۔ اپنا عمل دوبارہ آزمائیں۔</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">شناخت کی تصدیق کے دوران آپ نیا اکاؤنٹ نہیں بنا سکتے۔</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تصدیق منسوخ کر دی گئی۔ تیار ہونے پر دوبارہ کوشش کریں۔</string>
 
     <!-- MFA Enrollment -->

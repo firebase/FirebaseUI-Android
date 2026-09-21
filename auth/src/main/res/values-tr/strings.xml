@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tekrar dene</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ek doğrulama gerekiyor. Lütfen çok faktörlü kimlik doğrulamayı tamamlayın.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Hesabın bağlanması gerekiyor. Lütfen farklı bir oturum açma yöntemi deneyin.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Kullanılabilir oturum açma yöntemlerinin hiçbiri hesabınıza bağlı değil.</string>
+    <string name="fui_error_reauth_incomplete">Bu hesap için kimliğiniz onaylanmadı. Tekrar deneyin.</string>
+    <string name="fui_error_reauth_interrupted">Kimliğinizin onaylanması kesintiye uğradı. İşleminizi tekrar deneyin.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Kimliğinizi onaylarken yeni bir hesap oluşturamazsınız.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Kimlik doğrulama iptal edildi. Hazır olduğunuzda tekrar deneyin.</string>
 
     <!-- MFA Enrollment -->

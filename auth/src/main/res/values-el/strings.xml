@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Δοκιμάστε ξανά</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Απαιτείται πρόσθετη επαλήθευση. Ολοκληρώστε τον έλεγχο ταυτότητας πολλαπλών παραγόντων.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Ο λογαριασμός πρέπει να συνδεθεί. Δοκιμάστε διαφορετική μέθοδο σύνδεσης.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Καμία από τις διαθέσιμες μεθόδους σύνδεσης δεν είναι συνδεδεμένη με τον λογαριασμό σας.</string>
+    <string name="fui_error_reauth_incomplete">Η ταυτότητά σας δεν επιβεβαιώθηκε για αυτόν τον λογαριασμό. Δοκιμάστε ξανά.</string>
+    <string name="fui_error_reauth_interrupted">Η επιβεβαίωση της ταυτότητάς σας διακόπηκε. Δοκιμάστε ξανά την ενέργειά σας.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Δεν μπορείτε να δημιουργήσετε νέο λογαριασμό κατά την επιβεβαίωση της ταυτότητάς σας.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Ο έλεγχος ταυτότητας ακυρώθηκε. Δοκιμάστε ξανά όταν είστε έτοιμοι.</string>
 
     <!-- MFA Enrollment -->

@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Coba lagi</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verifikasi tambahan diperlukan. Harap selesaikan autentikasi multi-faktor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Akun perlu ditautkan. Harap coba metode login yang lain.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Tidak ada metode login yang tersedia yang ditautkan ke akun Anda.</string>
+    <string name="fui_error_reauth_incomplete">Identitas Anda tidak dikonfirmasi untuk akun ini. Coba lagi.</string>
+    <string name="fui_error_reauth_interrupted">Konfirmasi identitas Anda terputus. Coba lagi tindakan Anda.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Anda tidak dapat membuat akun baru saat mengonfirmasi identitas Anda.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentikasi dibatalkan. Harap coba lagi saat Anda siap.</string>
 
     <!-- MFA Enrollment -->

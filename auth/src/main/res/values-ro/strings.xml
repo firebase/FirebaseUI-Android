@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Încearcă din nou</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Este necesară verificarea suplimentară. Vă rugăm să completați autentificarea cu mai mulți factori.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Contul trebuie conectat. Încercați o metodă de conectare diferită.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Niciuna dintre metodele de conectare disponibile nu este asociată contului dvs.</string>
+    <string name="fui_error_reauth_incomplete">Identitatea dvs. nu a fost confirmată pentru acest cont. Încercați din nou.</string>
+    <string name="fui_error_reauth_interrupted">Confirmarea identității dvs. a fost întreruptă. Reîncercați acțiunea.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Nu puteți crea un cont nou în timpul confirmării identității.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentificarea a fost anulată. Încercați din nou când sunteți gata.</string>
 
     <!-- MFA Enrollment -->

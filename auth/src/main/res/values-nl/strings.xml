@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Opnieuw proberen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account moet worden gekoppeld. Probeer een andere inlogmethode.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Geen van de beschikbare inlogmethoden is gekoppeld aan je account.</string>
+    <string name="fui_error_reauth_incomplete">Je identiteit is niet bevestigd voor dit account. Probeer het opnieuw.</string>
+    <string name="fui_error_reauth_interrupted">Het bevestigen van je identiteit is onderbroken. Probeer je actie opnieuw.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Je kunt geen nieuw account maken terwijl je je identiteit bevestigt.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authenticatie is geannuleerd. Probeer opnieuw wanneer u klaar bent.</string>
 
     <!-- MFA Enrollment -->

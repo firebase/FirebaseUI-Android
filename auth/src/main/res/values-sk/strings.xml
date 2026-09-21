@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Skúsiť znova</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžaduje sa dodatočné overenie. Dokončite prosím viacfaktorové overenie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je potrebné prepojiť. Skúste iný spôsob prihlásenia.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Žiadny z dostupných spôsobov prihlásenia nie je prepojený s vaším účtom.</string>
+    <string name="fui_error_reauth_incomplete">Vašu identitu sa pre tento účet nepodarilo potvrdiť. Skúste to znova.</string>
+    <string name="fui_error_reauth_interrupted">Potvrdzovanie vašej identity bolo prerušené. Skúste akciu znova.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Počas potvrdzovania identity nemôžete vytvoriť nový účet.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Overenie bolo zrušené. Skúste znova keď budete pripravení.</string>
 
     <!-- MFA Enrollment -->

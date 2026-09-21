@@ -125,6 +125,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ลองอีกครั้ง</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">ต้องมีการยืนยันเพิ่มเติม โปรดดำเนินการยืนยันตัวตนแบบหลายปัจจัยให้เสร็จสมบูรณ์</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">ต้องลิงก์บัญชี โปรดลองใช้วิธีลงชื่อเข้าใช้วิธีอื่น</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">ไม่มีวิธีลงชื่อเข้าใช้ที่พร้อมใช้งานวิธีใดลิงก์กับบัญชีของคุณ</string>
+    <string name="fui_error_reauth_incomplete">ยืนยันตัวตนของคุณสำหรับบัญชีนี้ไม่สำเร็จ ลองอีกครั้ง</string>
+    <string name="fui_error_reauth_interrupted">การยืนยันตัวตนของคุณถูกขัดจังหวะ ลองดำเนินการอีกครั้ง</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">คุณสร้างบัญชีใหม่ไม่ได้ขณะยืนยันตัวตน</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">การตรวจสอบสิทธิ์ถูกยกเลิก โปรดลองอีกครั้งเมื่อคุณพร้อม</string>
 
     <!-- MFA Enrollment -->

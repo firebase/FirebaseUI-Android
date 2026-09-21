@@ -124,6 +124,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Spróbuj ponownie</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Wymagana dodatkowa weryfikacja. Proszę ukończyć uwierzytelnianie wieloskładnikowe.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konto musi zostać połączone. Spróbuj innej metody logowania.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Żadna z dostępnych metod logowania nie jest połączona z Twoim kontem.</string>
+    <string name="fui_error_reauth_incomplete">Nie potwierdzono Twojej tożsamości dla tego konta. Spróbuj ponownie.</string>
+    <string name="fui_error_reauth_interrupted">Potwierdzanie Twojej tożsamości zostało przerwane. Spróbuj ponownie wykonać czynność.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Nie możesz utworzyć nowego konta podczas potwierdzania tożsamości.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Uwierzytelnianie zostało anulowane. Spróbuj ponownie gdy będziesz gotowy.</string>
 
     <!-- MFA Enrollment -->
