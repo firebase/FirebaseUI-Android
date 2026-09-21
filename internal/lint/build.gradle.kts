@@ -6,6 +6,7 @@ dependencies {
     compileOnly(libs.lint.api)
     compileOnly(libs.kotlin.stdlib)
 
+    testImplementation(libs.junit)
     testImplementation(libs.lint.api)
     testImplementation(libs.lint.tests)
 }
