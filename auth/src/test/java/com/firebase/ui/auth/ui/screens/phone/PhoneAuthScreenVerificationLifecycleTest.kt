@@ -573,8 +573,9 @@ class PhoneAuthScreenVerificationLifecycleTest {
             settle()
 
             // The failure also tears down the verification, which must not append a second,
-            // spurious cancellation error behind the real one.
-            assertThat(reportedErrors.map { it.message }).containsExactly("sign-in blew up")
+            // spurious cancellation error behind the real one. AuthException.from replaces the
+            // message with renderable copy, so the original text is identified on the cause.
+            assertThat(reportedErrors.map { it.cause?.message }).containsExactly("sign-in blew up")
         }
     }
 

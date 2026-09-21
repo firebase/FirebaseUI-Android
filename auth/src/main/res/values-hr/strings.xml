@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefonski je broj automatski potvrđen</string>
     <string name="fui_resend_code">Ponovo pošalji kôd</string>
     <string name="fui_verify_phone_number">Potvrda telefonskog broja</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Upotrijebi drugi telefonski broj</string>
     <string name="fui_sms_terms_of_service">Dodirivanje gumba “%1$s” može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ako dodirnete "%1$s", potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Greška provjere identiteta</string>
@@ -175,4 +175,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Višefaktorska autentifikacija trenutno je onemogućena</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Ta e-adresa ili zaporka nije točna</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Ta sesija potvrde više nije važeća. Zatražite novi kôd.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Potvrda telefonskog broja nije dovršena. Pokušajte ponovno.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Te vjerodajnice pripadaju drugom računu.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Taj telefonski broj nije postavljen za potvrdu na ovom računu.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Vaša je sesija prijave istekla. Prijavite se ponovno da biste nastavili.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Ta veza više nije važeća. Zatražite novu.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Potvrdite svoju e-adresu prije nego što nastavite.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Taj je način potvrde već postavljen na ovom računu.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Dosegnuli ste ograničenje broja načina potvrde na ovom računu.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Vaša zaporka ne ispunjava uvjete. Pokušajte s drugom.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Zaporka je predugačka. Najveća duljina je %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Nismo pronašli pristupni ključ za ovaj račun. Prijavite se na drugi način.</string>
 </resources>

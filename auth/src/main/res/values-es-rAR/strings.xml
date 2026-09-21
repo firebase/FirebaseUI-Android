@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Se verificó automáticamente el número de teléfono</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Verificar número de teléfono</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Usar otro número de teléfono</string>
     <string name="fui_sms_terms_of_service">Si presionas “%1$s”, se enviará un SMS. Se aplicarán las tarifas de mensajes y datos.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Si presionas "%1$s", indicas que aceptas nuestras %2$s y %3$s. Es posible que se te envíe un SMS. Podrían aplicarse las tarifas de mensajes y datos.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error de autenticación</string>
@@ -186,4 +186,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">La autenticación multifactor está actualmente desactivada</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">El correo electrónico o la contraseña no son correctos</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Esta sesión de verificación ya no es válida. Solicita un código nuevo.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">No se completó la verificación telefónica. Vuelve a intentarlo.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Estas credenciales pertenecen a otra cuenta.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Este número de teléfono no está configurado para la verificación en esta cuenta.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Tu sesión expiró. Vuelve a acceder para continuar.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Este vínculo ya no es válido. Solicita uno nuevo.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Verifica tu dirección de correo electrónico antes de continuar.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Este método de verificación ya está configurado en esta cuenta.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Alcanzaste el límite de métodos de verificación de esta cuenta.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Tu contraseña no cumple con los requisitos. Prueba con otra.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">La contraseña es demasiado larga. La longitud máxima es %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">No encontramos una llave de acceso para esta cuenta. Accede de otra manera.</string>
 </resources>

@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Користи други број телефона</string>
     <string name="fui_sms_terms_of_service">Ако додирнете „%1$s“, можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ако додирнете „%1$s“, потврђујете да прихватате документе %2$s и %3$s. Можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Грешка при аутентификацији</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Пробајте поново</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потребна је додатна верификација. Довршите аутентификацију са више фактора.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Налог треба да се повеже. Пробајте други метод пријављивања.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Аутентификација је отказана. Пробајте поново када будете спремни.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Изаберите метод аутентификације</string>
@@ -176,4 +176,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Вишефакторска аутентификација је тренутно онемогућена</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Та имејл адреса или лозинка није тачна</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Та сесија верификације више не важи. Затражите нови кôд.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Верификација броја телефона није довршена. Пробајте поново.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Ти акредитиви припадају другом налогу.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Тај број телефона није подешен за верификацију на овом налогу.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Сесија пријављивања је истекла. Пријавите се поново да бисте наставили.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Та веза више не важи. Затражите нову.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Верификујте имејл адресу пре него што наставите.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Тај метод верификације је већ подешен на овом налогу.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Достигли сте ограничење броја метода верификације на овом налогу.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Лозинка не испуњава услове. Пробајте другу.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Лозинка је предугачка. Максимална дужина је %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Нисмо пронашли приступни кључ за овај налог. Пријавите се на други начин.</string>
 </resources>

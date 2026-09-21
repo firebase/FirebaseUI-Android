@@ -100,7 +100,7 @@
     <string name="fui_auto_verified">Telefónne číslo bolo automaticky overené</string>
     <string name="fui_resend_code">Znova odoslať kód</string>
     <string name="fui_verify_phone_number">Overiť telefónne číslo</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Použiť iné telefónne číslo</string>
     <string name="fui_sms_terms_of_service">Klepnutím na tlačidlo %1$s možno odoslať SMS. Môžu sa účtovať poplatky za správy a dáta.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačidlo %1$s vyjadrujete súhlas s dokumentmi %2$s a %3$s. Môže byť odoslaná SMS a môžu sa účtovať poplatky za správy a dáta.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba overenia</string>
@@ -175,4 +175,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Viacfaktorové overovanie je momentálne zakázané</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Tento e-mail alebo heslo nie je správne</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Táto overovacia relácia už nie je platná. Vyžiadajte si nový kód.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Overenie telefónneho čísla sa nedokončilo. Skúste to znova.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Tieto prihlasovacie údaje patria inému účtu.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Toto telefónne číslo nie je v tomto účte nastavené na overovanie.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Vaša prihlasovacia relácia vypršala. Ak chcete pokračovať, prihláste sa znova.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Tento odkaz už nie je platný. Vyžiadajte si nový.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Skôr než budete pokračovať, overte svoju e-mailovú adresu.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Táto metóda overenia je v tomto účte už nastavená.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Dosiahli ste limit metód overenia pre tento účet.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Vaše heslo nespĺňa požiadavky. Skúste iné.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Heslo je príliš dlhé. Maximálna dĺžka je %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Pre tento účet sa nenašiel prístupový kľúč. Prihláste sa iným spôsobom.</string>
 </resources>

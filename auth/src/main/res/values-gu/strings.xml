@@ -100,15 +100,15 @@
     <string name="fui_auto_verified">ફોન નંબર આપમેળે ચકાસવામાં આવ્યો</string>
     <string name="fui_resend_code">કોડ ફરીથી મોકલો</string>
     <string name="fui_verify_phone_number">ફોન નંબર ચકાસો</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">અલગ ફોન નંબરનો ઉપયોગ કરો</string>
     <string name="fui_sms_terms_of_service">“%1$s”ને ટૅપ કરવાથી, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ટૅપ કરીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %2$s અને %3$sને સ્વીકારો છો. SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">પ્રમાણીકરણ ભૂલ</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ફરી પ્રયાસ કરો</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">વધારાની ચકાસણી જરૂરી છે. કૃપા કરીને મલ્ટિ-ફૅક્ટર પ્રમાણીકરણ પૂર્ણ કરો.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">એકાઉન્ટ લિંક કરવાની જરૂર છે. કૃપા કરીને કોઈ અલગ સાઇન ઇન પદ્ધતિ અજમાવો.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">પ્રમાણીકરણ રદ કરવામાં આવ્યું. તમે તૈયાર હો ત્યારે ફરી પ્રયાસ કરો.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">પ્રમાણીકરણ પદ્ધતિ પસંદ કરો</string>
@@ -176,4 +176,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">મલ્ટિ-ફેક્ટર પ્રમાણીકરણ હાલમાં અક્ષમ છે</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">તે ઇમેઇલ અથવા પાસવર્ડ સાચો નથી</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">તે ચકાસણી સત્ર હવે માન્ય નથી. નવા કોડની વિનંતી કરો.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">ફોનની ચકાસણી પૂર્ણ થઈ નથી. ફરી પ્રયાસ કરો.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">તે ઓળખપત્રો કોઈ અલગ એકાઉન્ટનાં છે.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">તે ફોન નંબર આ એકાઉન્ટ પર ચકાસણી માટે સેટ કરેલો નથી.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">તમારું સાઇન ઇન સત્ર સમાપ્ત થઈ ગયું છે. ચાલુ રાખવા માટે ફરી સાઇન ઇન કરો.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">તે લિંક હવે માન્ય નથી. નવી લિંકની વિનંતી કરો.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">તમે આગળ વધો તે પહેલાં તમારું ઇમેઇલ ઍડ્રેસ ચકાસો.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">તે ચકાસણી પદ્ધતિ આ એકાઉન્ટ પર પહેલેથી જ સેટ કરેલી છે.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">તમે આ એકાઉન્ટ પર ચકાસણી પદ્ધતિઓની મર્યાદા પર પહોંચી ગયા છો.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">તમારો પાસવર્ડ જરૂરિયાતો પૂરી કરતો નથી. બીજો પાસવર્ડ અજમાવો.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">પાસવર્ડ ઘણો લાંબો છે. મહત્તમ લંબાઈ %1$d છે.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">આ એકાઉન્ટ માટે કોઈ પાસકી મળી નથી. બીજી રીતે સાઇન ઇન કરો.</string>
 </resources>

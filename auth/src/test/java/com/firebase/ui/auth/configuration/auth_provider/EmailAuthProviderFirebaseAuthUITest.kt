@@ -26,6 +26,7 @@ import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.ui.components.getRecoveryMessage
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.MockPersistenceManager
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -33,6 +34,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -2264,8 +2266,11 @@ class EmailAuthProviderFirebaseAuthUITest {
             // "Too many attempts. Please try again later", in Japanese.
             val localizedMessage = "試行回数が多すぎます。しばらくしてからもう一度お試しください"
             `when`(mockFirebaseAuth.currentUser).thenReturn(null)
-            val tooManyRequests =
-                object : FirebaseAuthException("ERROR_TOO_MANY_REQUESTS", "Too many requests") {}
+            // Rate limiting is a FirebaseTooManyRequestsException, not a FirebaseAuthException:
+            // it is not an auth exception at all and carries no error code.
+            val tooManyRequests = FirebaseTooManyRequestsException(
+                "We have blocked all requests from this device due to unusual activity."
+            )
             val taskCompletionSource = TaskCompletionSource<Void>()
             taskCompletionSource.setException(tooManyRequests)
             `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
@@ -2360,5 +2365,169 @@ class EmailAuthProviderFirebaseAuthUITest {
             assertThat(state).isInstanceOf(AuthState.Error::class.java)
             assertThat((state as AuthState.Error).exception).hasMessageThat()
                 .isEqualTo(localizedMessage)
+        }
+
+    @Test
+    fun `signInWithEmailAndPassword - wrong password uses the per-code string, not the invalid-credentials one`() =
+        runTest {
+            // "The password is incorrect", in Japanese. ERROR_WRONG_PASSWORD used to share one flat
+            // arm with every other invalid-credential code, so this string was unreachable.
+            val localizedMessage = "パスワードが正しくありません"
+            val wrongPassword = FirebaseAuthInvalidCredentialsException(
+                "ERROR_WRONG_PASSWORD",
+                "The password is invalid or the user does not have a password. [ INVALID_PASSWORD ]"
+            )
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setException(wrongPassword)
+            `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+                .thenReturn(taskCompletionSource.task)
+
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(
+                        AuthProvider.Email(
+                            emailLinkActionCodeSettings = null,
+                            passwordValidationRules = emptyList()
+                        )
+                    )
+                }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val invalidPassword: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithEmailAndPassword(
+                    context = applicationContext,
+                    email = "test@example.com",
+                    password = "Pass@123"
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
+
+    @Test
+    fun `signInWithEmailAndPassword - merged invalid-credential code does not blame the password`() =
+        runTest {
+            // With email enumeration protection on, a wrong password and a nonexistent account both
+            // arrive as ERROR_INVALID_CREDENTIAL, so "Incorrect password" would be a false claim.
+            val incorrectEmailOrPassword = "That email or password isn't correct"
+            val invalidCredential = FirebaseAuthInvalidCredentialsException(
+                "ERROR_INVALID_CREDENTIAL",
+                "The supplied auth credential is incorrect, malformed or has expired."
+            )
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setException(invalidCredential)
+            `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+                .thenReturn(taskCompletionSource.task)
+
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(
+                        AuthProvider.Email(
+                            emailLinkActionCodeSettings = null,
+                            passwordValidationRules = emptyList()
+                        )
+                    )
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithEmailAndPassword(
+                    context = applicationContext,
+                    email = "test@example.com",
+                    password = "Pass@123"
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(incorrectEmailOrPassword)
+            assertThat(thrown).hasMessageThat()
+                .isNotEqualTo(applicationContext.getString(R.string.fui_error_invalid_password))
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(incorrectEmailOrPassword)
+        }
+
+    @Test
+    fun `sendSignInLinkToEmail - a disabled provider surfaces as MisconfigurationException`() =
+        runTest {
+            // The user can do nothing about a provider left disabled in the Firebase console, so
+            // the raw diagnostic stays on the cause for logs and never reaches the message.
+            val rawDiagnostic = "This operation is not allowed. This may be because the given " +
+                    "sign-in provider is disabled for this Firebase project. [ OPERATION_NOT_ALLOWED ]"
+            `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+            val notAllowed =
+                object : FirebaseAuthException("ERROR_OPERATION_NOT_ALLOWED", rawDiagnostic) {}
+            val taskCompletionSource = TaskCompletionSource<Void>()
+            taskCompletionSource.setException(notAllowed)
+            `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
+                .thenReturn(taskCompletionSource.task)
+
+            val provider = AuthProvider.Email(
+                isEmailLinkSignInEnabled = true,
+                emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                    .setUrl("https://example.com")
+                    .setHandleCodeInApp(true)
+                    .setAndroidPackageName("com.test", true, null)
+                    .build(),
+                passwordValidationRules = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(provider) }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).sendSignInLinkToEmail(
+                    context = applicationContext,
+                    provider = provider,
+                    email = "test@example.com",
+                    credentialForLinking = null
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.MisconfigurationException::class.java)
+            // EmailAuthScreen renders `exception.message` inline, so the message itself has to be
+            // clean; the diagnostic is still reachable as `exception.cause?.message`.
+            assertThat(thrown).hasMessageThat().doesNotContain("Firebase")
+            assertThat(thrown).hasMessageThat().doesNotContain("OPERATION_NOT_ALLOWED")
+            assertThat(thrown?.cause).isEqualTo(notAllowed)
+            assertThat(thrown?.cause).hasMessageThat().isEqualTo(rawDiagnostic)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            val emitted = (state as AuthState.Error).exception
+            assertThat(emitted).isInstanceOf(AuthException.MisconfigurationException::class.java)
+            assertThat(
+                getRecoveryMessage(
+                    emitted as AuthException,
+                    DefaultAuthUIStringProvider(applicationContext)
+                )
+            ).doesNotContain("Firebase")
         }
 }
