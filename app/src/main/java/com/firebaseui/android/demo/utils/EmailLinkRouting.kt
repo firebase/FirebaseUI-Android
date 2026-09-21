@@ -11,6 +11,9 @@ import androidx.core.net.toUri
  * screen needs none of this — it passes the link straight to `FirebaseAuthScreen(emailLink = …)`.
  */
 
+/** The query parameter each demo tags its own continue URL with. */
+const val EMAIL_LINK_ORIGIN_PARAM = "demo"
+
 /** The continue URL, which sits either directly on [uri] or nested inside its `link`. */
 private fun continueUrlOf(uri: Uri): Uri? {
     uri.getQueryParameter("continueUrl")?.let { return it.toUri() }
@@ -21,11 +24,10 @@ private fun continueUrlOf(uri: Uri): Uri? {
 /**
  * Which demo sent [link], or null when it says nothing about where it came from.
  *
- * Each demo tags the last path segment of its continue URL, which the library leaves alone while
- * appending its own session parameters to the query.
+ * Read off the continue URL rather than the outer link, so the library's own `ui_` parameters and
+ * any the action handler adds cannot be mistaken for the tag.
  */
 internal fun emailLinkOrigin(link: String?): String? =
     link?.takeIf { it.isNotEmpty() }
         ?.let { runCatching { continueUrlOf(it.toUri()) }.getOrNull() }
-        ?.pathSegments
-        ?.lastOrNull()
+        ?.getQueryParameter(EMAIL_LINK_ORIGIN_PARAM)

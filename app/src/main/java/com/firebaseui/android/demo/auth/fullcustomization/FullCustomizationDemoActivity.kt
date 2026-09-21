@@ -26,6 +26,7 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebaseui.android.demo.R
+import com.firebaseui.android.demo.utils.EMAIL_LINK_ORIGIN_PARAM
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthMethodPickerUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthenticatedUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.EmailAuthUI
@@ -72,9 +73,9 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                     AuthProvider.Email(
                         isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
-                            // Trailing segment is what MainActivity routes the return trip on.
-                            url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
-                                    EMAIL_LINK_ORIGIN
+                            // This tag is what MainActivity routes the return trip on.
+                            url = "https://flutterfire-e2e-tests.firebaseapp.com" +
+                                    "?$EMAIL_LINK_ORIGIN_PARAM=$EMAIL_LINK_ORIGIN"
                             handleCodeInApp = true
                             setAndroidPackageName(
                                 "com.firebaseui.android.demo",
