@@ -2223,6 +2223,33 @@ Or override individual strings in your `strings.xml`:
 </resources>
 ```
 
+### Error message resolution
+
+Error text is chosen when the exception is built, not when the dialog renders it, and it resolves in this order:
+
+1. **The type-level hook**, one `fui_error_*` resource per exception type. These ship **deliberately blank**, and a blank value means "skip me" rather than "show nothing".
+2. **A per-code string**, selected from the Firebase error code, so a mistyped SMS code and a wrong password no longer produce the same sentence.
+3. **The Firebase SDK's own message**, English only, reached only for codes the library does not map.
+
+Setting a type-level hook therefore overrides *every* code of that type at once. That is occasionally what you want — uniform copy resists account enumeration, since distinguishing "no such account" from "wrong password" tells an attacker which addresses are registered — but it costs you the specific per-code messages:
+
+```xml
+<resources>
+    <!-- Replaces the phone-format, wrong-code, bad-email and wrong-password messages alike -->
+    <string name="fui_error_invalid_credentials">Those sign-in details aren\'t correct.</string>
+</resources>
+```
+
+Developer misconfiguration is handled separately. `AuthException.MisconfigurationException` carries generic translated copy on `message`, and keeps Firebase's diagnostic on `cause` so it reaches your logs without reaching your users:
+
+```kotlin
+is AuthException.MisconfigurationException -> {
+    Log.e(TAG, "Check the Firebase console", exception.cause)
+}
+```
+
+One limit worth knowing: `FirebaseAuthUI.signOut`, `withReauth` and `delete` take a `Context` and no configuration, so their messages resolve against that `Context` rather than a `stringProvider` or `locale` you configured. Pass a locale-aware `Context` if that matters.
+
 ## Error Handling
 
 FirebaseUI provides a comprehensive exception hierarchy:
