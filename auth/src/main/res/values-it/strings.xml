@@ -10,7 +10,7 @@
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefono</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_email" tools:ignore="UntranslatedResource">Email</string>
     <string name="fui_sign_in_with_google">Accedi con Google</string>
     <string name="fui_continue_with_google">Accedi con Google</string>
     <string name="fui_sign_in_with_facebook">Accedi con Facebook</string>
@@ -36,7 +36,7 @@
     <string name="fui_country_hint">Paese</string>
     <string name="fui_country_selector_title" translation_description="Country selector modal title">Seleziona un paese</string>
     <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cerca paese ad es. +1, "US"</string>
-    <string name="fui_password_hint">Password</string>
+    <string name="fui_password_hint" tools:ignore="UntranslatedResource">Password</string>
     <string name="fui_new_password_hint">Nuova password</string>
     <string name="fui_required_field">Questo campo non può restare vuoto.</string>
     <string name="fui_invalid_email_address">L\'indirizzo email non è corretto</string>
