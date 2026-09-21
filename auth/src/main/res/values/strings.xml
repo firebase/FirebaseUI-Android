@@ -256,9 +256,12 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
-    <!-- AuthException messages — override in your app's strings.xml to customise.
-         Strings left empty fall back to the Firebase SDK error message. -->
     <string name="fui_error_user_disabled" translation_description="Error when a user account has been disabled by an administrator. Override to show a custom message.">User account has been disabled</string>
+    <!-- AuthException messages — override in your app's strings.xml to customise.
+         Strings left empty fall back to the Firebase SDK error message; those below are
+         translatable="false" because there is no source text to translate. Giving one real
+         copy means dropping that attribute in the same change, or it ships English-only in
+         every locale and MissingTranslation stays silent about it by design. -->
     <string name="fui_error_invalid_credentials" translatable="false" translation_description="Error when provided credentials are invalid. Leave empty to use the Firebase SDK message."></string>
     <string name="fui_error_user_not_found" translatable="false" translation_description="Error when the user account does not exist. Leave empty to use the Firebase SDK message."></string>
     <string name="fui_error_user_account_generic" translatable="false" translation_description="Generic error for unexpected user account issues. Leave empty to use the Firebase SDK message."></string>
