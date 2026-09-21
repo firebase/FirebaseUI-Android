@@ -54,7 +54,11 @@ android {
             // A themed icon needs a flat silhouette drawn for the purpose. The only
             // candidate here is ic_launcher_foreground, whose opaque region is a solid
             // plate, so it tints to a featureless block — worse than no monochrome layer.
-            "MonochromeLauncherIcon"
+            "MonochromeLauncherIcon",
+            // The full customization demo's art was drawn once at xhdpi. Filling the other
+            // buckets would mean upscaling invented detail into xxhdpi, so the demo ships
+            // the one density and lets the framework scale it.
+            "IconDensities"
         )
     }
 
