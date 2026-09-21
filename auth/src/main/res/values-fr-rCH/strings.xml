@@ -12,7 +12,7 @@
     <string name="fui_loading_signing_in_with_facebook">Connexion avec Facebook…</string>
     <string name="fui_loading_signing_in_with_provider">Connexion avec %1$s…</string>
     <string name="fui_loading_verifying_phone_number">Validation du numéro de téléphone…</string>
-    <string name="fui_loading_submitting_verification_code">Envoi du code de validation…</string>
+    <string name="fui_loading_submitting_verification_code">Envoi du code de vérification…</string>
     <string name="fui_loading_signing_in_with_phone">Connexion par téléphone…</string>
     <string name="fui_loading_creating_user">Création du compte…</string>
     <string name="fui_loading_signing_in">Connexion…</string>
