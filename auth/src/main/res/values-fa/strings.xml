@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوباره امتحان کنید</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">تأیید بیشتری لازم است. لطفاً احراز هویت چندعاملی را کامل کنید.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">حساب باید پیوند داده شود. لطفاً روش ورود دیگری را امتحان کنید.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">هویت خود را تأیید کنید</string>
+    <string name="fui_reauth_dialog_message">برای امنیت شما، لطفاً گذرواژه خود را دوباره وارد کنید تا ادامه دهید.</string>
+    <string name="fui_reauth_account_label">حساب: %1$s</string>
+    <string name="fui_reauth_generic_error">احراز هویت ناموفق بود. دوباره امتحان کنید.</string>
+    <string name="fui_reauth_password_required_notice">تأیید هویت شما در اینجا به گذرواژه این حساب نیاز دارد. اگر به‌جای گذرواژه با پیوند ایمیل وارد می‌شوید، این حساب را نمی‌توان با گذرواژه تأیید کرد.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">هیچ‌یک از روش‌های ورود موجود به حساب شما پیوند داده نشده است.</string>
     <string name="fui_error_reauth_incomplete">هویت شما برای این حساب تأیید نشد. دوباره امتحان کنید.</string>

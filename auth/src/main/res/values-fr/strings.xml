@@ -182,6 +182,7 @@
     <string name="fui_reauth_dialog_message">Pour votre sécurité, veuillez saisir à nouveau votre mot de passe pour continuer.</string>
     <string name="fui_reauth_dialog_title">Vérifiez votre identité</string>
     <string name="fui_reauth_generic_error">Échec de l\'authentification. Veuillez réessayer.</string>
+    <string name="fui_reauth_password_required_notice">La confirmation de votre identité ici nécessite le mot de passe de ce compte. Si vous vous connectez avec un lien e-mail plutôt qu\'avec un mot de passe, ce compte ne peut pas être confirmé avec un mot de passe.</string>
     <string name="fui_remove_action">Supprimer</string>
     <string name="fui_resend_verification_email_action">Renvoyer l\'e-mail de vérification</string>
     <string name="fui_secret_key_label">Clé secrète</string>

@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторити спробу</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потрібне додаткове підтвердження. Виконайте багатофакторну автентифікацію.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Обліковий запис потрібно зв\'язати. Спробуйте інший спосіб входу.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Підтвердіть свою особу</string>
+    <string name="fui_reauth_dialog_message">З міркувань безпеки введіть пароль ще раз, щоб продовжити.</string>
+    <string name="fui_reauth_account_label">Обліковий запис: %1$s</string>
+    <string name="fui_reauth_generic_error">Не вдалося виконати автентифікацію. Повторіть спробу.</string>
+    <string name="fui_reauth_password_required_notice">Щоб підтвердити тут вашу особу, потрібен пароль цього облікового запису. Якщо ви входите за посиланням з електронного листа, а не за паролем, цей обліковий запис не можна підтвердити паролем.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Жоден із доступних способів входу не зв\'язаний з вашим обліковим записом.</string>
     <string name="fui_error_reauth_incomplete">Не вдалося підтвердити вашу особу для цього облікового запису. Повторіть спробу.</string>

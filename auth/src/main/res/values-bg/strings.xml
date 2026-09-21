@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Опитай отново</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Необходима е допълнителна проверка. Моля, завършете многофакторното удостоверяване.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Акаунтът трябва да бъде свързан. Опитайте различен метод за влизане.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Потвърдете самоличността си</string>
+    <string name="fui_reauth_dialog_message">За вашата сигурност въведете отново паролата си, за да продължите.</string>
+    <string name="fui_reauth_account_label">Профил: %1$s</string>
+    <string name="fui_reauth_generic_error">Удостоверяването е неуспешно. Опитайте отново.</string>
+    <string name="fui_reauth_password_required_notice">Потвърждаването на самоличността ви тук изисква паролата на този профил. Ако влизате чрез имейл връзка вместо с парола, този профил не може да бъде потвърден с парола.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Нито един от наличните методи за влизане не е свързан с профила ви.</string>
     <string name="fui_error_reauth_incomplete">Самоличността ви не беше потвърдена за този профил. Опитайте отново.</string>

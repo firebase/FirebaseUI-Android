@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Yritä uudelleen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Lisävarmistus vaaditaan. Suorita monitekijätodennus loppuun.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Tili täytyy linkittää. Kokeile eri kirjautumistapaa.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Vahvista henkilöllisyytesi</string>
+    <string name="fui_reauth_dialog_message">Turvallisuussyistä anna salasanasi uudelleen jatkaaksesi.</string>
+    <string name="fui_reauth_account_label">Tili: %1$s</string>
+    <string name="fui_reauth_generic_error">Todennus epäonnistui. Yritä uudelleen.</string>
+    <string name="fui_reauth_password_required_notice">Henkilöllisyytesi vahvistaminen täällä vaatii tämän tilin salasanan. Jos kirjaudut sisään sähköpostilinkillä salasanan sijaan, tätä tiliä ei voi vahvistaa salasanalla.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Mikään käytettävissä olevista kirjautumistavoista ei ole linkitetty tiliisi.</string>
     <string name="fui_error_reauth_incomplete">Henkilöllisyyttäsi ei vahvistettu tälle tilille. Yritä uudelleen.</string>

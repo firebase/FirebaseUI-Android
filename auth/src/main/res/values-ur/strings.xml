@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوبارہ کوشش کریں</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">اضافی تصدیق درکار ہے۔ براہ کرم کثیر عنصری تصدیق مکمل کریں۔</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">اکاؤنٹ کو لنک کرنے کی ضرورت ہے۔ براہ کرم مختلف سائن ان طریقہ آزمائیں۔</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">اپنی شناخت کی توثیق کریں</string>
+    <string name="fui_reauth_dialog_message">آپ کی سیکیورٹی کے لیے، جاری رکھنے کے لیے اپنا پاس ورڈ دوبارہ درج کریں۔</string>
+    <string name="fui_reauth_account_label">اکاؤنٹ: %1$s</string>
+    <string name="fui_reauth_generic_error">توثیق ناکام ہو گئی۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_reauth_password_required_notice">یہاں آپ کی شناخت کی تصدیق کے لیے اس اکاؤنٹ کا پاس ورڈ درکار ہے۔ اگر آپ پاس ورڈ کے بجائے ای میل لنک سے سائن ان کرتے ہیں، تو اس اکاؤنٹ کی تصدیق پاس ورڈ سے نہیں کی جا سکتی۔</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">دستیاب سائن ان طریقوں میں سے کوئی بھی آپ کے اکاؤنٹ سے لنک نہیں ہے۔</string>
     <string name="fui_error_reauth_incomplete">اس اکاؤنٹ کے لیے آپ کی شناخت کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں۔</string>

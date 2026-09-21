@@ -183,6 +183,7 @@
     <string name="fui_reauth_dialog_message">Zu Ihrer Sicherheit geben Sie bitte Ihr Passwort erneut ein, um fortzufahren.</string>
     <string name="fui_reauth_dialog_title">Verifizieren Sie Ihre Identität</string>
     <string name="fui_reauth_generic_error">Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_reauth_password_required_notice">Zur Bestätigung Ihrer Identität wird hier das Passwort dieses Kontos benötigt. Wenn Sie sich mit einem E-Mail-Link statt mit einem Passwort anmelden, kann dieses Konto nicht mit einem Passwort bestätigt werden.</string>
     <string name="fui_remove_action">Entfernen</string>
     <string name="fui_resend_verification_email_action">Bestätigungs-E-Mail erneut senden</string>
     <string name="fui_secret_key_label">Geheimer Schlüssel</string>

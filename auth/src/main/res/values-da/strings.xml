@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Prøv igen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Yderligere bekræftelse påkrævet. Fuldfør venligst multifaktorgodkendelse.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontoen skal tilknyttes. Prøv en anden login-metode.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Bekræft din identitet</string>
+    <string name="fui_reauth_dialog_message">Af sikkerhedsmæssige årsager skal du angive din adgangskode igen for at fortsætte.</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_generic_error">Godkendelsen mislykkedes. Prøv igen.</string>
+    <string name="fui_reauth_password_required_notice">Bekræftelse af din identitet her kræver adgangskoden til denne konto. Hvis du logger ind med et maillink i stedet for en adgangskode, kan denne konto ikke bekræftes med en adgangskode.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Ingen af de tilgængelige login-metoder er tilknyttet din konto.</string>
     <string name="fui_error_reauth_incomplete">Din identitet blev ikke bekræftet for denne konto. Prøv igen.</string>

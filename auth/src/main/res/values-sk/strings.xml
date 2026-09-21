@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Skúsiť znova</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžaduje sa dodatočné overenie. Dokončite prosím viacfaktorové overenie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je potrebné prepojiť. Skúste iný spôsob prihlásenia.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Overte svoju identitu</string>
+    <string name="fui_reauth_dialog_message">Z bezpečnostných dôvodov zadajte znova heslo a pokračujte.</string>
+    <string name="fui_reauth_account_label">Účet: %1$s</string>
+    <string name="fui_reauth_generic_error">Overenie zlyhalo. Skúste to znova.</string>
+    <string name="fui_reauth_password_required_notice">Potvrdenie vašej identity tu vyžaduje heslo tohto účtu. Ak sa prihlasujete pomocou e-mailového odkazu namiesto hesla, tento účet nie je možné potvrdiť heslom.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Žiadny z dostupných spôsobov prihlásenia nie je prepojený s vaším účtom.</string>
     <string name="fui_error_reauth_incomplete">Vašu identitu sa pre tento účet nepodarilo potvrdiť. Skúste to znova.</string>

@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">أعد المحاولة</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">مطلوب تحقق إضافي. يرجى إكمال المصادقة متعددة العوامل.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">يجب ربط الحساب. جرب طريقة تسجيل دخول مختلفة.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">تأكيد هويتك</string>
+    <string name="fui_reauth_dialog_message">لأمانك، أعد إدخال كلمة المرور للمتابعة.</string>
+    <string name="fui_reauth_account_label">الحساب: %1$s</string>
+    <string name="fui_reauth_generic_error">فشلت المصادقة. أعد المحاولة.</string>
+    <string name="fui_reauth_password_required_notice">يتطلب تأكيد هويتك هنا كلمة مرور هذا الحساب. إذا كنت تسجل الدخول باستخدام رابط بريد إلكتروني بدلاً من كلمة مرور، فلا يمكن تأكيد هذا الحساب بكلمة مرور.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">لا ترتبط أي من طرق تسجيل الدخول المتاحة بحسابك.</string>
     <string name="fui_error_reauth_incomplete">لم يتم تأكيد هويتك لهذا الحساب. أعد المحاولة.</string>

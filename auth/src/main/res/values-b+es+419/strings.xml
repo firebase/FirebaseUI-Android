@@ -182,6 +182,7 @@
     <string name="fui_reauth_dialog_message">Por tu seguridad, vuelve a ingresar tu contraseña para continuar.</string>
     <string name="fui_reauth_dialog_title">Verifica tu identidad</string>
     <string name="fui_reauth_generic_error">Error de autenticación. Inténtalo de nuevo.</string>
+    <string name="fui_reauth_password_required_notice">Para confirmar tu identidad aquí se necesita la contraseña de esta cuenta. Si inicias sesión con un enlace de correo en lugar de una contraseña, esta cuenta no se puede confirmar con una contraseña.</string>
     <string name="fui_remove_action">Eliminar</string>
     <string name="fui_resend_verification_email_action">Reenviar correo de verificación</string>
     <string name="fui_secret_key_label">Clave secreta</string>

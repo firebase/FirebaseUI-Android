@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Пробајте поново</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потребна је додатна верификација. Довршите аутентификацију са више фактора.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Налог треба да се повеже. Пробајте други метод пријављивања.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Верификујте свој идентитет</string>
+    <string name="fui_reauth_dialog_message">Ради ваше безбедности, поново унесите лозинку да бисте наставили.</string>
+    <string name="fui_reauth_account_label">Налог: %1$s</string>
+    <string name="fui_reauth_generic_error">Аутентификација није успела. Покушајте поново.</string>
+    <string name="fui_reauth_password_required_notice">Потврђивање вашег идентитета овде захтева лозинку овог налога. Ако се пријављујете помоћу имејл линка уместо лозинке, овај налог не може да се потврди лозинком.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Ниједан од доступних метода пријављивања није повезан са вашим налогом.</string>
     <string name="fui_error_reauth_incomplete">Ваш идентитет није потврђен за овај налог. Покушајте поново.</string>

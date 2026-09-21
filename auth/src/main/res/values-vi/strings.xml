@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Thử lại</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Bạn cần xác minh thêm. Vui lòng hoàn tất quy trình xác thực nhiều yếu tố.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Bạn cần liên kết tài khoản. Vui lòng thử một phương thức đăng nhập khác.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Xác minh danh tính của bạn</string>
+    <string name="fui_reauth_dialog_message">Vì lý do bảo mật, hãy nhập lại mật khẩu của bạn để tiếp tục.</string>
+    <string name="fui_reauth_account_label">Tài khoản: %1$s</string>
+    <string name="fui_reauth_generic_error">Xác thực không thành công. Hãy thử lại.</string>
+    <string name="fui_reauth_password_required_notice">Để xác nhận danh tính của bạn tại đây, bạn cần có mật khẩu của tài khoản này. Nếu bạn đăng nhập bằng liên kết email thay vì mật khẩu, thì không thể xác nhận tài khoản này bằng mật khẩu.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Không có phương thức đăng nhập nào hiện có được liên kết với tài khoản của bạn.</string>
     <string name="fui_error_reauth_incomplete">Không xác nhận được danh tính của bạn cho tài khoản này. Hãy thử lại.</string>

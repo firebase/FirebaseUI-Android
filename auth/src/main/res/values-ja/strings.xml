@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">再試行</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">追加の認証が必要です。多要素認証を完了してください。</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">アカウントをリンクする必要があります。別のサインイン方法をお試しください。</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">本人確認</string>
+    <string name="fui_reauth_dialog_message">セキュリティのため、パスワードを再入力して続行してください。</string>
+    <string name="fui_reauth_account_label">アカウント: %1$s</string>
+    <string name="fui_reauth_generic_error">認証に失敗しました。再試行してください。</string>
+    <string name="fui_reauth_password_required_notice">ここで本人確認を行うには、このアカウントのパスワードが必要です。パスワードではなくメールリンクでログインしている場合、このアカウントはパスワードで確認できません。</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">利用可能なログイン方法のいずれもアカウントにリンクされていません。</string>
     <string name="fui_error_reauth_incomplete">このアカウントの本人確認ができませんでした。再試行してください。</string>

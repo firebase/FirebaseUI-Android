@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Försök igen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontot måste länkas. Försök med en annan inloggningsmetod.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifiera din identitet</string>
+    <string name="fui_reauth_dialog_message">För din säkerhet, ange ditt lösenord igen för att fortsätta.</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentiseringen misslyckades. Försök igen.</string>
+    <string name="fui_reauth_password_required_notice">För att bekräfta din identitet här krävs lösenordet för det här kontot. Om du loggar in med en e-postlänk i stället för ett lösenord kan det här kontot inte bekräftas med ett lösenord.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Ingen av de tillgängliga inloggningsmetoderna är länkad till ditt konto.</string>
     <string name="fui_error_reauth_incomplete">Din identitet bekräftades inte för det här kontot. Försök igen.</string>

@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Subukan Muli</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Kailangan ang karagdagang pagpapatotoo. Mangyaring kumpletuhin ang multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kailangang i-link ang account. Mangyaring subukan ang ibang paraan ng pag-sign in.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">I-verify ang iyong pagkakakilanlan</string>
+    <string name="fui_reauth_dialog_message">Para sa iyong seguridad, ilagay muli ang iyong password upang magpatuloy.</string>
+    <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
+    <string name="fui_reauth_generic_error">Nabigo ang pag-authenticate. Subukan muli.</string>
+    <string name="fui_reauth_password_required_notice">Kailangan ang password ng account na ito upang kumpirmahin ang iyong pagkakakilanlan dito. Kung nag-sign in ka gamit ang email link sa halip na password, hindi makukumpirma ang account na ito gamit ang password.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Wala sa mga available na paraan ng pag-sign in ang naka-link sa iyong account.</string>
     <string name="fui_error_reauth_incomplete">Hindi nakumpirma ang iyong pagkakakilanlan para sa account na ito. Subukan muli.</string>

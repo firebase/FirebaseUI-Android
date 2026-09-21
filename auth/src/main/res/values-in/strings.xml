@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Coba lagi</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verifikasi tambahan diperlukan. Harap selesaikan autentikasi multi-faktor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Akun perlu ditautkan. Harap coba metode login yang lain.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifikasi identitas Anda</string>
+    <string name="fui_reauth_dialog_message">Demi keamanan Anda, masukkan kembali sandi untuk melanjutkan.</string>
+    <string name="fui_reauth_account_label">Akun: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentikasi gagal. Coba lagi.</string>
+    <string name="fui_reauth_password_required_notice">Mengonfirmasi identitas Anda di sini memerlukan sandi akun ini. Jika Anda login dengan link email, bukan sandi, akun ini tidak dapat dikonfirmasi dengan sandi.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Tidak ada metode login yang tersedia yang ditautkan ke akun Anda.</string>
     <string name="fui_error_reauth_incomplete">Identitas Anda tidak dikonfirmasi untuk akun ini. Coba lagi.</string>

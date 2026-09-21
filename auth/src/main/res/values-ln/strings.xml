@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Meka lisusu</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Bondimi mosusu esengeli. Tosɛngi osilisa bondimisami ya makambo mingi.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konte esengeli kokangisama. Tosɛngi omeka lolenge mosusu ya kokɔta.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Kondima identité na yo</string>
+    <string name="fui_reauth_dialog_message">Mpo na sécurité na yo, kotisa lisusu mot de passe na yo mpo na kokoba.</string>
+    <string name="fui_reauth_account_label">Konte: %1$s</string>
+    <string name="fui_reauth_generic_error">Authentification elongi te. Meka lisusu.</string>
+    <string name="fui_reauth_password_required_notice">Mpo na kondima identité na yo awa, mot de passe ya compte oyo esengeli. Soki ozali kokɔta na lien ya email na esika ya mot de passe, compte oyo ekoki kondimama te na mot de passe.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Ata lolenge moko te ya kokɔta oyo ezali ekangisami na compte na yo.</string>
     <string name="fui_error_reauth_incomplete">Identité na yo endimami te mpo na compte oyo. Meka lisusu.</string>

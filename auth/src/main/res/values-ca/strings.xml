@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Torna-ho a provar</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Cal una verificació addicional. Completeu l\'autenticació multifactor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Cal enllaçar el compte. Proveu un altre mètode d\'inici de sessió.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifica la teva identitat</string>
+    <string name="fui_reauth_dialog_message">Per a la teva seguretat, torna a introduir la contrasenya per continuar.</string>
+    <string name="fui_reauth_account_label">Compte: %1$s</string>
+    <string name="fui_reauth_generic_error">L\'autenticació ha fallat. Torna-ho a provar.</string>
+    <string name="fui_reauth_password_required_notice">Per confirmar la teva identitat aquí cal la contrasenya d\'aquest compte. Si inicies la sessió amb un enllaç de correu electrònic en lloc d\'una contrasenya, aquest compte no es pot confirmar amb una contrasenya.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Cap dels mètodes d\'inici de sessió disponibles no està enllaçat amb el teu compte.</string>
     <string name="fui_error_reauth_incomplete">Això no ha confirmat la teva identitat per a aquest compte. Torna-ho a provar.</string>

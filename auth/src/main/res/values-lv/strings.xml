@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Mēģiniet vēlreiz</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Nepieciešama papildu verifikācija. Lūdzu, pabeidziet vairāku faktoru autentifikāciju.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konts ir jāsaista. Lūdzu, izmēģiniet citu pierakstīšanās metodi.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verificējiet savu identitāti</string>
+    <string name="fui_reauth_dialog_message">Jūsu drošībai vēlreiz ievadiet paroli, lai turpinātu.</string>
+    <string name="fui_reauth_account_label">Konts: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentifikācija neizdevās. Mēģiniet vēlreiz.</string>
+    <string name="fui_reauth_password_required_notice">Lai šeit apstiprinātu jūsu identitāti, nepieciešama šī konta parole. Ja pierakstāties ar e-pasta saiti, nevis paroli, šo kontu nevar apstiprināt ar paroli.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Neviena no pieejamajām pierakstīšanās metodēm nav saistīta ar jūsu kontu.</string>
     <string name="fui_error_reauth_incomplete">Jūsu identitāte netika apstiprināta šim kontam. Mēģiniet vēlreiz.</string>

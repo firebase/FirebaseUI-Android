@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Riprova</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">È richiesta una verifica aggiuntiva. Completa l\'autenticazione a più fattori.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">L\'account deve essere collegato. Prova un metodo di accesso diverso.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifica la tua identità</string>
+    <string name="fui_reauth_dialog_message">Per la tua sicurezza, inserisci di nuovo la password per continuare.</string>
+    <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
+    <string name="fui_reauth_generic_error">Autenticazione non riuscita. Riprova.</string>
+    <string name="fui_reauth_password_required_notice">Per confermare la tua identità qui è necessaria la password di questo account. Se accedi con un link email anziché con una password, questo account non può essere confermato con una password.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Nessuno dei metodi di accesso disponibili è collegato al tuo account.</string>
     <string name="fui_error_reauth_incomplete">La tua identità non è stata confermata per questo account. Riprova.</string>

@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторить</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Требуется дополнительная проверка. Пожалуйста, завершите многофакторную аутентификацию.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Необходимо связать аккаунт. Попробуйте другой способ входа.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Подтвердите свою личность</string>
+    <string name="fui_reauth_dialog_message">В целях безопасности повторно введите пароль, чтобы продолжить.</string>
+    <string name="fui_reauth_account_label">Аккаунт: %1$s</string>
+    <string name="fui_reauth_generic_error">Не удалось выполнить аутентификацию. Повторите попытку.</string>
+    <string name="fui_reauth_password_required_notice">Для подтверждения вашей личности здесь требуется пароль этого аккаунта. Если вы входите по ссылке из письма, а не с помощью пароля, этот аккаунт нельзя подтвердить паролем.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Ни один из доступных способов входа не связан с вашим аккаунтом.</string>
     <string name="fui_error_reauth_incomplete">Не удалось подтвердить вашу личность для этого аккаунта. Повторите попытку.</string>

@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">重试</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">需要额外的验证。请完成多重身份验证。</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">需要关联账户。请尝试其他登录方式。</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">验证您的身份</string>
+    <string name="fui_reauth_dialog_message">为了您的账号安全，请重新输入密码以继续。</string>
+    <string name="fui_reauth_account_label">帐号：%1$s</string>
+    <string name="fui_reauth_generic_error">身份验证失败。请重试。</string>
+    <string name="fui_reauth_password_required_notice">在此确认您的身份需要此帐号的密码。如果您使用电子邮件链接而非密码登录，则无法使用密码确认此帐号。</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">可用的登录方式均未关联到您的账号。</string>
     <string name="fui_error_reauth_incomplete">未能确认此账号的身份。请重试。</string>

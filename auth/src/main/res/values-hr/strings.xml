@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Pokušaj ponovno</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Potrebna je dodatna provjera. Molimo dovršite višefaktorsku provjeru identiteta.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Račun mora biti povezan. Pokušajte s drugim načinom prijave.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Potvrdite svoj identitet</string>
+    <string name="fui_reauth_dialog_message">Radi vaše sigurnosti ponovno unesite zaporku za nastavak.</string>
+    <string name="fui_reauth_account_label">Račun: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentifikacija nije uspjela. Pokušajte ponovno.</string>
+    <string name="fui_reauth_password_required_notice">Za potvrdu vašeg identiteta ovdje potrebna je zaporka ovog računa. Ako se prijavljujete pomoću poveznice e-pošte umjesto zaporkom, ovaj se račun ne može potvrditi zaporkom.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Nijedan od dostupnih načina prijave nije povezan s vašim računom.</string>
     <string name="fui_error_reauth_incomplete">Vaš identitet nije potvrđen za ovaj račun. Pokušajte ponovno.</string>

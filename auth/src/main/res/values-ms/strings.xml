@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Cuba lagi</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Pengesahan tambahan diperlukan. Sila lengkapkan pengesahan berbilang faktor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Akaun perlu dipautkan. Sila cuba kaedah log masuk yang lain.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Sahkan identiti anda</string>
+    <string name="fui_reauth_dialog_message">Demi keselamatan anda, masukkan semula kata laluan anda untuk meneruskan.</string>
+    <string name="fui_reauth_account_label">Akaun: %1$s</string>
+    <string name="fui_reauth_generic_error">Pengesahan gagal. Cuba lagi.</string>
+    <string name="fui_reauth_password_required_notice">Mengesahkan identiti anda di sini memerlukan kata laluan akaun ini. Jika anda log masuk dengan pautan e-mel dan bukan kata laluan, akaun ini tidak boleh disahkan dengan kata laluan.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Tiada satu pun kaedah log masuk yang tersedia dipautkan ke akaun anda.</string>
     <string name="fui_error_reauth_incomplete">Identiti anda tidak disahkan untuk akaun ini. Cuba lagi.</string>

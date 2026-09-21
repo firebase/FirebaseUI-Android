@@ -123,6 +123,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">다시 시도</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">추가 인증이 필요합니다. 다단계 인증을 완료해 주세요.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">계정을 연결해야 합니다. 다른 로그인 방법을 시도해 주세요.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">본인 확인</string>
+    <string name="fui_reauth_dialog_message">보안을 위해 비밀번호를 다시 입력하여 계속하세요.</string>
+    <string name="fui_reauth_account_label">계정: %1$s</string>
+    <string name="fui_reauth_generic_error">인증에 실패했습니다. 다시 시도하세요.</string>
+    <string name="fui_reauth_password_required_notice">여기에서 본인 확인을 진행하려면 이 계정의 비밀번호가 필요합니다. 비밀번호 대신 이메일 링크로 로그인하는 경우 이 계정은 비밀번호로 확인할 수 없습니다.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">사용 가능한 로그인 방법 중 계정에 연결된 것이 없습니다.</string>
     <string name="fui_error_reauth_incomplete">이 계정의 본인 확인을 완료하지 못했습니다. 다시 시도하세요.</string>

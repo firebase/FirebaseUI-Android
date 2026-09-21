@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ફરી પ્રયાસ કરો</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">વધારાની ચકાસણી જરૂરી છે. કૃપા કરીને મલ્ટિ-ફૅક્ટર પ્રમાણીકરણ પૂર્ણ કરો.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">એકાઉન્ટ લિંક કરવાની જરૂર છે. કૃપા કરીને કોઈ અલગ સાઇન ઇન પદ્ધતિ અજમાવો.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">તમારી ઓળખ ચકાસો</string>
+    <string name="fui_reauth_dialog_message">તમારી સુરક્ષા માટે, ચાલુ રાખવા માટે તમારો પાસવર્ડ ફરીથી દાખલ કરો.</string>
+    <string name="fui_reauth_account_label">એકાઉન્ટ: %1$s</string>
+    <string name="fui_reauth_generic_error">પ્રમાણીકરણ નિષ્ફળ થયું. ફરી પ્રયાસ કરો.</string>
+    <string name="fui_reauth_password_required_notice">અહીં તમારી ઓળખની પુષ્ટિ કરવા માટે આ એકાઉન્ટનો પાસવર્ડ જરૂરી છે. જો તમે પાસવર્ડને બદલે ઇમેઇલ લિંક વડે સાઇન ઇન કરો છો, તો આ એકાઉન્ટની પુષ્ટિ પાસવર્ડ વડે કરી શકાતી નથી.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">ઉપલબ્ધ સાઇન ઇન પદ્ધતિઓમાંથી કોઈ પણ તમારા એકાઉન્ટ સાથે લિંક નથી.</string>
     <string name="fui_error_reauth_incomplete">આ એકાઉન્ટ માટે તમારી ઓળખની પુષ્ટિ થઈ નથી. ફરી પ્રયાસ કરો.</string>

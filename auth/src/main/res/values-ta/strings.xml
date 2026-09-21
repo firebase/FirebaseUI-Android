@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">மீண்டும் முயலவும்</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">கூடுதல் சரிபார்ப்பு தேவை. பல்காரணி அங்கீகாரத்தை நிறைவுசெய்யவும்.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">கணக்கை இணைக்க வேண்டும். வேறு உள்நுழைவு முறையை முயலவும்.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">உங்கள் அடையாளத்தைச் சரிபார்க்கவும்</string>
+    <string name="fui_reauth_dialog_message">உங்கள் பாதுகாப்பிற்காக, தொடர உங்கள் கடவுச்சொல்லை மீண்டும் உள்ளிடவும்.</string>
+    <string name="fui_reauth_account_label">கணக்கு: %1$s</string>
+    <string name="fui_reauth_generic_error">அங்கீகாரம் தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="fui_reauth_password_required_notice">இங்கு உங்கள் அடையாளத்தை உறுதிப்படுத்த இந்தக் கணக்கின் கடவுச்சொல் தேவை. கடவுச்சொல்லுக்குப் பதிலாக மின்னஞ்சல் இணைப்பு மூலம் உள்நுழைந்தால், இந்தக் கணக்கைக் கடவுச்சொல்லைக் கொண்டு உறுதிப்படுத்த முடியாது.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">கிடைக்கக்கூடிய உள்நுழைவு முறைகளில் எதுவும் உங்கள் கணக்குடன் இணைக்கப்படவில்லை.</string>
     <string name="fui_error_reauth_incomplete">இந்தக் கணக்கிற்கான உங்கள் அடையாளம் உறுதிப்படுத்தப்படவில்லை. மீண்டும் முயற்சிக்கவும்.</string>

@@ -125,6 +125,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">ಹೆಚ್ಚುವರಿ ಪರಿಶೀಲನೆ ಅಗತ್ಯವಿದೆ. ದಯವಿಟ್ಟು ಬಹು-ಅಂಶ ಪ್ರಮಾಣೀಕರಣವನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">ಖಾತೆಯನ್ನು ಲಿಂಕ್ ಮಾಡಬೇಕಾಗಿದೆ. ದಯವಿಟ್ಟು ಬೇರೆ ಸೈನ್ ಇನ್ ವಿಧಾನವನ್ನು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">ನಿಮ್ಮ ಗುರುತನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_reauth_dialog_message">ನಿಮ್ಮ ಸುರಕ್ಷತೆಗಾಗಿ, ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮತ್ತೆ ನಮೂದಿಸಿ.</string>
+    <string name="fui_reauth_account_label">ಖಾತೆ: %1$s</string>
+    <string name="fui_reauth_generic_error">ಪ್ರಮಾಣೀಕರಣ ವಿಫಲವಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_reauth_password_required_notice">ಇಲ್ಲಿ ನಿಮ್ಮ ಗುರುತನ್ನು ದೃಢೀಕರಿಸಲು ಈ ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯವಿದೆ. ನೀವು ಪಾಸ್‌ವರ್ಡ್ ಬದಲಿಗೆ ಇಮೇಲ್ ಲಿಂಕ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿದರೆ, ಈ ಖಾತೆಯನ್ನು ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ದೃಢೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">ಲಭ್ಯವಿರುವ ಯಾವುದೇ ಸೈನ್ ಇನ್ ವಿಧಾನಗಳು ನಿಮ್ಮ ಖಾತೆಗೆ ಲಿಂಕ್ ಆಗಿಲ್ಲ.</string>
     <string name="fui_error_reauth_incomplete">ಈ ಖಾತೆಗಾಗಿ ನಿಮ್ಮ ಗುರುತನ್ನು ದೃಢೀಕರಿಸಲಾಗಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>

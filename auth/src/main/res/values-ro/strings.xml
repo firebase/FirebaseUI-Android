@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Încearcă din nou</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Este necesară verificarea suplimentară. Vă rugăm să completați autentificarea cu mai mulți factori.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Contul trebuie conectat. Încercați o metodă de conectare diferită.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verificați-vă identitatea</string>
+    <string name="fui_reauth_dialog_message">Pentru siguranța dvs., introduceți din nou parola pentru a continua.</string>
+    <string name="fui_reauth_account_label">Cont: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentificarea a eșuat. Încercați din nou.</string>
+    <string name="fui_reauth_password_required_notice">Confirmarea identității dvs. aici necesită parola acestui cont. Dacă vă conectați cu un link din e-mail în loc de parolă, acest cont nu poate fi confirmat cu o parolă.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Niciuna dintre metodele de conectare disponibile nu este asociată contului dvs.</string>
     <string name="fui_error_reauth_incomplete">Identitatea dvs. nu a fost confirmată pentru acest cont. Încercați din nou.</string>

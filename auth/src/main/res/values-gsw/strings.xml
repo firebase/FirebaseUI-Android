@@ -124,6 +124,12 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Erneut versuchen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Zusätzliche Verifizierung erforderlich. Bitte schließen Sie die Multi-Faktor-Authentifizierung ab.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Das Konto muss verknüpft werden. Bitte versuchen Sie eine andere Anmeldemethode.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifizier dini Identität</string>
+    <string name="fui_reauth_dialog_message">Zu dinere Sicherheit gib bitte dis Passwort no mal i, zum Fortfahre.</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_generic_error">Authentifizierig fehlgschlage. Probier\'s no mal.</string>
+    <string name="fui_reauth_password_required_notice">Zum dini Identität da bestätige, bruucht s s Passwort vo dem Konto. Wenn du dich mit eme E-Mail-Link statt mit eme Passwort amäldisch, cha das Konto nöd mit eme Passwort bestätigt werde.</string>
     <!-- Re-authentication errors -->
     <string name="fui_error_reauth_no_linked_providers">Kei vo de verfüegbare Amäldemethode isch mit dim Konto verknüpft.</string>
     <string name="fui_error_reauth_incomplete">Dini Identität isch für das Konto nöd bestätigt worde. Probier\'s no mal.</string>
