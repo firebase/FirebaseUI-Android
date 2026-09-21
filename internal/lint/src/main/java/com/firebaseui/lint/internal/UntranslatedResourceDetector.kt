@@ -142,8 +142,10 @@ class UntranslatedResourceDetector : ResourceXmlDetector() {
          *
          * The four `fui_idp_name_*` entries are brand names, which are not translated. Note this
          * does make a regression invisible: if a locale ever replaced one with a mistranslation,
-         * nothing here would report it. `values-fil` and `values-tl` already carry `Fecebook`
-         * for `fui_idp_name_facebook`, a pre-existing typo this exemption would hide.
+         * nothing here would report it. That is not hypothetical. `values-fil` and `values-tl`
+         * spelled `fui_idp_name_facebook` as `Fecebook` from the original translation import
+         * (#771) until this change corrected it, and an exemption is exactly why no gate would
+         * have caught it.
          *
          * `fui_mfa_method_sms` is a **provisional** exemption and not the same kind of entry.
          * "SMS" is genuinely translated in several locales (`رسالة نصية` in `ar`, `短信` in `zh`,
