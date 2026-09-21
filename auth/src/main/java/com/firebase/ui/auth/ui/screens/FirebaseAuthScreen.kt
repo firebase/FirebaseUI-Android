@@ -78,7 +78,6 @@ import com.firebase.ui.auth.configuration.auth_provider.rememberOAuthSignInHandl
 import com.firebase.ui.auth.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
@@ -181,7 +180,9 @@ fun FirebaseAuthScreen(
     val activity = LocalActivity.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val stringProvider = remember(context) { DefaultAuthUIStringProvider(context) }
+    // The host's provider, not one built from LocalContext: only this honours a custom
+    // AuthUIStringProvider and the configured locale.
+    val stringProvider = configuration.stringProvider
 
     // The reauth effects below run outside composition, so they cannot call stringResource
     // themselves.
@@ -202,7 +203,7 @@ fun FirebaseAuthScreen(
         hostAuthFlowScope(authUI, configuration, hostStateHolder)
     }
     val authState = rawAuthState
-    val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
+    val dialogController = rememberTopLevelDialogController { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }

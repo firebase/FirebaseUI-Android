@@ -68,7 +68,7 @@ internal suspend fun AuthFlowScope.verifyPhoneNumber(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -107,7 +107,7 @@ internal suspend fun AuthFlowScope.submitVerificationCode(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
@@ -161,7 +161,7 @@ internal suspend fun AuthFlowScope.signInWithPhoneAuthCredential(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }

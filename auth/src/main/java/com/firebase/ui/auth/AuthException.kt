@@ -379,13 +379,33 @@ abstract class AuthException(
          * }
          * ```
          *
+         * Messages are resolved against [context]'s own configuration, so this overload honours
+         * neither a custom [AuthUIStringProvider] nor the `locale` a host configured. Prefer the
+         * [AuthUIStringProvider] overload wherever one is reachable, which inside an auth flow it
+         * always is, as `config.stringProvider`. This overload exists for the entry points that
+         * genuinely have no configuration to draw on, such as [FirebaseAuthUI.signOut],
+         * [FirebaseAuthUI.withReauth] and [FirebaseAuthUI.delete].
+         *
          * @param firebaseException The Firebase exception to convert
+         * @param context Used to build a [DefaultAuthUIStringProvider] for the error messages
          * @return An appropriate [AuthException] subtype
          */
         @JvmStatic
         fun from(firebaseException: Exception, context: Context): AuthException =
             from(firebaseException, DefaultAuthUIStringProvider(context))
 
+        /**
+         * Creates an [AuthException] from [firebaseException], taking message text from
+         * [stringProvider] so it honours the host's configured strings and locale.
+         *
+         * This is the preferred overload; see the [Context] one above for the exception mapping
+         * table and an example. A `null` [stringProvider], or one whose resource for a given error
+         * is blank, falls back to the Firebase SDK's own message.
+         *
+         * @param firebaseException The Firebase exception to convert
+         * @param stringProvider Supplies localized message text; pass `config.stringProvider`
+         * @return An appropriate [AuthException] subtype
+         */
         @JvmStatic
         @JvmOverloads
         fun from(firebaseException: Exception, stringProvider: AuthUIStringProvider? = null): AuthException {

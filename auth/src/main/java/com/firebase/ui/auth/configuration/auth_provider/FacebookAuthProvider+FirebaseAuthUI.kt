@@ -94,7 +94,7 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
                             currentScope.emit(AuthState.Error(e))
                             if (e !is AuthException.AuthCancelledException) currentOnSignInFailure(e)
                         } catch (e: Exception) {
-                            val authException = AuthException.from(e, currentContext)
+                            val authException = AuthException.from(e, currentScope.config.stringProvider)
                             currentScope.emit(AuthState.Error(authException))
                             if (authException !is AuthException.AuthCancelledException) currentOnSignInFailure(authException)
                         }
@@ -107,7 +107,7 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
 
                 override fun onError(error: FacebookException) {
                     Log.e("FacebookAuthProvider", "Error during Facebook sign in", error)
-                    val authException = AuthException.from(error, currentContext)
+                    val authException = AuthException.from(error, currentScope.config.stringProvider)
                     currentScope.emit(
                         AuthState.Error(
                             authException
@@ -202,7 +202,7 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
         emit(AuthState.Error(e))
         throw e
     } catch (e: FacebookException) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     } catch (e: CancellationException) {
@@ -216,7 +216,7 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e, context)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
