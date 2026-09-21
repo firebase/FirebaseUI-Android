@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Nalaganje…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializiranje</string>
+    <string name="fui_verification_code_digit_description">Števka %1$d od %2$d potrditvene kode</string>
+    <string name="fui_enter_totp_code">Vnesite kodo TOTP</string>
+    <string name="fui_text_field_read_only">Samo za branje</string>
+    <string name="fui_error_user_disabled">Uporabniški račun je onemogočen</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Prijavljanje kot gost…</string>
     <string name="fui_loading_signing_in_with_google">Prijavljanje z Googlom…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Preskoči</string>
     <string name="fui_use_different_method_action">Uporabi drugo metodo</string>
     <string name="fui_verification_code_label">Koda za preverjanje</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Dopolnite podatke svojega profila za nadaljevanje.</string>
+    <string name="fui_profile_missing_fields_message">Manjkajoča polja: %1$s</string>
     <string name="fui_verified_email_action">E-pošta preverjena</string>
     <string name="fui_verify_action">Preveri</string>
     <string name="fui_verify_email_instruction">Poslali smo e-sporočilo za preverjanje na %1$s</string>

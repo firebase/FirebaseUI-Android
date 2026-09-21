@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">جارٍ التحميل…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">جارٍ التهيئة</string>
+    <string name="fui_verification_code_digit_description">رقم رمز التحقق %1$d من %2$d</string>
+    <string name="fui_enter_totp_code">أدخل رمز TOTP</string>
+    <string name="fui_text_field_read_only">للقراءة فقط</string>
+    <string name="fui_error_user_disabled">تم إيقاف حساب المستخدم</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">جارٍ تسجيل الدخول كضيف…</string>
     <string name="fui_loading_signing_in_with_google">جارٍ تسجيل الدخول عبر Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">تخطي</string>
     <string name="fui_use_different_method_action">استخدم طريقة أخرى</string>
     <string name="fui_verification_code_label">رمز التحقق</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">أكمل معلومات ملفك الشخصي للمتابعة.</string>
+    <string name="fui_profile_missing_fields_message">الحقول الناقصة: %1$s</string>
     <string name="fui_verified_email_action">البريد الإلكتروني محقق</string>
     <string name="fui_verify_action">تحقق</string>
     <string name="fui_verify_email_instruction">أرسلنا بريدًا للتحقق إلى %1$s</string>

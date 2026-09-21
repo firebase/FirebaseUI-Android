@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Загрузка…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Инициализация</string>
+    <string name="fui_verification_code_digit_description">Цифра %1$d из %2$d кода подтверждения</string>
+    <string name="fui_enter_totp_code">Введите код TOTP</string>
+    <string name="fui_text_field_read_only">Только для чтения</string>
+    <string name="fui_error_user_disabled">Аккаунт пользователя отключён</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Выполняется вход в качестве гостя…</string>
     <string name="fui_loading_signing_in_with_google">Выполняется вход через Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Пропустить</string>
     <string name="fui_use_different_method_action">Использовать другой способ</string>
     <string name="fui_verification_code_label">Код подтверждения</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Заполните информацию профиля, чтобы продолжить.</string>
+    <string name="fui_profile_missing_fields_message">Отсутствующие поля: %1$s</string>
     <string name="fui_verified_email_action">Email подтвержден</string>
     <string name="fui_verify_action">Подтвердить</string>
     <string name="fui_verify_email_instruction">Мы отправили письмо подтверждения на %1$s</string>

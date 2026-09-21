@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laden…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initialiseren</string>
+    <string name="fui_verification_code_digit_description">Cijfer %1$d van %2$d van de verificatiecode</string>
+    <string name="fui_enter_totp_code">Voer TOTP-code in</string>
+    <string name="fui_text_field_read_only">Alleen-lezen</string>
+    <string name="fui_error_user_disabled">Het gebruikersaccount is uitgeschakeld</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Inloggen als gast…</string>
     <string name="fui_loading_signing_in_with_google">Inloggen met Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Overslaan</string>
     <string name="fui_use_different_method_action">Gebruik een andere methode</string>
     <string name="fui_verification_code_label">Verificatiecode</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Vul je profielgegevens in om door te gaan.</string>
+    <string name="fui_profile_missing_fields_message">Ontbrekende velden: %1$s</string>
     <string name="fui_verified_email_action">E-mail geverifieerd</string>
     <string name="fui_verify_action">Verifiëren</string>
     <string name="fui_verify_email_instruction">We hebben een verificatie-e-mail verzonden naar %1$s</string>

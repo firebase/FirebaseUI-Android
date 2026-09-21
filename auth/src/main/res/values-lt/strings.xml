@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Įkeliama…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicijuojama</string>
+    <string name="fui_verification_code_digit_description">%1$d skaitmuo iš %2$d patvirtinimo kodo</string>
+    <string name="fui_enter_totp_code">Įveskite TOTP kodą</string>
+    <string name="fui_text_field_read_only">Tik skaitymas</string>
+    <string name="fui_error_user_disabled">Naudotojo paskyra išjungta</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Prisijungiama kaip svečias…</string>
     <string name="fui_loading_signing_in_with_google">Prisijungiama per „Google“…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Praleisti</string>
     <string name="fui_use_different_method_action">Naudoti kitą metodą</string>
     <string name="fui_verification_code_label">Patvirtinimo kodas</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Užpildykite profilio informaciją, kad tęstumėte.</string>
+    <string name="fui_profile_missing_fields_message">Trūksta laukų: %1$s</string>
     <string name="fui_verified_email_action">El. paštas patvirtintas</string>
     <string name="fui_verify_action">Patvirtinti</string>
     <string name="fui_verify_email_instruction">Išsiuntėme patvirtinimo el. laišką adresu %1$s</string>

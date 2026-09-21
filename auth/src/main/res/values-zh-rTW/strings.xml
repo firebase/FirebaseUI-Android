@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">載入中…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">正在初始化</string>
+    <string name="fui_verification_code_digit_description">驗證碼第 %1$d 位 (共 %2$d 位)</string>
+    <string name="fui_enter_totp_code">輸入 TOTP 驗證碼</string>
+    <string name="fui_text_field_read_only">唯讀</string>
+    <string name="fui_error_user_disabled">使用者帳號已停用</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">以訪客身分登入中…</string>
     <string name="fui_loading_signing_in_with_google">使用 Google 登入中…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">略過</string>
     <string name="fui_use_different_method_action">使用其他方式</string>
     <string name="fui_verification_code_label">驗證碼</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">請填寫完整的個人資料以繼續。</string>
+    <string name="fui_profile_missing_fields_message">缺少的欄位：%1$s</string>
     <string name="fui_verified_email_action">郵件已驗證</string>
     <string name="fui_verify_action">驗證</string>
     <string name="fui_verify_email_instruction">我們已傳送驗證郵件至 %1$s</string>

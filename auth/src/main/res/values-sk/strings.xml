@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítava sa…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializuje sa</string>
+    <string name="fui_verification_code_digit_description">Číslica %1$d z %2$d overovacieho kódu</string>
+    <string name="fui_enter_totp_code">Zadajte kód TOTP</string>
+    <string name="fui_text_field_read_only">Iba na čítanie</string>
+    <string name="fui_error_user_disabled">Používateľský účet bol deaktivovaný</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Prihlasovanie ako hosť…</string>
     <string name="fui_loading_signing_in_with_google">Prihlasovanie účtom Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Preskočiť</string>
     <string name="fui_use_different_method_action">Použiť inú metódu</string>
     <string name="fui_verification_code_label">Overovací kód</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Doplňte informácie vo svojom profile a pokračujte.</string>
+    <string name="fui_profile_missing_fields_message">Chýbajúce polia: %1$s</string>
     <string name="fui_verified_email_action">E-mail overený</string>
     <string name="fui_verify_action">Overiť</string>
     <string name="fui_verify_email_instruction">Poslali sme overovací e-mail na adresu %1$s</string>

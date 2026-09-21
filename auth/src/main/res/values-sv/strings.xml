@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Läser in…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initierar</string>
+    <string name="fui_verification_code_digit_description">Siffra %1$d av %2$d i verifieringskoden</string>
+    <string name="fui_enter_totp_code">Ange TOTP-kod</string>
+    <string name="fui_text_field_read_only">Skrivskyddad</string>
+    <string name="fui_error_user_disabled">Användarkontot har inaktiverats</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Loggar in som gäst…</string>
     <string name="fui_loading_signing_in_with_google">Loggar in med Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Hoppa över</string>
     <string name="fui_use_different_method_action">Använd en annan metod</string>
     <string name="fui_verification_code_label">Verifieringskod</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Fyll i dina profiluppgifter för att fortsätta.</string>
+    <string name="fui_profile_missing_fields_message">Fält som saknas: %1$s</string>
     <string name="fui_verified_email_action">E-post verifierad</string>
     <string name="fui_verify_action">Verifiera</string>
     <string name="fui_verify_email_instruction">Vi har skickat ett verifieringsmail till %1$s</string>

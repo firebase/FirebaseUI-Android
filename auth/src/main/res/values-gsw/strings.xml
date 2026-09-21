@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wird geladen…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Wird initialisiert</string>
+    <string name="fui_verification_code_digit_description">Ziffer %1$d vo %2$d vom Verifizierigscode</string>
+    <string name="fui_enter_totp_code">TOTP-Code igäh</string>
+    <string name="fui_text_field_read_only">Schriibgschützt</string>
+    <string name="fui_error_user_disabled">S Benutzerkonto isch deaktiviert worde</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Anmeldung als Gast wird durchgeführt…</string>
     <string name="fui_loading_signing_in_with_google">Anmeldung über Google wird durchgeführt…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Überspringe</string>
     <string name="fui_use_different_method_action">E anderi Methode verwände</string>
     <string name="fui_verification_code_label">Verifizierigscode</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Vervollständig bitte dini Profilinformatione, zum Fortfahre.</string>
+    <string name="fui_profile_missing_fields_message">Fählendi Fälder: %1$s</string>
     <string name="fui_verified_email_action">E-Mail verifiziert</string>
     <string name="fui_verify_action">Verifiziere</string>
     <string name="fui_verify_email_instruction">Mir hend e Verifizierigs-E-Mail an %1$s gschickt</string>

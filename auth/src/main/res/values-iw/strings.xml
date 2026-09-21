@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">טוען…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">מאתחל</string>
+    <string name="fui_verification_code_digit_description">ספרה %1$d מתוך %2$d של קוד האימות</string>
+    <string name="fui_enter_totp_code">הזן קוד TOTP</string>
+    <string name="fui_text_field_read_only">לקריאה בלבד</string>
+    <string name="fui_error_user_disabled">חשבון המשתמש הושבת</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">נכנס כאורח…</string>
     <string name="fui_loading_signing_in_with_google">נכנס באמצעות Google…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">דלג</string>
     <string name="fui_use_different_method_action">השתמש בשיטה אחרת</string>
     <string name="fui_verification_code_label">קוד אימות</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">יש להשלים את פרטי הפרופיל שלך כדי להמשיך.</string>
+    <string name="fui_profile_missing_fields_message">שדות חסרים: %1$s</string>
     <string name="fui_verified_email_action">אימייל מאומת</string>
     <string name="fui_verify_action">אמת</string>
     <string name="fui_verify_email_instruction">שלחנו אימייל אימות אל %1$s</string>

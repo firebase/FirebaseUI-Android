@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">読み込んでいます…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">初期化しています</string>
+    <string name="fui_verification_code_digit_description">確認コードの %2$d 桁中 %1$d 桁目</string>
+    <string name="fui_enter_totp_code">TOTP コードを入力</string>
+    <string name="fui_text_field_read_only">読み取り専用</string>
+    <string name="fui_error_user_disabled">ユーザー アカウントは無効になっています</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">ゲストとしてログインしています…</string>
     <string name="fui_loading_signing_in_with_google">Google でログインしています…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">スキップ</string>
     <string name="fui_use_different_method_action">別の方法を使用</string>
     <string name="fui_verification_code_label">確認コード</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">続行するにはプロフィール情報を入力してください。</string>
+    <string name="fui_profile_missing_fields_message">未入力の項目: %1$s</string>
     <string name="fui_verified_email_action">メールアドレスを確認済み</string>
     <string name="fui_verify_action">確認</string>
     <string name="fui_verify_email_instruction">%1$s に確認メールを送信しました</string>

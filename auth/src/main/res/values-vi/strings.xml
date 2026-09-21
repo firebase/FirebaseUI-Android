@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Đang tải…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Đang khởi tạo</string>
+    <string name="fui_verification_code_digit_description">Chữ số %1$d trong số %2$d của mã xác minh</string>
+    <string name="fui_enter_totp_code">Nhập mã TOTP</string>
+    <string name="fui_text_field_read_only">Chỉ đọc</string>
+    <string name="fui_error_user_disabled">Tài khoản người dùng đã bị vô hiệu hoá</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Đang đăng nhập với vai trò người dùng khách…</string>
     <string name="fui_loading_signing_in_with_google">Đang đăng nhập bằng Google…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Bỏ qua</string>
     <string name="fui_use_different_method_action">Sử dụng phương thức khác</string>
     <string name="fui_verification_code_label">Mã xác minh</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Hãy hoàn tất thông tin hồ sơ của bạn để tiếp tục.</string>
+    <string name="fui_profile_missing_fields_message">Các trường còn thiếu: %1$s</string>
     <string name="fui_verified_email_action">Email đã xác minh</string>
     <string name="fui_verify_action">Xác minh</string>
     <string name="fui_verify_email_instruction">Chúng tôi đã gửi email xác minh đến %1$s</string>

@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítání…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializace</string>
+    <string name="fui_verification_code_digit_description">Číslice %1$d z %2$d ověřovacího kódu</string>
+    <string name="fui_enter_totp_code">Zadejte kód TOTP</string>
+    <string name="fui_text_field_read_only">Jen pro čtení</string>
+    <string name="fui_error_user_disabled">Uživatelský účet byl deaktivován</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Přihlašování jako host…</string>
     <string name="fui_loading_signing_in_with_google">Přihlašování přes Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Přeskočit</string>
     <string name="fui_use_different_method_action">Použít jinou metodu</string>
     <string name="fui_verification_code_label">Ověřovací kód</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Dokončete informace ve svém profilu a pokračujte.</string>
+    <string name="fui_profile_missing_fields_message">Chybějící pole: %1$s</string>
     <string name="fui_verified_email_action">E-mail ověřen</string>
     <string name="fui_verify_action">Ověřit</string>
     <string name="fui_verify_email_instruction">Odeslali jsme ověřovací e-mail na %1$s</string>

@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Naglo-load…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Sinisimulan</string>
+    <string name="fui_verification_code_digit_description">Digit %1$d ng %2$d ng verification code</string>
+    <string name="fui_enter_totp_code">Ilagay ang TOTP code</string>
+    <string name="fui_text_field_read_only">Read-only lang</string>
+    <string name="fui_error_user_disabled">Na-disable ang user account</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Nagsa-sign in bilang bisita…</string>
     <string name="fui_loading_signing_in_with_google">Nagsa-sign in gamit ang Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Laktawan</string>
     <string name="fui_use_different_method_action">Gumamit ng ibang paraan</string>
     <string name="fui_verification_code_label">Code sa pag-verify</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Kumpletuhin ang impormasyon ng iyong profile upang magpatuloy.</string>
+    <string name="fui_profile_missing_fields_message">Mga kulang na field: %1$s</string>
     <string name="fui_verified_email_action">Na-verify ang email</string>
     <string name="fui_verify_action">I-verify</string>
     <string name="fui_verify_email_instruction">Nagpadala kami ng verification email sa %1$s</string>

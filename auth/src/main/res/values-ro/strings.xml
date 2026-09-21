@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Se încarcă…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Se inițializează</string>
+    <string name="fui_verification_code_digit_description">Cifra %1$d din %2$d a codului de verificare</string>
+    <string name="fui_enter_totp_code">Introduceți codul TOTP</string>
+    <string name="fui_text_field_read_only">Doar în citire</string>
+    <string name="fui_error_user_disabled">Contul de utilizator a fost dezactivat</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Se conectează ca invitat…</string>
     <string name="fui_loading_signing_in_with_google">Se conectează cu Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Omite</string>
     <string name="fui_use_different_method_action">Folosiți o altă metodă</string>
     <string name="fui_verification_code_label">Cod de verificare</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Completați informațiile profilului pentru a continua.</string>
+    <string name="fui_profile_missing_fields_message">Câmpuri lipsă: %1$s</string>
     <string name="fui_verified_email_action">E-mail verificat</string>
     <string name="fui_verify_action">Verificare</string>
     <string name="fui_verify_email_instruction">Am trimis un e-mail de verificare la %1$s</string>

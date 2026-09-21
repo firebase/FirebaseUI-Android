@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuat…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Melakukan inisialisasi</string>
+    <string name="fui_verification_code_digit_description">Digit %1$d dari %2$d kode verifikasi</string>
+    <string name="fui_enter_totp_code">Masukkan kode TOTP</string>
+    <string name="fui_text_field_read_only">Hanya baca</string>
+    <string name="fui_error_user_disabled">Akun pengguna telah dinonaktifkan</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Login sebagai tamu…</string>
     <string name="fui_loading_signing_in_with_google">Login dengan Google…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Lewati</string>
     <string name="fui_use_different_method_action">Gunakan metode lain</string>
     <string name="fui_verification_code_label">Kode verifikasi</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Lengkapi informasi profil Anda untuk melanjutkan.</string>
+    <string name="fui_profile_missing_fields_message">Kolom yang belum diisi: %1$s</string>
     <string name="fui_verified_email_action">Email terverifikasi</string>
     <string name="fui_verify_action">Verifikasi</string>
     <string name="fui_verify_email_instruction">Kami telah mengirim email verifikasi ke %1$s</string>

@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">로드 중…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">초기화 중</string>
+    <string name="fui_verification_code_digit_description">인증 코드 %2$d자리 중 %1$d번째</string>
+    <string name="fui_enter_totp_code">TOTP 코드 입력</string>
+    <string name="fui_text_field_read_only">읽기 전용</string>
+    <string name="fui_error_user_disabled">사용자 계정이 사용 중지되었습니다</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">게스트로 로그인 중…</string>
     <string name="fui_loading_signing_in_with_google">Google 계정으로 로그인 중…</string>
@@ -207,6 +213,9 @@
     <string name="fui_skip_action">건너뛰기</string>
     <string name="fui_use_different_method_action">다른 방법 사용</string>
     <string name="fui_verification_code_label">확인 코드</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">계속하려면 프로필 정보를 작성하세요.</string>
+    <string name="fui_profile_missing_fields_message">누락된 항목: %1$s</string>
     <string name="fui_verified_email_action">이메일 확인 완료</string>
     <string name="fui_verify_action">확인</string>
     <string name="fui_verify_email_instruction">%1$s(으)로 확인 이메일을 보냈습니다</string>

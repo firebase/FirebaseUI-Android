@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Ladataan…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Alustetaan</string>
+    <string name="fui_verification_code_digit_description">Vahvistuskoodin numero %1$d/%2$d</string>
+    <string name="fui_enter_totp_code">Anna TOTP-koodi</string>
+    <string name="fui_text_field_read_only">Vain luku</string>
+    <string name="fui_error_user_disabled">Käyttäjätili on poistettu käytöstä</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Kirjaudutaan sisään vieraana…</string>
     <string name="fui_loading_signing_in_with_google">Kirjaudutaan sisään Google-tilillä…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Ohita</string>
     <string name="fui_use_different_method_action">Käytä eri menetelmää</string>
     <string name="fui_verification_code_label">Vahvistuskoodi</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Täydennä profiilitietosi jatkaaksesi.</string>
+    <string name="fui_profile_missing_fields_message">Puuttuvat kentät: %1$s</string>
     <string name="fui_verified_email_action">Sähköposti vahvistettu</string>
     <string name="fui_verify_action">Vahvista</string>
     <string name="fui_verify_email_instruction">Lähetimme vahvistussähköpostin osoitteeseen %1$s</string>

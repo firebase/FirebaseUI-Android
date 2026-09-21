@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Chargement…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Ezali kobanda</string>
+    <string name="fui_verification_code_digit_description">Chiffre %1$d na %2$d ya code ya vérification</string>
+    <string name="fui_enter_totp_code">Kotisa code TOTP</string>
+    <string name="fui_text_field_read_only">Kotánga kaka</string>
+    <string name="fui_error_user_disabled">Konte ya musaleli ekangami</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Connexion en tant qu\'invité…</string>
     <string name="fui_loading_signing_in_with_google">Connexion avec Google…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Leka</string>
     <string name="fui_use_different_method_action">Salelá méthode mosusu</string>
     <string name="fui_verification_code_label">Code ya vérification</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Kokokisa ba informations ya profil na yo mpo na kokoba.</string>
+    <string name="fui_profile_missing_fields_message">Ba champs oyo ezangi: %1$s</string>
     <string name="fui_verified_email_action">E-mail esalemi</string>
     <string name="fui_verify_action">Sala vérification</string>
     <string name="fui_verify_email_instruction">Totindi e-mail ya vérification na %1$s</string>

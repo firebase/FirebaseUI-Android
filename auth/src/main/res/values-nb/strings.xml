@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laster inn…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initialiserer</string>
+    <string name="fui_verification_code_digit_description">Siffer %1$d av %2$d i bekreftelseskoden</string>
+    <string name="fui_enter_totp_code">Skriv inn TOTP-kode</string>
+    <string name="fui_text_field_read_only">Skrivebeskyttet</string>
+    <string name="fui_error_user_disabled">Brukerkontoen er deaktivert</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Logger på som gjest…</string>
     <string name="fui_loading_signing_in_with_google">Logger på med Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Hopp over</string>
     <string name="fui_use_different_method_action">Bruk en annen metode</string>
     <string name="fui_verification_code_label">Bekreftelseskode</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Fyll ut profilopplysningene dine for å fortsette.</string>
+    <string name="fui_profile_missing_fields_message">Manglende felter: %1$s</string>
     <string name="fui_verified_email_action">E-post bekreftet</string>
     <string name="fui_verify_action">Bekreft</string>
     <string name="fui_verify_email_instruction">Vi sendte en bekreftelsese-post til %1$s</string>

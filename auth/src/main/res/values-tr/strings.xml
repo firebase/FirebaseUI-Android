@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Yükleniyor…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Başlatılıyor</string>
+    <string name="fui_verification_code_digit_description">Doğrulama kodunun %2$d basamağından %1$d. basamağı</string>
+    <string name="fui_enter_totp_code">TOTP kodunu girin</string>
+    <string name="fui_text_field_read_only">Salt okunur</string>
+    <string name="fui_error_user_disabled">Kullanıcı hesabı devre dışı bırakıldı</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Misafir olarak oturum açılıyor…</string>
     <string name="fui_loading_signing_in_with_google">Google ile oturum açılıyor…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">Atla</string>
     <string name="fui_use_different_method_action">Farklı bir yöntem kullan</string>
     <string name="fui_verification_code_label">Doğrulama kodu</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Devam etmek için profil bilgilerinizi tamamlayın.</string>
+    <string name="fui_profile_missing_fields_message">Eksik alanlar: %1$s</string>
     <string name="fui_verified_email_action">E-posta doğrulandı</string>
     <string name="fui_verify_action">Doğrula</string>
     <string name="fui_verify_email_instruction">%1$s adresine bir doğrulama e-postası gönderdik</string>

@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">A carregar…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">A inicializar</string>
+    <string name="fui_verification_code_digit_description">Dígito %1$d de %2$d do código de validação</string>
+    <string name="fui_enter_totp_code">Introduza o código TOTP</string>
+    <string name="fui_text_field_read_only">Apenas leitura</string>
+    <string name="fui_error_user_disabled">A conta de utilizador foi desativada</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">A iniciar sessão como convidado…</string>
     <string name="fui_loading_signing_in_with_google">A iniciar sessão com o Google…</string>

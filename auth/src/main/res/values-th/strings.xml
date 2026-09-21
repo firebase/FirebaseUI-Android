@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">กำลังโหลด…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">กำลังเริ่มต้น</string>
+    <string name="fui_verification_code_digit_description">หลักที่ %1$d จาก %2$d ของรหัสยืนยัน</string>
+    <string name="fui_enter_totp_code">ป้อนรหัส TOTP</string>
+    <string name="fui_text_field_read_only">อ่านอย่างเดียว</string>
+    <string name="fui_error_user_disabled">บัญชีผู้ใช้ถูกปิดใช้งาน</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">กำลังลงชื่อเข้าใช้ในฐานะผู้เข้าร่วม…</string>
     <string name="fui_loading_signing_in_with_google">กำลังลงชื่อเข้าใช้ด้วย Google…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">ข้าม</string>
     <string name="fui_use_different_method_action">ใช้วิธีอื่น</string>
     <string name="fui_verification_code_label">รหัสยืนยัน</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">กรอกข้อมูลโปรไฟล์ของคุณให้ครบถ้วนเพื่อดำเนินการต่อ</string>
+    <string name="fui_profile_missing_fields_message">ช่องที่ขาดหายไป: %1$s</string>
     <string name="fui_verified_email_action">ยืนยันอีเมลแล้ว</string>
     <string name="fui_verify_action">ยืนยัน</string>
     <string name="fui_verify_email_instruction">เราส่งอีเมลยืนยันไปที่ %1$s แล้ว</string>

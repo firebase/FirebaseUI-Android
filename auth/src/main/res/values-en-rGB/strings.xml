@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Loading…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initializing</string>
+    <string name="fui_verification_code_digit_description">Verification code digit %1$d of %2$d</string>
+    <string name="fui_enter_totp_code">Enter TOTP code</string>
+    <string name="fui_text_field_read_only">Read-only</string>
+    <string name="fui_error_user_disabled">User account has been disabled</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Signing in as guest…</string>
     <string name="fui_loading_signing_in_with_google">Signing in with Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Skip</string>
     <string name="fui_use_different_method_action">Use a different method</string>
     <string name="fui_verification_code_label">Verification code</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Please complete your profile information to continue.</string>
+    <string name="fui_profile_missing_fields_message">Missing fields: %1$s</string>
     <string name="fui_verified_email_action">Email verified</string>
     <string name="fui_verify_action">Verify</string>
     <string name="fui_verify_email_instruction">We sent a verification email to %1$s</string>

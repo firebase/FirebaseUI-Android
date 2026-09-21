@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Betöltés…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializálás</string>
+    <string name="fui_verification_code_digit_description">Az ellenőrző kód %1$d. számjegye a(z) %2$d-ből</string>
+    <string name="fui_enter_totp_code">Adja meg a TOTP-kódot</string>
+    <string name="fui_text_field_read_only">Csak olvasható</string>
+    <string name="fui_error_user_disabled">A felhasználói fiók le lett tiltva</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Bejelentkezés vendégként…</string>
     <string name="fui_loading_signing_in_with_google">Bejelentkezés Google-fiókkal…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Kihagyás</string>
     <string name="fui_use_different_method_action">Másik módszer használata</string>
     <string name="fui_verification_code_label">Ellenőrző kód</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">A folytatáshoz töltse ki profiladatait.</string>
+    <string name="fui_profile_missing_fields_message">Hiányzó mezők: %1$s</string>
     <string name="fui_verified_email_action">E-mail ellenőrizve</string>
     <string name="fui_verify_action">Ellenőrzés</string>
     <string name="fui_verify_email_instruction">Ellenőrző e-mailt küldtünk a következő címre: %1$s</string>

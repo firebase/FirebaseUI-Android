@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">شروع ہو رہا ہے</string>
+    <string name="fui_verification_code_digit_description">توثیقی کوڈ کا %2$d میں سے %1$d ہندسہ</string>
+    <string name="fui_enter_totp_code">TOTP کوڈ درج کریں</string>
+    <string name="fui_text_field_read_only">صرف پڑھنے کے لیے</string>
+    <string name="fui_error_user_disabled">صارف اکاؤنٹ غیر فعال کر دیا گیا ہے</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">مہمان کے طور پر سائن ان ہو رہا ہے…</string>
     <string name="fui_loading_signing_in_with_google">Google کے ساتھ سائن ان ہو رہا ہے…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">چھوڑیں</string>
     <string name="fui_use_different_method_action">ایک مختلف طریقہ استعمال کریں</string>
     <string name="fui_verification_code_label">تصدیقی کوڈ</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">جاری رکھنے کے لیے اپنی پروفائل کی معلومات مکمل کریں۔</string>
+    <string name="fui_profile_missing_fields_message">غائب فیلڈز: %1$s</string>
     <string name="fui_verified_email_action">ای میل تصدیق شدہ</string>
     <string name="fui_verify_action">تصدیق کریں</string>
     <string name="fui_verify_email_instruction">ہم نے %1$s کو تصدیقی ای میل بھیجی</string>

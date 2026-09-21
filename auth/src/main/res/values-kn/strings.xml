@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">ಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ</string>
+    <string name="fui_verification_code_digit_description">ಪರಿಶೀಲನೆ ಕೋಡ್‌ನ %2$d ರಲ್ಲಿ %1$d ನೇ ಅಂಕಿ</string>
+    <string name="fui_enter_totp_code">TOTP ಕೋಡ್ ನಮೂದಿಸಿ</string>
+    <string name="fui_text_field_read_only">ಓದಲು ಮಾತ್ರ</string>
+    <string name="fui_error_user_disabled">ಬಳಕೆದಾರರ ಖಾತೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">ಅತಿಥಿಯಾಗಿ ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_loading_signing_in_with_google">Google ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">ಸ್ಕಿಪ್ ಮಾಡಿ</string>
     <string name="fui_use_different_method_action">ವಿಭಿನ್ನ ವಿಧಾನವನ್ನು ಬಳಸಿ</string>
     <string name="fui_verification_code_label">ಪರಿಶೀಲನೆ ಕೋಡ್</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಮಾಹಿತಿಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.</string>
+    <string name="fui_profile_missing_fields_message">ಕಾಣೆಯಾದ ಫೀಲ್ಡ್‌ಗಳು: %1$s</string>
     <string name="fui_verified_email_action">ಇಮೇಲ್ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_verify_action">ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_verify_email_instruction">ನಾವು %1$s ಗೆ ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಕಳುಹಿಸಿದ್ದೇವೆ</string>

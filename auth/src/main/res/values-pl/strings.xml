@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wczytuję…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicjowanie</string>
+    <string name="fui_verification_code_digit_description">Cyfra %1$d z %2$d kodu weryfikacyjnego</string>
+    <string name="fui_enter_totp_code">Wpisz kod TOTP</string>
+    <string name="fui_text_field_read_only">Tylko do odczytu</string>
+    <string name="fui_error_user_disabled">Konto użytkownika zostało wyłączone</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Loguję jako gość…</string>
     <string name="fui_loading_signing_in_with_google">Loguję przez Google…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Pomiń</string>
     <string name="fui_use_different_method_action">Użyj innej metody</string>
     <string name="fui_verification_code_label">Kod weryfikacyjny</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Uzupełnij informacje w profilu, aby kontynuować.</string>
+    <string name="fui_profile_missing_fields_message">Brakujące pola: %1$s</string>
     <string name="fui_verified_email_action">E-mail zweryfikowany</string>
     <string name="fui_verify_action">Zweryfikuj</string>
     <string name="fui_verify_email_instruction">Wysłaliśmy e-mail weryfikacyjny na adres %1$s</string>

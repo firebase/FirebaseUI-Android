@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">લોડ કરી રહ્યું છે…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">પ્રારંભ થઈ રહ્યું છે</string>
+    <string name="fui_verification_code_digit_description">ચકાસણી કોડનો %2$d માંથી %1$d અંક</string>
+    <string name="fui_enter_totp_code">TOTP કોડ દાખલ કરો</string>
+    <string name="fui_text_field_read_only">ફક્ત વાંચવા માટે</string>
+    <string name="fui_error_user_disabled">વપરાશકર્તા એકાઉન્ટ અક્ષમ કરવામાં આવ્યું છે</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">અતિથિ તરીકે સાઇન ઇન કરી રહ્યાં છીએ…</string>
     <string name="fui_loading_signing_in_with_google">Google વડે સાઇન ઇન કરી રહ્યાં છીએ…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">છોડો</string>
     <string name="fui_use_different_method_action">એક અલગ પદ્ધતિ વાપરો</string>
     <string name="fui_verification_code_label">ચકાસણી કોડ</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">ચાલુ રાખવા માટે તમારી પ્રોફાઇલ માહિતી પૂર્ણ કરો.</string>
+    <string name="fui_profile_missing_fields_message">ખૂટતાં ફીલ્ડ: %1$s</string>
     <string name="fui_verified_email_action">ઇમેઇલ ચકાસાયેલ</string>
     <string name="fui_verify_action">ચકાસો</string>
     <string name="fui_verify_email_instruction">અમે %1$s પર ચકાસણી ઇમેઇલ મોકલ્યો</string>

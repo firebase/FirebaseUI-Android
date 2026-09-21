@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">লোড হচ্ছে…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">চালু করা হচ্ছে</string>
+    <string name="fui_verification_code_digit_description">যাচাইকরণ কোডের %2$d-এর মধ্যে %1$d নম্বর সংখ্যা</string>
+    <string name="fui_enter_totp_code">TOTP কোড লিখুন</string>
+    <string name="fui_text_field_read_only">শুধু পড়ার জন্য</string>
+    <string name="fui_error_user_disabled">ব্যবহারকারীর অ্যাকাউন্ট নিষ্ক্রিয় করা হয়েছে</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">অতিথি হিসেবে সাইন-ইন করা হচ্ছে…</string>
     <string name="fui_loading_signing_in_with_google">Google দিয়ে সাইন-ইন করা হচ্ছে…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">এড়িয়ে যান</string>
     <string name="fui_use_different_method_action">একটি ভিন্ন পদ্ধতি ব্যবহার করুন</string>
     <string name="fui_verification_code_label">যাচাইকরণ কোড</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">চালিয়ে যেতে আপনার প্রোফাইলের তথ্য সম্পূর্ণ করুন।</string>
+    <string name="fui_profile_missing_fields_message">অনুপস্থিত ফিল্ড: %1$s</string>
     <string name="fui_verified_email_action">ইমেল যাচাই করা হয়েছে</string>
     <string name="fui_verify_action">যাচাই করুন</string>
     <string name="fui_verify_email_instruction">আমরা %1$s-এ একটি যাচাইকরণ ইমেল পাঠিয়েছি</string>

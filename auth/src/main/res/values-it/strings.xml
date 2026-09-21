@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Caricamento in corso…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inizializzazione</string>
+    <string name="fui_verification_code_digit_description">Cifra %1$d di %2$d del codice di verifica</string>
+    <string name="fui_enter_totp_code">Inserisci il codice TOTP</string>
+    <string name="fui_text_field_read_only">Sola lettura</string>
+    <string name="fui_error_user_disabled">L\'account utente è stato disattivato</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">Accesso come ospite in corso…</string>
     <string name="fui_loading_signing_in_with_google">Accesso con Google in corso…</string>
@@ -208,6 +214,9 @@
     <string name="fui_skip_action">Salta</string>
     <string name="fui_use_different_method_action">Usa un metodo diverso</string>
     <string name="fui_verification_code_label">Codice di verifica</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Completa le informazioni del tuo profilo per continuare.</string>
+    <string name="fui_profile_missing_fields_message">Campi mancanti: %1$s</string>
     <string name="fui_verified_email_action">Email verificata</string>
     <string name="fui_verify_action">Verifica</string>
     <string name="fui_verify_email_instruction">Abbiamo inviato un\'email di verifica a %1$s</string>

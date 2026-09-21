@@ -1,5 +1,11 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड करत आहे…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">सुरू करत आहे</string>
+    <string name="fui_verification_code_digit_description">पडताळणी कोडचा %2$d पैकी %1$d अंक</string>
+    <string name="fui_enter_totp_code">TOTP कोड एंटर करा</string>
+    <string name="fui_text_field_read_only">फक्त वाचनासाठी</string>
+    <string name="fui_error_user_disabled">वापरकर्ता खाते बंद केले आहे</string>
     <!-- Loading state messages shown during auth operations -->
     <string name="fui_loading_signing_in_anonymously">अतिथी म्हणून साइन इन करत आहे…</string>
     <string name="fui_loading_signing_in_with_google">Google ने साइन इन करत आहे…</string>
@@ -209,6 +215,9 @@
     <string name="fui_skip_action">वगळा</string>
     <string name="fui_use_different_method_action">वेगळी पद्धत वापरा</string>
     <string name="fui_verification_code_label">सत्यापन कोड</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">सुरू ठेवण्यासाठी तुमची प्रोफाइल माहिती पूर्ण करा.</string>
+    <string name="fui_profile_missing_fields_message">गहाळ फील्ड: %1$s</string>
     <string name="fui_verified_email_action">ईमेल सत्यापित</string>
     <string name="fui_verify_action">सत्यापित करा</string>
     <string name="fui_verify_email_instruction">आम्ही %1$s वर सत्यापन ईमेल पाठवला</string>
