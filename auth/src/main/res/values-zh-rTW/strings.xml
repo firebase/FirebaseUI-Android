@@ -209,7 +209,7 @@
     <string name="fui_reauthenticate_action">重新驗證</string>
     <string name="fui_remove_action">移除</string>
     <string name="fui_resend_verification_email_action">重新傳送驗證郵件</string>
-    <string name="fui_secret_key_label">密鑰</string>
+    <string name="fui_secret_key_label">金鑰</string>
     <string name="fui_sign_out_action">登出</string>
     <string name="fui_signed_in_as">登入身分：%1$s</string>
     <string name="fui_skip_action">略過</string>
