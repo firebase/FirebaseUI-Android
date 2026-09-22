@@ -86,3 +86,23 @@ tasks.register<Test>("e2eTest") {
 
     doNotTrackState("Always run e2e emulator tests to mirror Android Studio")
 }
+
+// Give this module friend access to `:auth` internals, so the e2e tests can drive test
+// seams that are `internal` rather than forcing those seams to stay public API.
+//
+// Two things here are deliberate and should not be simplified:
+//
+// 1. `libraries` is filtered instead of naming the jar it resolves to. That jar lives under
+//    AGP's `intermediates` tree, which is an implementation detail and moves on an AGP bump.
+// 2. `rootProject.layout.projectDirectory` rather than `project(":auth").layout.buildDirectory`.
+//    The latter works today, but it is cross-project model access and breaks under project
+//    isolation.
+//
+// Appending `-Xfriend-paths` to `compilerOptions.freeCompilerArgs` does not work: KGP
+// generates that flag itself from the typed `friendPaths` property, so a hand-appended copy
+// is ignored. Pointing at `auth/build/tmp/kotlin-classes/debug` does not work either, because
+// `:e2eTest` never sees that directory.
+val authBuildDir = rootProject.layout.projectDirectory.dir("auth/build").asFile.absolutePath
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    friendPaths.from(libraries.filter { it.absolutePath.startsWith(authBuildDir) })
+}
