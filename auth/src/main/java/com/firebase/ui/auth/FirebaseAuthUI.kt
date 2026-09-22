@@ -93,10 +93,10 @@ class FirebaseAuthUI private constructor(
      */
     internal val pendingReauth = MutableStateFlow<AuthState.Reauthentication.Required?>(null)
 
-    /** How many composed [FirebaseAuthScreen]s can currently drive a reauthentication request. */
-
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal var testLoginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null
 
     /**
@@ -721,7 +721,7 @@ class FirebaseAuthUI private constructor(
          */
         @JvmStatic
         @RestrictTo(RestrictTo.Scope.TESTS)
-        fun clearInstanceCache() {
+        internal fun clearInstanceCache() {
             instanceCache.clear()
         }
 

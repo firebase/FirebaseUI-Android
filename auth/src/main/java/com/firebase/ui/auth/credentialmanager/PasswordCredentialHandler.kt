@@ -22,6 +22,7 @@ import androidx.credentials.GetPasswordOption
 import androidx.credentials.PasswordCredential as AndroidPasswordCredential
 import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.CreateCredentialException
+import androidx.annotation.RestrictTo
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
@@ -31,6 +32,7 @@ import com.firebase.ui.auth.util.CredentialPersistenceManager
  * Provider interface for obtaining CredentialManager instances.
  * This allows test code to inject mock CredentialManager instances.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal interface CredentialManagerProvider {
     fun getCredentialManager(context: Context): CredentialManager
 }
@@ -38,6 +40,7 @@ internal interface CredentialManagerProvider {
 /**
  * Default implementation that creates a real CredentialManager instance.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
     override fun getCredentialManager(context: Context): CredentialManager {
         return CredentialManager.create(context)
@@ -53,6 +56,7 @@ internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
  * @property context The Android context used for credential operations
  * @property provider Optional provider for testing purposes
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class PasswordCredentialHandler(
     private val context: Context,
     provider: CredentialManagerProvider? = null
@@ -62,6 +66,7 @@ internal class PasswordCredentialHandler(
          * Test-only provider for injecting mock CredentialManager instances.
          */
         @Volatile
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         var testCredentialManagerProvider: CredentialManagerProvider? = null
 
         /**
@@ -170,7 +175,8 @@ internal class PasswordCredentialHandler(
 /**
  * Base exception for password credential operations.
  */
-open class PasswordCredentialException(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal open class PasswordCredentialException(
     message: String,
     cause: Throwable? = null
 ) : Exception(message, cause)
@@ -178,6 +184,7 @@ open class PasswordCredentialException(
 /**
  * Exception thrown when a password credential operation is cancelled by the user.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class PasswordCredentialCancelledException(
     message: String,
     cause: Throwable? = null
@@ -186,6 +193,7 @@ internal class PasswordCredentialCancelledException(
 /**
  * Exception thrown when no password credentials are found.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class PasswordCredentialNotFoundException(
     message: String,
     cause: Throwable? = null

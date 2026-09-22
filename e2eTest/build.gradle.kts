@@ -87,22 +87,23 @@ tasks.register<Test>("e2eTest") {
     doNotTrackState("Always run e2e emulator tests to mirror Android Studio")
 }
 
-// Give this module friend access to `:auth` internals, so the e2e tests can drive test
-// seams that are `internal` rather than forcing those seams to stay public API.
+// Give this module's unit-test compilations friend access to `:auth` internals, so the e2e
+// tests can drive test seams that are `internal` rather than forcing those seams to stay
+// public API. Deliberately scoped to the unit-test tasks: the production source set has no
+// reason to reach into `:auth`.
 //
-// Two things here are deliberate and should not be simplified:
+// `libraries` is filtered rather than naming the jar it resolves to, because that jar lives
+// under AGP's `intermediates` tree, which is an implementation detail and moves on an AGP bump.
+// `layout.settingsDirectory` addresses `:auth`'s build directory without going through
+// `project(":auth")`, which would be cross-project model access.
 //
-// 1. `libraries` is filtered instead of naming the jar it resolves to. That jar lives under
-//    AGP's `intermediates` tree, which is an implementation detail and moves on an AGP bump.
-// 2. `rootProject.layout.projectDirectory` rather than `project(":auth").layout.buildDirectory`.
-//    The latter works today, but it is cross-project model access and breaks under project
-//    isolation.
-//
-// Appending `-Xfriend-paths` to `compilerOptions.freeCompilerArgs` does not work: KGP
-// generates that flag itself from the typed `friendPaths` property, so a hand-appended copy
-// is ignored. Pointing at `auth/build/tmp/kotlin-classes/debug` does not work either, because
-// `:e2eTest` never sees that directory.
-val authBuildDir = rootProject.layout.projectDirectory.dir("auth/build").asFile.absolutePath
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    friendPaths.from(libraries.filter { it.absolutePath.startsWith(authBuildDir) })
-}
+// Appending `-Xfriend-paths` to `compilerOptions.freeCompilerArgs` does not work: KGP generates
+// that flag itself from the typed `friendPaths` property, so a hand-appended copy is ignored.
+// Pointing at `auth/build/tmp/kotlin-classes/debug` does not work either, because `:e2eTest`
+// never sees that directory.
+val authBuildDir = layout.settingsDirectory.dir("auth/build").asFile.absolutePath + File.separator
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+    .matching { it.name.contains("UnitTest") }
+    .configureEach {
+        friendPaths.from(libraries.filter { it.absolutePath.startsWith(authBuildDir) })
+    }

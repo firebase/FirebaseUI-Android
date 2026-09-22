@@ -14,12 +14,15 @@
 
 package com.firebase.ui.auth.credentialmanager
 
+import androidx.annotation.RestrictTo
+
 /**
  * Represents a password credential retrieved from the system credential manager.
  *
  * @property username The username/identifier associated with the credential
  * @property password The password associated with the credential
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal data class PasswordCredential(
     val username: String,
     val password: String
