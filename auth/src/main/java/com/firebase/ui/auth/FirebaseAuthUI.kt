@@ -93,9 +93,11 @@ class FirebaseAuthUI private constructor(
      */
     internal val pendingReauth = MutableStateFlow<AuthState.Reauthentication.Required?>(null)
 
+    @Volatile
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
 
+    @Volatile
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal var testLoginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null
 
