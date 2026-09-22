@@ -62,7 +62,8 @@
     <string name="fui_title_recover_password_activity">Gendan adgangskode</string>
     <string name="fui_title_confirm_recover_password">Tjek din mail.</string>
     <string name="fui_password_recovery_body">Få en vejledning sendt til denne mail om, hvordan du nulstiller din adgangskode.</string>
-    <string name="fui_button_text_send">Send</string>
+    <!-- Identical to English: this is the imperative of "sende". -->
+    <string name="fui_button_text_send" tools:ignore="UntranslatedResource">Send</string>
     <string name="fui_confirm_recovery_body">Følg vejledningen, der blev sendt til %1$s, for at gendanne din adgangskode.</string>
     <string name="fui_progress_dialog_sending">Sender…</string>
     <string name="fui_error_email_does_not_exist">Mailadressen matcher ikke en eksisterende konto</string>

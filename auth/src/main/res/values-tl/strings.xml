@@ -6,11 +6,11 @@
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error sa network, tingnan ang koneksyon mo sa internet.</string>
     <string name="fui_idp_name_google">Google</string>
-    <string name="fui_idp_name_facebook">Fecebook</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telepono</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_email" tools:ignore="UntranslatedResource">Email</string>
     <string name="fui_sign_in_with_google">Mag-sign in sa Google</string>
     <string name="fui_continue_with_google">Mag-sign in sa Google</string>
     <string name="fui_sign_in_with_facebook">Mag-sign in sa Facebook</string>
@@ -36,7 +36,7 @@
     <string name="fui_country_hint">Bansa</string>
     <string name="fui_country_selector_title" translation_description="Country selector modal title">Pumili ng bansa</string>
     <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Maghanap ng bansa hal. +1, "US"</string>
-    <string name="fui_password_hint">Password</string>
+    <string name="fui_password_hint" tools:ignore="UntranslatedResource">Password</string>
     <string name="fui_new_password_hint">Bagong password</string>
     <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>
     <string name="fui_invalid_email_address">Mali ang email address na iyon</string>
