@@ -26,12 +26,12 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 
 | Intent | Command | Never use instead |
 |--------|---------|-------------------|
-| Full CI unit path (assemble + checkstyle + unit tests) | `./scripts/build.sh` | Ad-hoc `./gradlew clean assembleDebug test` without checkstyle; inventing a different exclusion set |
+| Full CI unit path (assemble + R8 + checkstyle + unit tests) | `./scripts/build.sh` | Ad-hoc `./gradlew clean assembleDebug test` without checkstyle; inventing a different exclusion set |
 | Unit tests (all library modules; exclude e2eTest) | `./gradlew testDebugUnitTest -x :e2eTest:testDebugUnitTest` | Bare `./gradlew test` (pulls wrong tasks / e2e); IDE-only as the agent gate |
 | Unit tests (one module with a real `src/test` suite) | `./gradlew :<module>:testDebugUnitTest` (e.g. `:auth:testDebugUnitTest`, `:firestore:…`, `:storage:…`) | `:common:testDebugUnitTest` / `:database:testDebugUnitTest` as “green” evidence (empty suites — [empty unit-suite trap](#empty-unit-suite-trap)); full suite when only one module changed *as a substitute for* the CI path at handoff |
 | Assemble one module (when no JVM unit suite) | `./gradlew :<module>:assembleDebug` (e.g. `:database`, `:common`) | Treating empty `testDebugUnitTest` as validation |
 | Checkstyle (**Java only**) | `./gradlew checkstyle` | Invented ktlint/detekt entrypoints; treating a green checkstyle as style coverage for Kotlin sources ([Kotlin blind spot](#checkstyle-kotlin-blind-spot)) |
-| Android Lint (all gated modules) — **not** in `build.sh`, own workflow | `./gradlew lintAll` | Bare `./gradlew lint` / `lintDebug` (pulls `:app` and `:e2eTest`, which declare no `lint { }` block yet); assuming a green `build.sh` covered lint |
+| Android Lint (all gated modules) — **not** in `build.sh`, own workflow | `./gradlew lintAll` | Bare `./gradlew lint` / `lintDebug` (pulls variants `lintAll` does not gate, e.g. `:proguard-tests` debug); assuming a green `build.sh` covered lint |
 | Android Lint (one module) | `./gradlew :<module>:lintDebug` (`:proguard-tests` uses `lintRelease`) | Editing Kotlin in a gated module without re-running lint |
 | Accept new lint debt (**needs a human decision**) | `./gradlew :auth:updateLintBaseline` | Running this to make a red build green — see [lint baseline trap](#lint-baseline-trap) |
 | Assemble debug | `./gradlew assembleDebug` | Module-scoped assemble as the only CI substitute at handoff |
@@ -122,9 +122,10 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 - [.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md) mentions `./gradlew check` (stale vs current CI).
 - **Agents:** treat **`./scripts/build.sh`** as the CI-matching unit path — [Android CI](../ci-workflows/android.md). Full handoff (including e2e when Auth UI touched): [validation checklist](validation-checklist.md).
 
-### ProGuard tests disabled in build.sh
+### `proguard-tests:build` is the only R8 gate
 
-- See [Android CI § `build.sh`](../ci-workflows/android.md#what-buildsh-runs) — `proguard-tests:build` is commented out; green unit CI does not prove ProGuard/R8.
+- `build.sh` runs it, and it is the only task that applies the libraries' consumer ProGuard rules — [Android CI § the ProGuard step](../ci-workflows/android.md#proguard-step).
+- Do **not** comment it out to clear a red build. A failure there is a real defect in the consumer rules or in code they must keep; fix the rules.
 
 ### Emulator foreground vs CI
 

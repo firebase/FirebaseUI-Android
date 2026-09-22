@@ -27,10 +27,13 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Facebook.FacebookProfileData
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -356,4 +359,100 @@ class FacebookAuthProviderFirebaseAuthUITest {
             assertThat(e).isInstanceOf(AuthException.UnknownException::class.java)
         }
     }
+
+    // =============================================================================================
+    // Error message routing — the configured AuthUIStringProvider, not the device
+    // =============================================================================================
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `signInWithFacebook - FacebookException message comes from the configured string provider`() =
+        runTest {
+            // "An unknown error occurred during sign-in", in Japanese.
+            val localizedMessage = "サインイン中に不明なエラーが発生しました"
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val provider = spy(AuthProvider.Facebook())
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(provider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorUnknownAuth: String = localizedMessage
+                }
+            }
+
+            val mockAccessToken = mock<AccessToken> {
+                on { token } doReturn "error-token"
+            }
+            doAnswer {
+                throw FacebookException("Graph error")
+            }.whenever(provider).fetchFacebookProfile(any())
+
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithFacebook(
+                    context = applicationContext,
+                    provider = provider,
+                    accessToken = mockAccessToken,
+                    credentialProvider = mockFBAuthCredentialProvider
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.UnknownException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first { it is AuthState.Error }
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `signInWithFacebook - credential failure message comes from the configured string provider`() =
+        runTest {
+            // "A network error has occurred", in Japanese.
+            val localizedMessage = "ネットワークエラーが発生しました"
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val provider = spy(AuthProvider.Facebook())
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(provider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorNetworkGeneric: String = localizedMessage
+                }
+            }
+
+            val mockAccessToken = mock<AccessToken> {
+                on { token } doReturn "network-token"
+            }
+            doReturn(null).whenever(provider).fetchFacebookProfile(any())
+            // A FirebaseException that is not a FirebaseAuthException, so it maps to
+            // NetworkException. Raised from the token exchange, which sits in signInWithFacebook's
+            // own body rather than in the delegated signInAndLinkWithCredential.
+            doAnswer {
+                throw FirebaseNetworkException("A network error has occurred.")
+            }.whenever(mockFBAuthCredentialProvider).getCredential("network-token")
+
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithFacebook(
+                    context = applicationContext,
+                    provider = provider,
+                    accessToken = mockAccessToken,
+                    credentialProvider = mockFBAuthCredentialProvider
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.NetworkException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first { it is AuthState.Error }
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
 }

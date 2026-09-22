@@ -37,14 +37,6 @@ android {
     }
 
     lint {
-        // Common lint options across all modules
-        disable += mutableSetOf(
-            "IconExpectedSize",
-            "InvalidPackage", // Firestore uses GRPC which makes lint mad
-            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor" // We almost never care about this
-        )
-
         // Module specific
         disable += mutableSetOf(
             "UnusedQuantity",
@@ -64,12 +56,11 @@ android {
             "LogConditional"
         )
 
-        checkAllWarnings = true
-        warningsAsErrors = true
-        abortOnError = true
-
-        // Pre-existing debt only: 168 localization findings (CPRN-432). Every entry is
-        // suppressed; new ones still fail.
+        // Pre-existing debt only: 43 MissingTranslation findings (CPRN-432). Every entry
+        // is suppressed; new ones still fail. They are strings the Compose rewrite added to
+        // values/strings.xml and never sent for translation, real UI copy in 50 languages,
+        // so they clear when translations land, not by editing anything here. Delete this
+        // file once they do.
         baseline = file("lint-baseline.xml")
     }
 

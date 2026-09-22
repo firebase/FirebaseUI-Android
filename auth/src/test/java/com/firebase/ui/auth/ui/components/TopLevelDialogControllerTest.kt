@@ -1,5 +1,11 @@
 package com.firebase.ui.auth.ui.components
 
+import android.content.Context
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -7,6 +13,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,8 +46,10 @@ class TopLevelDialogControllerTest {
         lateinit var controller: TopLevelDialogController
 
         composeTestRule.setContent {
-            controller = rememberTopLevelDialogController(stringProvider) { state }
-            controller.CurrentDialog()
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                controller = rememberTopLevelDialogController { state }
+                controller.CurrentDialog()
+            }
         }
 
         val error = AuthState.Error(Exception("boom"))
@@ -69,8 +78,10 @@ class TopLevelDialogControllerTest {
         lateinit var controller: TopLevelDialogController
 
         composeTestRule.setContent {
-            controller = rememberTopLevelDialogController(stringProvider) { state }
-            controller.CurrentDialog()
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                controller = rememberTopLevelDialogController { state }
+                controller.CurrentDialog()
+            }
         }
 
         val error = AuthState.Error(Exception("boom"))
@@ -98,14 +109,63 @@ class TopLevelDialogControllerTest {
     }
 
     @Test
+    fun `de-dup fallback reads the latest authState lambda, not the first composition's`() {
+        stringProvider = DefaultAuthUIStringProvider(ApplicationProvider.getApplicationContext())
+        val liveState = mutableStateOf<AuthState>(AuthState.Idle)
+        lateinit var controller: TopLevelDialogController
+
+        composeTestRule.setContent {
+            // Mirrors FirebaseAuthScreen, which reads the collected state into a local `val` and
+            // passes `{ authState }`: every recomposition hands the factory a *new* lambda that
+            // has captured that frame's value, so an unkeyed `remember` would pin the first one.
+            val authState = liveState.value
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                controller = rememberTopLevelDialogController { authState }
+                controller.CurrentDialog()
+            }
+        }
+
+        val error = AuthState.Error(Exception("boom"))
+        val exception = AuthException.from(error.exception, stringProvider)
+
+        // Recompose with the Error before showing anything, so the first composition's captured
+        // value (Idle) and the live one differ.
+        composeTestRule.runOnIdle { liveState.value = error }
+        composeTestRule.waitForIdle()
+
+        // No errorState argument, so `currentAuthState()` is the only path that can record the
+        // Error for de-duplication.
+        composeTestRule.runOnIdle {
+            controller.showErrorDialog(exception = exception)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+
+        composeTestRule.runOnIdle { controller.dismissDialog() }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
+
+        // Same Error still live, same exception instance: the fallback must have recorded it, so
+        // this repeat is a no-op. With a pinned first-composition lambda the fallback resolves to
+        // Idle, records nothing, and the dialog comes back.
+        composeTestRule.runOnIdle {
+            controller.showErrorDialog(exception = exception)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
+    }
+
+    @Test
     fun `second observer of the same error does not overwrite the first observer's dialog`() {
         stringProvider = DefaultAuthUIStringProvider(ApplicationProvider.getApplicationContext())
         var state: AuthState = AuthState.Idle
         lateinit var controller: TopLevelDialogController
 
         composeTestRule.setContent {
-            controller = rememberTopLevelDialogController(stringProvider) { state }
-            controller.CurrentDialog()
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                controller = rememberTopLevelDialogController { state }
+                controller.CurrentDialog()
+            }
         }
 
         val error = AuthState.Error(Exception("boom"))
@@ -149,5 +209,67 @@ class TopLevelDialogControllerTest {
                 "call overwrote it (firstOnRetryCalled=$firstOnRetryCalled, " +
                 "secondOnRetryCalled=$secondOnRetryCalled)"
         }
+    }
+
+    @Test
+    fun `dialog survives a host that rebuilds its string provider every recomposition`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        stringProvider = DefaultAuthUIStringProvider(context)
+        var state: AuthState = AuthState.Idle
+        lateinit var controller: TopLevelDialogController
+        var tick by mutableIntStateOf(0)
+
+        composeTestRule.setContent {
+            // What `authUIConfiguration { }` built inside a composable does: a fresh
+            // DefaultAuthUIStringProvider, identity-equal to nothing, on every recomposition.
+            @Suppress("UNUSED_EXPRESSION")
+            tick
+            val unstableProvider = DefaultAuthUIStringProvider(context)
+            CompositionLocalProvider(LocalAuthUIStringProvider provides unstableProvider) {
+                controller = rememberTopLevelDialogController { state }
+                controller.CurrentDialog()
+            }
+        }
+
+        val error = AuthState.Error(Exception("boom"))
+        composeTestRule.runOnIdle {
+            state = error
+            controller.showErrorDialog(
+                exception = AuthException.from(error.exception, stringProvider)
+            )
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+
+        composeTestRule.runOnIdle { tick++ }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+    }
+
+    @Suppress("DEPRECATION")
+    @Test
+    fun `deprecated constructor still renders with its explicit provider and no CompositionLocal`() {
+        stringProvider = DefaultAuthUIStringProvider(ApplicationProvider.getApplicationContext())
+        var state: AuthState = AuthState.Idle
+        lateinit var controller: TopLevelDialogController
+
+        // Deliberately no LocalAuthUIStringProvider in scope: the local throws when absent, so
+        // this pins that the deprecated path keeps honouring the provider it was handed.
+        composeTestRule.setContent {
+            controller = rememberTopLevelDialogController(stringProvider) { state }
+            controller.CurrentDialog()
+        }
+
+        val error = AuthState.Error(Exception("boom"))
+        composeTestRule.runOnIdle {
+            state = error
+            controller.showErrorDialog(
+                exception = AuthException.from(error.exception, stringProvider)
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
     }
 }

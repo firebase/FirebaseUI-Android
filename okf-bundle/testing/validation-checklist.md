@@ -26,7 +26,7 @@ Work types and tiers: [change authoring workflow](change-authoring-workflow.md).
 
 ## Build and unit tests
 
-Repo root. Full CI unit path (what `build.sh` runs — `assembleDebug`, `checkstyle`, unit tests): [Android CI](../ci-workflows/android.md). Lint and e2e are **separate** workflows; `build.sh` does not run them.
+Repo root. Full CI unit path (what `build.sh` runs — `assembleDebug`, `proguard-tests:build`, `checkstyle`, unit tests): [Android CI](../ci-workflows/android.md). Lint and e2e are **separate** workflows; `build.sh` does not run `lintAll` or `e2eTest`. It is not lint-free, though: `proguard-tests:build` pulls that module's lint through `check`, and lint **analysis** with it for the library dependencies (`:auth`, `:common`, `:database`, `:firestore`, `:storage`, and `:internal:lintchecks` on a local run) — [lint footprint](../ci-workflows/android.md#proguard-step-lint). Findings are reported for `:proguard-tests` only, so a lint failure during `build.sh` is still that module's gate, not `lintAll`'s.
 
 ```bash
 ./scripts/build.sh
@@ -62,9 +62,9 @@ Instrumented `androidTest` (database/firestore) is **not** in CI or the agent al
 ./gradlew lintAll      # Android Lint — reads Kotlin and resources
 ```
 
-`checkstyle` is scoped `include("**/*.java")` from the root `build.gradle.kts`, so on a Kotlin-only diff it inspects **zero files and exits 0**. A green checkstyle is not evidence for a change in `:auth`, `:app` or `:e2eTest` — [Kotlin blind spot](agent-command-policy.md#checkstyle-kotlin-blind-spot).
+`checkstyle` is scoped `include("**/*.java")` from the root `build.gradle.kts`, so on a Kotlin-only diff it inspects **zero files and exits 0**. A green checkstyle is not evidence for a change in `:auth`, `:app` or `:e2eTest`; `lintAll` is what covers those — [Kotlin blind spot](agent-command-policy.md#checkstyle-kotlin-blind-spot).
 
-`lintAll` runs Android Lint for the 8 modules that configure a `lint { }` block, each at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` says nothing about lint. `:app` and `:e2eTest` are not yet gated (CPRN-433). Config: each module's `lint { }` block; `library/quality/checkstyle.xml` for checkstyle.
+`lintAll` runs Android Lint for all 10 Android modules at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` covers only `:proguard-tests`' own findings (see above), never the other nine modules'. Config: the shared policy in the root `build.gradle.kts` sets those flags and the common `disable` set, and a module's own `lint { }` block adds only its module-specific disables; `library/quality/checkstyle.xml` for checkstyle.
 
 `auth/lint-baseline.xml` suppresses 180 pre-existing findings. **Never** run `updateLintBaseline` to clear a failure your change caused — [baseline trap](agent-command-policy.md#lint-baseline-trap).
 
@@ -114,7 +114,7 @@ Before closing **`implementation_gate`**, **`review_gate`**, **`commit_gate`**, 
 
 ## Handoff checklist
 
-- [ ] `./scripts/build.sh` (or equivalent assemble + checkstyle + unit exclusion path) exit 0
+- [ ] `./scripts/build.sh` (or equivalent assemble + R8 + checkstyle + unit exclusion path) exit 0
 - [ ] Module evidence per [module validation matrix](#module-validation-matrix)
 - [ ] `./gradlew checkstyle` when **Java** sources changed
 - [ ] `./gradlew lintAll` when Kotlin or resources changed in a gated module
