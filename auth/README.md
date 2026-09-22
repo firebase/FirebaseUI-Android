@@ -406,25 +406,85 @@ override fun onDestroy() {
 `AuthState` represents the current state of authentication:
 
 ```kotlin
-sealed class AuthState {
-    object Idle : AuthState()
-    data class Loading(val message: String?) : AuthState()
-    data class Success(val result: AuthResult?, val user: FirebaseUser, val isNewUser: Boolean = false) : AuthState()
-    data class Error(val exception: AuthException, val isRecoverable: Boolean) : AuthState()
-    data class RequiresMfa(val resolver: MultiFactorResolver, val hint: String? = null) : AuthState()
-    data class RequiresEmailVerification(val user: FirebaseUser, val email: String) : AuthState()
-    data class RequiresProfileCompletion(val user: FirebaseUser, val missingFields: List<String> = emptyList()) : AuthState()
-    object Cancelled : AuthState()
-    object Aborted : AuthState()
-    object PasswordResetLinkSent : AuthState()
-    object EmailSignInLinkSent : AuthState()
-    data class SMSAutoVerified(val credential: PhoneAuthCredential) : AuthState()
-    data class PhoneNumberVerificationRequired(
-        val verificationId: String,
-        val forceResendingToken: PhoneAuthProvider.ForceResendingToken
+abstract class AuthState private constructor() {
+
+    /**
+     * Whether this is a one-off notification a screen shows once and then resets back to
+     * `AuthState.Idle`, so it does not leak to a screen created later.
+     */
+    abstract val isNotification: Boolean
+
+    class Idle internal constructor() : AuthState()
+    class Loading(val message: String? = null) : AuthState()
+
+    class Success internal constructor(
+        val result: AuthResult?,
+        val user: FirebaseUser,
+        val isNewUser: Boolean = false,
+        val reauthenticatedUid: String? = null,
     ) : AuthState()
+
+    class Error(val exception: Exception, val isRecoverable: Boolean = true) : AuthState()
+
+    class Cancelled internal constructor() : AuthState()
+    class Aborted internal constructor() : AuthState()
+
+    class RequiresMfa(val resolver: MultiFactorResolver, val hint: String? = null) : AuthState()
+    class RequiresEmailVerification(val user: FirebaseUser, val email: String) : AuthState()
+    class RequiresProfileCompletion(
+        val user: FirebaseUser,
+        val missingFields: List<String> = emptyList(),
+    ) : AuthState()
+
+    class PasswordResetLinkSent : AuthState()
+    class EmailSignInLinkSent : AuthState()
+    class SMSAutoVerified(val credential: PhoneAuthCredential) : AuthState()
+    class PhoneNumberVerificationRequired(
+        val verificationId: String,
+        val forceResendingToken: PhoneAuthProvider.ForceResendingToken,
+    ) : AuthState()
+
+    /** The phases of one reauthentication request. */
+    sealed class Reauthentication : AuthState() {
+        abstract val requestId: String
+        abstract val userUid: String
+
+        class Required internal constructor(...) : Reauthentication() {
+            val user: FirebaseUser
+            val reason: String?
+        }
+        // Every other phase — Authenticating, AttemptFailed, RequiresMfa,
+        // PhoneNumberVerificationRequired, SmsAutoVerified, PasswordResetLinkSent,
+        // EmailSignInLinkSent, Succeeded — is `internal`. Match the sealed parent.
+    }
+
+    companion object {
+        @JvmStatic val Idle: Idle
+        @JvmStatic val Cancelled: Cancelled
+        @JvmStatic val Aborted: Aborted
+    }
 }
 ```
+
+Four things about this shape change how you write against it:
+
+- **It is `abstract`, not `sealed`.** A `when` over an `AuthState` is never exhaustive. Used as an
+  expression it will not compile without an `else`; used as a statement it compiles and then does
+  nothing for the branches you left out. Write the `else` either way.
+- **Nothing is a `data class`.** There is no `copy()` and no destructuring. The states listed
+  above hand-write `equals`/`hashCode`, so `==` compares by value there. The `Reauthentication`
+  phases do not follow that rule: `Required` compares on `requestId` alone, ignoring its other
+  properties, and the `internal` phases inherit identity equality. Match them with `is`, not `==`.
+- **`Error.exception` is typed `Exception`, not `AuthException`.** The library puts an
+  `AuthException` there, but the type does not promise it and the constructor is public, so an
+  unchecked cast is a crash waiting to happen. Narrow with `as?`, or normalise it with
+  `AuthException.from(exception, stringProvider)`.
+- **`Idle`, `Cancelled` and `Aborted` are classes with `internal` constructors**, exposed as the
+  companion values above. Read them as `AuthState.Idle`; test them with `is AuthState.Idle` or `==`.
+
+`Success.reauthenticatedUid` carries the uid a reauthentication just re-proved, and is `null` on an
+ordinary sign-in. `AuthState.Reauthentication` covers the whole reauthentication window — see
+[Reauthentication](#reauthentication) for what `authStateFlow()` emits while one is running.
 
 ## Authentication Methods
 
@@ -726,6 +786,12 @@ fun AuthenticationScreen() {
 ```
 
 **FirebaseAuthScreen Parameters:**
+
+Partial. Seven customisation parameters are omitted here and documented under
+[Custom UI with Slots](#custom-ui-with-slots): `customMethodPickerLayout`,
+`customMethodPickerTermsConfiguration`, `emailContent`, `phoneContent`, `mfaEnrollmentContent`,
+`mfaChallengeContent` and `reauthContent`. Each defaults to `null`, which keeps the built-in
+behaviour, so none of them is needed to get a working screen.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -1127,30 +1193,58 @@ launcher.launch(intent)
 
 ### MFA Configuration
 
-Enable and configure Multi-Factor Authentication:
+MFA is configured in two places. `isMfaEnabled` on the configuration turns the feature on or off;
+`MfaConfiguration` tunes it, and reaches the library as `FirebaseAuthScreen`'s `mfaConfiguration`
+parameter — it is **not** a property of `authUIConfiguration`, which is the mistake worth avoiding
+here. Both have defaults, so MFA works without either; set them to change the defaults.
 
 ```kotlin
-val mfaConfig = MfaConfiguration(
-    // Allowed MFA factors (default: [Sms, Totp])
-    allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    // Optional: Require MFA enrollment (default: false)
-    requireEnrollment = false,
+        setContent {
+            MyAppTheme {
+                val configuration = authUIConfiguration {
+                    context = applicationContext
+                    providers {
+                        provider(AuthProvider.Email())
+                    }
+                    // Turns the feature on. Defaults to true.
+                    isMfaEnabled = true
+                }
 
-    // Optional: restrict the SMS enrollment step's country selector, as ISO 3166-1 alpha-2
-    // codes (default: null, no restriction). Independent of the phone sign-in provider's own
-    // allowedCountries — an SMS second factor is configured separately from phone sign-in.
-    allowedCountries = listOf("US", "CA", "GB")
-)
+                val mfaConfig = MfaConfiguration(
+                    // Allowed MFA factors (default: [Sms, Totp])
+                    allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
+                    // Optional: Require MFA enrollment (default: false)
+                    requireEnrollment = false,
+
+                    // Optional: restrict the SMS enrollment step's country selector, as
+                    // ISO 3166-1 alpha-2 codes (default: null, no restriction). Independent of
+                    // the phone sign-in provider's own allowedCountries — an SMS second factor
+                    // is configured separately from phone sign-in.
+                    allowedCountries = listOf("US", "CA", "GB")
+                )
+
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    mfaConfiguration = mfaConfig,
+                    onSignInSuccess = { result -> navigateToHome() },
+                    onSignInFailure = { exception -> showError(exception) },
+                    onSignInCancelled = { }
+                )
+            }
+        }
     }
-    isMfaEnabled = true
 }
 ```
+
+`mfaConfiguration` defaults to `MfaConfiguration()`, so omitting it gives SMS and TOTP, optional
+enrollment, and no country restriction. The [low-level API](#low-level-api-advanced) has no way to
+pass one: the activity `AuthFlowController` launches composes `FirebaseAuthScreen` with that
+default. `isMfaEnabled` on the configuration still applies on both paths.
 
 ### MFA Enrollment
 
@@ -2054,44 +2148,32 @@ val configuration = authUIConfiguration {
 
 Every input and button on the auth screens carries a stable, public test tag, and FirebaseUI exposes those tags as Android resource ids automatically — no setup required in your app. This is what lets [Firebase Test Lab's Robo test](https://firebase.google.com/docs/test-lab/android/robo-ux-test) and the Google Play Console's pre-launch report drive a real sign-in during automated testing, instead of typing into the wrong field or getting stuck on a screen it can't navigate.
 
-**Why this matters:** a crawler that can't tell which field is the password will happily type a username into it, then hammer "sign in" and "forgot password" until your test account is buried in reset emails. Every field and button below resolves to one unambiguous resource id, so a crawler — or your own instrumented test — can target it directly.
+**Why this matters:** a crawler that can't tell which field is the password will happily type a username into it, then hammer "sign in" and "forgot password" until your test account is buried in reset emails. Every tagged field and button resolves to one unambiguous resource id, so a crawler — or your own instrumented test — can target it directly.
 
-**Tag reference.** Tags are grouped by screen; import `com.firebase.ui.auth.ui.FirebaseAuthTestTags`.
+**Tag reference.** `com.firebase.ui.auth.ui.FirebaseAuthTestTags` is the list. It groups its
+constants into one nested object per screen or component, today:
 
-| Screen | Constant | Resource id |
-|---|---|---|
-| Sign in | `SignIn.EMAIL_FIELD` | `fui_sign_in_email_field` |
-| | `SignIn.PASSWORD_FIELD` | `fui_sign_in_password_field` |
-| | `SignIn.SIGN_IN_BUTTON` | `fui_sign_in_sign_in_button` |
-| | `SignIn.SIGN_UP_BUTTON` | `fui_sign_in_sign_up_button` |
-| | `SignIn.FORGOT_PASSWORD_BUTTON` | `fui_sign_in_forgot_password_button` |
-| | `SignIn.EMAIL_LINK_BUTTON` | `fui_sign_in_email_link_button` |
-| Sign up | `SignUp.NAME_FIELD` | `fui_sign_up_name_field` |
-| | `SignUp.EMAIL_FIELD` | `fui_sign_up_email_field` |
-| | `SignUp.PASSWORD_FIELD` | `fui_sign_up_password_field` |
-| | `SignUp.CONFIRM_PASSWORD_FIELD` | `fui_sign_up_confirm_password_field` |
-| | `SignUp.SIGN_UP_BUTTON` | `fui_sign_up_sign_up_button` |
-| Password recovery | `ResetPassword.EMAIL_FIELD` | `fui_reset_password_email_field` |
-| | `ResetPassword.SEND_BUTTON` | `fui_reset_password_send_button` |
-| | `ResetPassword.DISMISS_BUTTON` | `fui_reset_password_dismiss_button` |
-| Email link sign-in | `EmailLink.EMAIL_FIELD` | `fui_email_link_email_field` |
-| | `EmailLink.SEND_LINK_BUTTON` | `fui_email_link_send_link_button` |
-| | `EmailLink.DISMISS_BUTTON` | `fui_email_link_dismiss_button` |
-| Phone number entry | `PhoneNumber.PHONE_NUMBER_FIELD` | `fui_phone_number_phone_number_field` |
-| | `PhoneNumber.COUNTRY_SELECTOR_BUTTON` | `fui_phone_number_country_selector_button` |
-| | `PhoneNumber.SEND_CODE_BUTTON` | `fui_phone_number_send_code_button` |
-| SMS verification | `VerificationCode.CODE_FIELD` | `fui_verification_code_code_field` |
-| | `VerificationCode.VERIFY_BUTTON` | `fui_verification_code_verify_button` |
-| | `VerificationCode.RESEND_CODE_BUTTON` | `fui_verification_code_resend_code_button` |
-| | `VerificationCode.CHANGE_PHONE_NUMBER_BUTTON` | `fui_verification_code_change_phone_number_button` |
-| MFA sign-in challenge | `MfaChallenge.CODE_FIELD` | `fui_mfa_challenge_code_field` |
-| | `MfaChallenge.VERIFY_BUTTON` | `fui_mfa_challenge_verify_button` |
-| Re-authentication | `Reauth.PASSWORD_FIELD` | `fui_reauth_password_field` |
-| | `Reauth.VERIFY_BUTTON` | `fui_reauth_verify_button` |
-| | `Reauth.DISMISS_BUTTON` | `fui_reauth_dismiss_button` |
-| Method picker | `MethodPicker.PROVIDER_LIST` | `fui_method_picker_provider_list` |
-| | `MethodPicker.CONTINUE_AS_BUTTON` | `fui_method_picker_continue_as_button` |
-| Country selector | `CountrySelector.COUNTRY_LIST` | `fui_country_selector_country_list` |
+`MethodPicker` · `CountrySelector` · `SignIn` · `SignUp` · `ResetPassword` · `EmailLink` ·
+`PhoneNumber` · `VerificationCode` · `MfaChallenge` · `MfaEnrollment` · `Reauth` · `ErrorRecovery` ·
+`TermsAndPrivacy`
+
+**The naming rule.** Every constant's value — and therefore the resource id it resolves to — is its
+own name, mechanically:
+
+```
+fui_<enclosing object in snake_case>_<constant name in lower case>
+```
+
+So `SignIn.EMAIL_FIELD` is `fui_sign_in_email_field`, and `MfaEnrollment.VERIFY_TOTP_BUTTON` is
+`fui_mfa_enrollment_verify_totp_button`. Every constant follows it, with no exceptions. The
+`fui_<group>_` half is machine-checked: `FirebaseAuthTestTagsTest` walks the object reflectively and
+fails the build if a value is not a valid `fui_` resource name, does not carry its group as a
+prefix, is not unique, or is nested at the wrong depth. The constant-name half is convention, so
+treat the rule as a reliable way to read a value you already have rather than as a licence to
+hand-assemble one you have not checked.
+
+Read the constants off `FirebaseAuthTestTags` rather than off a copy — in an IDE it autocompletes,
+and each constant's KDoc says which control it is attached to.
 
 `VerificationCode.CODE_FIELD` and `MfaChallenge.CODE_FIELD` each name the whole six-digit input rather than an individual digit box: the field accepts a complete code in a single `ACTION_SET_TEXT`/`performTextInput` call and distributes it across the digit boxes, so one Robo directive or one `performTextInput("123456")` types the entire code.
 
@@ -2127,15 +2209,33 @@ gcloud firebase test android run \
   --device model=MediumPhone.arm,version=34
 ```
 
-This is exactly the mechanism a **Play Console pre-launch report** uses, under **Test and release → Testing → Pre-launch report → Settings → Test account credentials**; the resource ids above are what you enter there for the username and password fields.
+This is exactly the mechanism a **Play Console pre-launch report** uses, under **Test and release → Testing → Pre-launch report → Settings → Test account credentials**; `fui_sign_in_email_field` and `fui_sign_in_password_field` are what you enter there for the username and password fields.
 
 Verified with a real Firebase Test Lab Robo run against the sign-in screen (August 2026): the crawler resolved `fui_sign_in_email_field` and `fui_sign_in_password_field` as `android.widget.EditText` nodes, typed the directive values into both, and submitted via `fui_sign_in_sign_in_button` — along the way also navigating by resource id through sign-up, password recovery, and phone entry, confirming the tagging works generally rather than only where a directive points. Robo's crawling behavior is Google's, not ours, and can change independently of this library; treat this as a snapshot of current behavior rather than a permanent guarantee.
 
-Renaming or removing a tag, or changing the resource id it resolves to, is a breaking change to FirebaseUI's public API — not an internal detail — so a value documented here will not change without a major version bump.
+Every constant on `FirebaseAuthTestTags` is public API. Renaming or removing one, changing the value it holds, or changing the resource id that value resolves to is a breaking change — not an internal detail — and will not happen without a major version bump. That covers the whole object, including constants added after this document was written.
 
 ### Sign Out & Account Deletion
 
 **Sign Out:**
+
+`signOut` does more than `FirebaseAuth.signOut()`. After signing out of Firebase it also clears the
+provider-side session for two of the providers, when they are linked to the account, so the next
+sign-in genuinely prompts instead of silently reusing the old one:
+
+- **Google** — clears the Credential Manager state, so the account picker reappears rather than
+  auto-selecting the previous account.
+- **Facebook** — logs out of the Facebook `LoginManager` session.
+
+No other provider is cleared: a linked Twitter, GitHub, Microsoft or Apple session is left to that
+provider's own web session.
+
+The Facebook step is guarded by a classpath probe, not by the account. Facebook is a `compileOnly`
+dependency, so an app that doesn't offer Facebook sign-in has no Facebook SDK at runtime — yet the
+account's provider data can still list `facebook.com` if it was linked on another platform. If the
+SDK isn't on the classpath, that step is skipped and sign-out still succeeds.
+
+This all happens inside the `signOut` call below; there is nothing extra to wire up.
 
 ```kotlin
 @Composable
@@ -2191,8 +2291,11 @@ Button(
 FirebaseUI includes default English strings. To add custom localization:
 
 ```kotlin
-// AuthUIStringProvider declares ~170 abstract `val`s, so override properties, not functions,
-// and expect to supply every one — DefaultAuthUIStringProvider is final and cannot be subclassed.
+// AuthUIStringProvider is an interface. Most members are `val`s, and a smaller set are `fun`s
+// taking a value to interpolate (passwordTooShort(minimumLength: Int),
+// signedInAs(userIdentifier: String), ...).
+// Only a handful of either have a default, so expect to implement nearly all of them —
+// DefaultAuthUIStringProvider is final and cannot be subclassed or partially overridden.
 // For most apps, translating the library's own string resources is the lighter option.
 class SpanishStringProvider : AuthUIStringProvider {
     override val signInWithEmail = "Iniciar sesión con correo"
@@ -2206,7 +2309,7 @@ val configuration = authUIConfiguration {
     providers {
         provider(AuthProvider.Email())
     }
-    stringProvider = SpanishStringProvider(context)
+    stringProvider = SpanishStringProvider()
     locale = Locale("es", "ES")
 }
 ```
@@ -2252,7 +2355,14 @@ One limit worth knowing: `FirebaseAuthUI.signOut`, `withReauth` and `delete` tak
 
 ## Error Handling
 
-FirebaseUI provides a comprehensive exception hierarchy:
+FirebaseUI provides a comprehensive exception hierarchy. `AuthException` is `abstract`, not
+`sealed`, so a `when` over it is never exhaustive — **always end with an `else`**, and treat that
+branch as the one that runs for anything this list does not name.
+
+Every `AuthException` carries a user-facing `message`, translated wherever the library maps the
+Firebase error code (see [Error message resolution](#error-message-resolution)). Match a specific
+type when you need a *different action* — offer linking, navigate back, log. If you only need to
+show text, the `else` branch below covers the whole hierarchy on its own.
 
 ```kotlin
 FirebaseAuthScreen(
@@ -2271,11 +2381,22 @@ FirebaseAuthScreen(
             is AuthException.WeakPasswordException -> {
                 showSnackbar("Password is too weak. Please use a stronger password.")
             }
+            is AuthException.PasswordPolicyViolationException -> {
+                // `message` already lists each failing constraint, newline-separated, so show
+                // it rather than generic copy. Translation is partial by design: a constraint
+                // the library recognises is translated, one it does not is kept as the server's
+                // English. `failingRequirements` has the raw sentences if you render them.
+                showSnackbar(exception.message.orEmpty())
+            }
             is AuthException.EmailAlreadyInUseException -> {
                 showSnackbar("An account already exists with this email.")
             }
             is AuthException.TooManyRequestsException -> {
                 showSnackbar("Too many attempts. Please try again later.")
+            }
+            is AuthException.PhoneVerificationCooldownException -> {
+                // Carries how long is left, so you can say something more useful than "later"
+                showSnackbar("Try again in ${exception.cooldownSeconds}s.")
             }
             is AuthException.MfaRequiredException -> {
                 // Handled automatically by FirebaseAuthScreen
@@ -2285,12 +2406,54 @@ FirebaseAuthScreen(
                 // Account needs to be linked
                 showAccountLinkingDialog(exception)
             }
+            is AuthException.DifferentSignInMethodRequiredException -> {
+                // The account already uses another provider. Carries `suggestedSignInMethod`
+                // so you can send the user straight to it.
+                showSnackbar("Sign in with ${exception.suggestedSignInMethod} instead.")
+            }
+            is AuthException.SignInMethodUnavailableException -> {
+                // The account exists, but this method can't be used on it. Not recoverable —
+                // offer another way in rather than a retry.
+                showSnackbar(exception.message.orEmpty())
+            }
+            is AuthException.MisconfigurationException -> {
+                // A setup problem in your project, not something the user can fix. The
+                // diagnostic is on `cause`; `message` is generic translated copy.
+                Log.e(TAG, "Check the Firebase console", exception.cause)
+                showSnackbar(exception.message.orEmpty())
+            }
             is AuthException.AuthCancelledException -> {
                 // User cancelled the flow
                 navigateBack()
             }
+            // Email link sign-in's own failure modes. Do NOT show `message` for these six:
+            // they bake untranslated English into their constructors. Resolve them through the
+            // string provider instead. `ErrorRecoveryDialog`'s `getRecoveryMessage` is the
+            // worked mapping, and two entries do not follow the others' naming: the copy for
+            // EmailMismatchException is `emailMismatchMessage`, with no emailLink prefix, and
+            // EmailLinkCrossDeviceLinkingException's is a function taking the provider name,
+            // `emailLinkCrossDeviceLinkingMessage(providerName)`.
+            //
+            // Two also need an action, not just copy: EmailLinkPromptForEmailException wants
+            // the email collected and the link re-submitted, and
+            // EmailLinkCrossDeviceLinkingException wants the user to sign in with
+            // `providerName` before linking.
+            is AuthException.InvalidEmailLinkException,
+            is AuthException.EmailLinkWrongDeviceException,
+            is AuthException.EmailLinkCrossDeviceLinkingException,
+            is AuthException.EmailLinkPromptForEmailException,
+            is AuthException.EmailLinkDifferentAnonymousUserException,
+            is AuthException.EmailMismatchException -> {
+                showEmailLinkRecovery(exception)
+            }
             is AuthException.UnknownException -> {
                 showSnackbar("An unexpected error occurred: ${exception.message}")
+                Log.e(TAG, "Auth error", exception)
+            }
+            // Not optional in practice: AuthException is not sealed, so a future release can
+            // add a type. Without this branch, that type would fail silently.
+            else -> {
+                showSnackbar(exception.message.orEmpty())
                 Log.e(TAG, "Auth error", exception)
             }
         }
