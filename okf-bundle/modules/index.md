@@ -21,7 +21,7 @@ Version and SDK floors: `buildSrc/.../Config.kt` — [repo tooling](../repo-tool
 | `:library` | Umbrella / publish aggregation (`prepareArtifacts`) |
 | `:app` | Demo app (Auth Compose sample) |
 | `:e2eTest` | Auth emulator e2e (Robolectric + Compose UI test) |
-| `:proguard-tests` | R8/ProGuard packaging checks (disabled in CI unit path — [Android CI](../ci-workflows/android.md)) |
+| `:proguard-tests` | R8/ProGuard packaging gate for the libraries' consumer rules; run by `build.sh` — [Android CI](../ci-workflows/android.md#proguard-step) |
 | `:lint`, `:internal:lint`, `:internal:lintchecks` | Custom lint detectors — [what each is for](#custom-lint-modules) |
 | `buildSrc` | Shared `Config` (version, SDK levels, submodule list) |
 
