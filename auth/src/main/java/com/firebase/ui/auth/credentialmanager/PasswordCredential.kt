@@ -20,7 +20,7 @@ package com.firebase.ui.auth.credentialmanager
  * @property username The username/identifier associated with the credential
  * @property password The password associated with the credential
  */
-data class PasswordCredential(
+internal data class PasswordCredential(
     val username: String,
     val password: String
 )

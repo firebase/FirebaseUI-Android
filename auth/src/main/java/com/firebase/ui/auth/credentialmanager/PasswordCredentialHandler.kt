@@ -31,14 +31,14 @@ import com.firebase.ui.auth.util.CredentialPersistenceManager
  * Provider interface for obtaining CredentialManager instances.
  * This allows test code to inject mock CredentialManager instances.
  */
-interface CredentialManagerProvider {
+internal interface CredentialManagerProvider {
     fun getCredentialManager(context: Context): CredentialManager
 }
 
 /**
  * Default implementation that creates a real CredentialManager instance.
  */
-class DefaultCredentialManagerProvider : CredentialManagerProvider {
+internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
     override fun getCredentialManager(context: Context): CredentialManager {
         return CredentialManager.create(context)
     }
@@ -53,21 +53,13 @@ class DefaultCredentialManagerProvider : CredentialManagerProvider {
  * @property context The Android context used for credential operations
  * @property provider Optional provider for testing purposes
  */
-class PasswordCredentialHandler(
+internal class PasswordCredentialHandler(
     private val context: Context,
     provider: CredentialManagerProvider? = null
 ) {
     companion object {
         /**
          * Test-only provider for injecting mock CredentialManager instances.
-         * Set this in your test setup to override the default CredentialManager.
-         *
-         * Example:
-         * ```
-         * PasswordCredentialHandler.testCredentialManagerProvider = object : CredentialManagerProvider {
-         *     override fun getCredentialManager(context: Context) = mockCredentialManager
-         * }
-         * ```
          */
         @Volatile
         var testCredentialManagerProvider: CredentialManagerProvider? = null
@@ -186,7 +178,7 @@ open class PasswordCredentialException(
 /**
  * Exception thrown when a password credential operation is cancelled by the user.
  */
-class PasswordCredentialCancelledException(
+internal class PasswordCredentialCancelledException(
     message: String,
     cause: Throwable? = null
 ) : PasswordCredentialException(message, cause)
@@ -194,7 +186,7 @@ class PasswordCredentialCancelledException(
 /**
  * Exception thrown when no password credentials are found.
  */
-class PasswordCredentialNotFoundException(
+internal class PasswordCredentialNotFoundException(
     message: String,
     cause: Throwable? = null
 ) : PasswordCredentialException(message, cause)
