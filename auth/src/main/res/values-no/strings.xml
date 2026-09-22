@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laster inn…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initialiserer</string>
+    <string name="fui_verification_code_digit_description">Siffer %1$d av %2$d i bekreftelseskoden</string>
+    <string name="fui_enter_totp_code">Skriv inn TOTP-kode</string>
+    <string name="fui_text_field_read_only">Skrivebeskyttet</string>
+    <string name="fui_error_user_disabled">Brukerkontoen er deaktivert</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Logger på som gjest…</string>
+    <string name="fui_loading_signing_in_with_google">Logger på med Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Logger på med Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Logger på med %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Bekrefter telefonnummeret…</string>
+    <string name="fui_loading_submitting_verification_code">Sender bekreftelseskoden…</string>
+    <string name="fui_loading_signing_in_with_phone">Logger på med telefon…</string>
+    <string name="fui_loading_creating_user">Oppretter konto…</string>
+    <string name="fui_loading_signing_in">Logger på…</string>
+    <string name="fui_loading_linking_credential">Logger på…</string>
+    <string name="fui_loading_sending_email_link">Sender påloggingslenke…</string>
+    <string name="fui_loading_signing_in_with_email_link">Logger på med e-postlenke…</string>
+    <string name="fui_loading_sending_password_reset">Sender e-post for tilbakestilling av passord…</string>
+    <string name="fui_loading_signing_out">Logger av…</string>
+    <string name="fui_loading_reauth_retrying">Fullfører handlingen…</string>
+    <string name="fui_loading_deleting_account">Sletter kontoen…</string>
     <string name="fui_sign_in_default">Logg på</string>
     <string name="fui_continue">Fortsett</string>
     <string name="fui_tos_and_pp">Ved å fortsette godtar du %1$s og %2$s våre.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Prøv igjen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligere verifisering kreves. Vennligst fullfør multifaktorgodkjenning.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontoen må kobles. Prøv en annen påloggingsmetode.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Bekreft identiteten din</string>
+    <string name="fui_reauth_dialog_message">Av sikkerhetshensyn må du skrive inn passordet ditt på nytt for å fortsette.</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentiseringen mislyktes. Prøv igjen.</string>
+    <string name="fui_reauth_password_required_notice">Bekreftelse av identiteten din her krever passordet til denne kontoen. Hvis du logger på med en e-postlenke i stedet for et passord, kan ikke denne kontoen bekreftes med et passord.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Ingen av de tilgjengelige påloggingsmetodene er koblet til kontoen din.</string>
+    <string name="fui_error_reauth_incomplete">Identiteten din ble ikke bekreftet for denne kontoen. Prøv på nytt.</string>
+    <string name="fui_error_reauth_interrupted">Bekreftelsen av identiteten din ble avbrutt. Prøv handlingen din på nytt.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Du kan ikke opprette en ny konto mens du bekrefter identiteten din.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Godkjenning ble avbrutt. Prøv igjen når du er klar.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekreftelse</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekreft koden din</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Administrer tofaktorautentisering</string>
+    <string name="fui_mfa_manage_factors_description">Legg til eller fjern autentiseringsmetoder for kontoen din</string>
+    <string name="fui_mfa_active_methods_title">Aktive metoder</string>
+    <string name="fui_mfa_add_new_method_title">Legg til ny metode</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alle tilgjengelige autentiseringsmetoder er registrert</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-autentisering</string>
+    <string name="fui_mfa_label_totp_authentication">Autentiseringsapp</string>
+    <string name="fui_mfa_label_unknown_method">Ukjent metode</string>
+    <string name="fui_mfa_enrolled_on">Registrert %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skann QR-koden eller skriv inn den hemmelige nøkkelen i autentiseringsappen din</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Velg en andre autentiseringsmetode for å sikre kontoen din</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Skriv inn telefonnummeret ditt for å motta bekreftelseskoder</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Hopp over</string>
     <string name="fui_use_different_method_action">Bruk en annen metode</string>
     <string name="fui_verification_code_label">Bekreftelseskode</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Fyll ut profilopplysningene dine for å fortsette.</string>
+    <string name="fui_profile_missing_fields_message">Manglende felter: %1$s</string>
     <string name="fui_verified_email_action">E-post bekreftet</string>
     <string name="fui_verify_action">Bekreft</string>
     <string name="fui_verify_email_instruction">Vi sendte en bekreftelsese-post til %1$s</string>

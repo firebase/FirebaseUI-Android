@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wird geladen…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Wird initialisiert</string>
+    <string name="fui_verification_code_digit_description">Ziffer %1$d von %2$d des Verifizierungscodes</string>
+    <string name="fui_enter_totp_code">TOTP-Code eingeben</string>
+    <string name="fui_text_field_read_only">Schreibgeschützt</string>
+    <string name="fui_error_user_disabled">Das Nutzerkonto wurde deaktiviert</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Anmeldung als Gast wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_google">Anmeldung über Google wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_facebook">Anmeldung über Facebook wird durchgeführt…</string>
+    <string name="fui_loading_signing_in_with_provider">Anmeldung über %1$s wird durchgeführt…</string>
+    <string name="fui_loading_verifying_phone_number">Telefonnummer wird bestätigt…</string>
+    <string name="fui_loading_submitting_verification_code">Bestätigungscode wird gesendet…</string>
+    <string name="fui_loading_signing_in_with_phone">Anmeldung per Telefon wird durchgeführt…</string>
+    <string name="fui_loading_creating_user">Konto wird erstellt…</string>
+    <string name="fui_loading_signing_in">Anmeldung wird durchgeführt…</string>
+    <string name="fui_loading_linking_credential">Anmeldung wird durchgeführt…</string>
+    <string name="fui_loading_sending_email_link">Anmeldelink wird gesendet…</string>
+    <string name="fui_loading_signing_in_with_email_link">Anmeldung mit E-Mail-Link wird durchgeführt…</string>
+    <string name="fui_loading_sending_password_reset">E-Mail zum Zurücksetzen des Passworts wird gesendet…</string>
+    <string name="fui_loading_signing_out">Abmeldung wird durchgeführt…</string>
+    <string name="fui_loading_reauth_retrying">Aktion wird abgeschlossen…</string>
+    <string name="fui_loading_deleting_account">Konto wird gelöscht…</string>
     <string name="fui_sign_in_default">Anmelden</string>
     <string name="fui_continue">Weiter</string>
     <string name="fui_tos_and_pp">Indem Sie fortfahren, stimmen Sie unseren %1$s und unserer %2$s zu.</string>
@@ -107,6 +130,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Erneut versuchen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Zusätzliche Verifizierung erforderlich. Bitte schließen Sie die Multi-Faktor-Authentifizierung ab.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Das Konto muss verknüpft werden. Bitte versuchen Sie eine andere Anmeldemethode.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Keine der verfügbaren Anmeldemethoden ist mit Ihrem Konto verknüpft.</string>
+    <string name="fui_error_reauth_incomplete">Ihre Identität wurde für dieses Konto nicht bestätigt. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_error_reauth_interrupted">Die Bestätigung Ihrer Identität wurde unterbrochen. Bitte versuchen Sie Ihre Aktion erneut.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Sie können kein neues Konto erstellen, während Sie Ihre Identität bestätigen.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Die Authentifizierung wurde abgebrochen. Bitte versuchen Sie es erneut, wenn Sie bereit sind.</string>
 
     <!-- MFA Enrollment -->
@@ -160,6 +188,7 @@
     <string name="fui_reauth_dialog_message">Zu Ihrer Sicherheit geben Sie bitte Ihr Passwort erneut ein, um fortzufahren.</string>
     <string name="fui_reauth_dialog_title">Verifizieren Sie Ihre Identität</string>
     <string name="fui_reauth_generic_error">Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_reauth_password_required_notice">Zur Bestätigung Ihrer Identität wird hier das Passwort dieses Kontos benötigt. Wenn Sie sich mit einem E-Mail-Link statt mit einem Passwort anmelden, kann dieses Konto nicht mit einem Passwort bestätigt werden.</string>
     <string name="fui_remove_action">Entfernen</string>
     <string name="fui_resend_verification_email_action">Bestätigungs-E-Mail erneut senden</string>
     <string name="fui_secret_key_label">Geheimer Schlüssel</string>

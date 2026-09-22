@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Đang tải…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Đang khởi tạo</string>
+    <string name="fui_verification_code_digit_description">Chữ số %1$d trong số %2$d của mã xác minh</string>
+    <string name="fui_enter_totp_code">Nhập mã TOTP</string>
+    <string name="fui_text_field_read_only">Chỉ đọc</string>
+    <string name="fui_error_user_disabled">Tài khoản người dùng đã bị vô hiệu hoá</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Đang đăng nhập với vai trò người dùng khách…</string>
+    <string name="fui_loading_signing_in_with_google">Đang đăng nhập bằng Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Đang đăng nhập bằng Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Đang đăng nhập bằng %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Đang xác minh số điện thoại…</string>
+    <string name="fui_loading_submitting_verification_code">Đang gửi mã xác minh…</string>
+    <string name="fui_loading_signing_in_with_phone">Đang đăng nhập bằng điện thoại…</string>
+    <string name="fui_loading_creating_user">Đang tạo tài khoản…</string>
+    <string name="fui_loading_signing_in">Đang đăng nhập…</string>
+    <string name="fui_loading_linking_credential">Đang đăng nhập…</string>
+    <string name="fui_loading_sending_email_link">Đang gửi đường liên kết đăng nhập…</string>
+    <string name="fui_loading_signing_in_with_email_link">Đang đăng nhập bằng liên kết email…</string>
+    <string name="fui_loading_sending_password_reset">Đang gửi email đặt lại mật khẩu…</string>
+    <string name="fui_loading_signing_out">Đang đăng xuất…</string>
+    <string name="fui_loading_reauth_retrying">Đang hoàn tất thao tác…</string>
+    <string name="fui_loading_deleting_account">Đang xóa tài khoản…</string>
     <string name="fui_sign_in_default">Đăng nhập</string>
     <string name="fui_continue">Tiếp tục</string>
     <string name="fui_tos_and_pp">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s và %2$s của chúng tôi.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Thử lại</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Bạn cần xác minh thêm. Vui lòng hoàn tất quy trình xác thực nhiều yếu tố.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Bạn cần liên kết tài khoản. Vui lòng thử một phương thức đăng nhập khác.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Xác minh danh tính của bạn</string>
+    <string name="fui_reauth_dialog_message">Vì lý do bảo mật, hãy nhập lại mật khẩu của bạn để tiếp tục.</string>
+    <string name="fui_reauth_account_label">Tài khoản: %1$s</string>
+    <string name="fui_reauth_generic_error">Xác thực không thành công. Hãy thử lại.</string>
+    <string name="fui_reauth_password_required_notice">Để xác nhận danh tính của bạn tại đây, bạn cần có mật khẩu của tài khoản này. Nếu bạn đăng nhập bằng liên kết email thay vì mật khẩu, thì không thể xác nhận tài khoản này bằng mật khẩu.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Không có phương thức đăng nhập nào hiện có được liên kết với tài khoản của bạn.</string>
+    <string name="fui_error_reauth_incomplete">Không xác nhận được danh tính của bạn cho tài khoản này. Hãy thử lại.</string>
+    <string name="fui_error_reauth_interrupted">Quá trình xác nhận danh tính của bạn đã bị gián đoạn. Thử lại hành động của bạn.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Bạn không thể tạo tài khoản mới trong khi xác nhận danh tính.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Quá trình xác thực đã bị hủy. Vui lòng thử lại khi bạn sẵn sàng.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Thiết lập xác minh qua SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Thiết lập ứng dụng xác thực</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Xác minh mã của bạn</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Quản lý xác thực hai yếu tố</string>
+    <string name="fui_mfa_manage_factors_description">Thêm hoặc xoá phương thức xác thực cho tài khoản của bạn</string>
+    <string name="fui_mfa_active_methods_title">Phương thức đang hoạt động</string>
+    <string name="fui_mfa_add_new_method_title">Thêm phương thức mới</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Đã đăng ký tất cả phương thức xác thực hiện có</string>
+    <string name="fui_mfa_label_sms_authentication">Xác thực bằng SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Ứng dụng xác thực</string>
+    <string name="fui_mfa_label_unknown_method">Phương thức không xác định</string>
+    <string name="fui_mfa_enrolled_on">Đã đăng ký vào %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Quét mã QR hoặc nhập khoá bí mật trong ứng dụng xác thực của bạn</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Chọn phương thức xác thực thứ hai để bảo mật tài khoản của bạn</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Nhập số điện thoại của bạn để nhận mã xác minh</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Bỏ qua</string>
     <string name="fui_use_different_method_action">Sử dụng phương thức khác</string>
     <string name="fui_verification_code_label">Mã xác minh</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Hãy hoàn tất thông tin hồ sơ của bạn để tiếp tục.</string>
+    <string name="fui_profile_missing_fields_message">Các trường còn thiếu: %1$s</string>
     <string name="fui_verified_email_action">Email đã xác minh</string>
     <string name="fui_verify_action">Xác minh</string>
     <string name="fui_verify_email_instruction">Chúng tôi đã gửi email xác minh đến %1$s</string>

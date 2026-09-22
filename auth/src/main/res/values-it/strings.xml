@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Caricamento in corso…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inizializzazione</string>
+    <string name="fui_verification_code_digit_description">Cifra %1$d di %2$d del codice di verifica</string>
+    <string name="fui_enter_totp_code">Inserisci il codice TOTP</string>
+    <string name="fui_text_field_read_only">Sola lettura</string>
+    <string name="fui_error_user_disabled">L\'account utente è stato disattivato</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Accesso come ospite in corso…</string>
+    <string name="fui_loading_signing_in_with_google">Accesso con Google in corso…</string>
+    <string name="fui_loading_signing_in_with_facebook">Accesso con Facebook in corso…</string>
+    <string name="fui_loading_signing_in_with_provider">Accesso con %1$s in corso…</string>
+    <string name="fui_loading_verifying_phone_number">Verifica del numero di telefono in corso…</string>
+    <string name="fui_loading_submitting_verification_code">Invio del codice di verifica in corso…</string>
+    <string name="fui_loading_signing_in_with_phone">Accesso con telefono in corso…</string>
+    <string name="fui_loading_creating_user">Creazione dell\'account in corso…</string>
+    <string name="fui_loading_signing_in">Accesso in corso…</string>
+    <string name="fui_loading_linking_credential">Accesso in corso…</string>
+    <string name="fui_loading_sending_email_link">Invio del link di accesso in corso…</string>
+    <string name="fui_loading_signing_in_with_email_link">Accesso con link email in corso…</string>
+    <string name="fui_loading_sending_password_reset">Invio dell\'email per reimpostare la password in corso…</string>
+    <string name="fui_loading_signing_out">Disconnessione in corso…</string>
+    <string name="fui_loading_reauth_retrying">Completamento dell\'azione in corso…</string>
+    <string name="fui_loading_deleting_account">Eliminazione dell\'account in corso…</string>
     <string name="fui_sign_in_default">Accedi</string>
     <string name="fui_continue">Continua</string>
     <string name="fui_tos_and_pp">Se continui, accetti i nostri %1$s e le nostre %2$s.</string>
@@ -107,6 +130,18 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Riprova</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">È richiesta una verifica aggiuntiva. Completa l\'autenticazione a più fattori.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">L\'account deve essere collegato. Prova un metodo di accesso diverso.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifica la tua identità</string>
+    <string name="fui_reauth_dialog_message">Per la tua sicurezza, inserisci di nuovo la password per continuare.</string>
+    <!-- Identical to English: "account" is the word in this language. -->
+    <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
+    <string name="fui_reauth_generic_error">Autenticazione non riuscita. Riprova.</string>
+    <string name="fui_reauth_password_required_notice">Per confermare la tua identità qui è necessaria la password di questo account. Se accedi con un link email anziché con una password, questo account non può essere confermato con una password.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Nessuno dei metodi di accesso disponibili è collegato al tuo account.</string>
+    <string name="fui_error_reauth_incomplete">La tua identità non è stata confermata per questo account. Riprova.</string>
+    <string name="fui_error_reauth_interrupted">La conferma della tua identità è stata interrotta. Riprova l\'azione.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Non puoi creare un nuovo account mentre confermi la tua identità.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">L\'autenticazione è stata annullata. Riprova quando sei pronto.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configura verifica SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configura app di autenticazione</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifica il codice</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Gestisci autenticazione a due fattori</string>
+    <string name="fui_mfa_manage_factors_description">Aggiungi o rimuovi metodi di autenticazione per il tuo account</string>
+    <string name="fui_mfa_active_methods_title">Metodi attivi</string>
+    <string name="fui_mfa_add_new_method_title">Aggiungi nuovo metodo</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Tutti i metodi di autenticazione disponibili sono registrati</string>
+    <string name="fui_mfa_label_sms_authentication">Autenticazione tramite SMS</string>
+    <string name="fui_mfa_label_totp_authentication">App di autenticazione</string>
+    <string name="fui_mfa_label_unknown_method">Metodo sconosciuto</string>
+    <string name="fui_mfa_enrolled_on">Registrato il %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scansiona il codice QR o inserisci la chiave segreta nella tua app di autenticazione</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleziona un secondo metodo di autenticazione per proteggere il tuo account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Inserisci il tuo numero di telefono per ricevere i codici di verifica</string>
@@ -169,6 +215,9 @@
     <string name="fui_skip_action">Salta</string>
     <string name="fui_use_different_method_action">Usa un metodo diverso</string>
     <string name="fui_verification_code_label">Codice di verifica</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Completa le informazioni del tuo profilo per continuare.</string>
+    <string name="fui_profile_missing_fields_message">Campi mancanti: %1$s</string>
     <string name="fui_verified_email_action">Email verificata</string>
     <string name="fui_verify_action">Verifica</string>
     <string name="fui_verify_email_instruction">Abbiamo inviato un\'email di verifica a %1$s</string>

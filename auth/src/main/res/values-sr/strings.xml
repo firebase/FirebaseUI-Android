@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Учитава се…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Иницијализација</string>
+    <string name="fui_verification_code_digit_description">Цифра %1$d од %2$d кода за верификацију</string>
+    <string name="fui_enter_totp_code">Унесите TOTP кôд</string>
+    <string name="fui_text_field_read_only">Само за читање</string>
+    <string name="fui_error_user_disabled">Кориснички налог је онемогућен</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Пријављивање као гост…</string>
+    <string name="fui_loading_signing_in_with_google">Пријављивање помоћу Google-а…</string>
+    <string name="fui_loading_signing_in_with_facebook">Пријављивање помоћу Facebook-а…</string>
+    <string name="fui_loading_signing_in_with_provider">Пријављивање помоћу %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Верификује се број телефона…</string>
+    <string name="fui_loading_submitting_verification_code">Шаље се кôд за верификацију…</string>
+    <string name="fui_loading_signing_in_with_phone">Пријављивање помоћу телефона…</string>
+    <string name="fui_loading_creating_user">Прави се налог…</string>
+    <string name="fui_loading_signing_in">Пријављивање…</string>
+    <string name="fui_loading_linking_credential">Пријављивање…</string>
+    <string name="fui_loading_sending_email_link">Шаље се линк за пријављивање…</string>
+    <string name="fui_loading_signing_in_with_email_link">Пријављивање помоћу имејл линка…</string>
+    <string name="fui_loading_sending_password_reset">Шаље се имејл за ресетовање лозинке…</string>
+    <string name="fui_loading_signing_out">Одјављивање…</string>
+    <string name="fui_loading_reauth_retrying">Довршава се радња…</string>
+    <string name="fui_loading_deleting_account">Брише се налог…</string>
     <string name="fui_sign_in_default">Пријави ме</string>
     <string name="fui_continue">Настави</string>
     <string name="fui_tos_and_pp">Ако наставите, потврђујете да прихватате документе %1$s и %2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Пробајте поново</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потребна је додатна верификација. Довршите аутентификацију са више фактора.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Налог треба да се повеже. Пробајте други метод пријављивања.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Верификујте свој идентитет</string>
+    <string name="fui_reauth_dialog_message">Ради ваше безбедности, поново унесите лозинку да бисте наставили.</string>
+    <string name="fui_reauth_account_label">Налог: %1$s</string>
+    <string name="fui_reauth_generic_error">Аутентификација није успела. Покушајте поново.</string>
+    <string name="fui_reauth_password_required_notice">Потврђивање вашег идентитета овде захтева лозинку овог налога. Ако се пријављујете помоћу имејл линка уместо лозинке, овај налог не може да се потврди лозинком.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Ниједан од доступних метода пријављивања није повезан са вашим налогом.</string>
+    <string name="fui_error_reauth_incomplete">Ваш идентитет није потврђен за овај налог. Покушајте поново.</string>
+    <string name="fui_error_reauth_interrupted">Потврђивање вашег идентитета је прекинуто. Покушајте поново своју радњу.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Не можете да направите нови налог док потврђујете идентитет.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Аутентификација је отказана. Пробајте поново када будете спремни.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Подесите SMS верификацију</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Подесите апликацију за аутентификацију</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Верификујте свој код</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Управљање двофакторском аутентификацијом</string>
+    <string name="fui_mfa_manage_factors_description">Додајте или уклоните методе аутентификације за свој налог</string>
+    <string name="fui_mfa_active_methods_title">Активне методе</string>
+    <string name="fui_mfa_add_new_method_title">Додај нову методу</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Све доступне методе аутентификације су регистроване</string>
+    <string name="fui_mfa_label_sms_authentication">Аутентификација SMS-ом</string>
+    <string name="fui_mfa_label_totp_authentication">Апликација за аутентификацију</string>
+    <string name="fui_mfa_label_unknown_method">Непозната метода</string>
+    <string name="fui_mfa_enrolled_on">Регистровано %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Скенирајте QR код или унесите тајни кључ у апликацији за аутентификацију</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Изаберите други метод аутентификације да бисте заштитили свој налог</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Унесите свој број телефона да бисте примали кодове за верификацију</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Прескочи</string>
     <string name="fui_use_different_method_action">Користи други метод</string>
     <string name="fui_verification_code_label">Код за верификацију</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Довршите информације о профилу да бисте наставили.</string>
+    <string name="fui_profile_missing_fields_message">Поља која недостају: %1$s</string>
     <string name="fui_verified_email_action">Имејл је верификован</string>
     <string name="fui_verify_action">Верификуј</string>
     <string name="fui_verify_email_instruction">Послали смо имејл за верификацију на %1$s</string>

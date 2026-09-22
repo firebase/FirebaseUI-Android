@@ -66,7 +66,7 @@ Instrumented `androidTest` (database/firestore) is **not** in CI or the agent al
 
 `lintAll` runs Android Lint for all 10 Android modules at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` covers only `:proguard-tests`' own findings (see above), never the other nine modules'. Config: the shared policy in the root `build.gradle.kts` sets those flags and the common `disable` set, and a module's own `lint { }` block adds only its module-specific disables; `library/quality/checkstyle.xml` for checkstyle.
 
-`auth/lint-baseline.xml` suppresses 180 pre-existing findings. **Never** run `updateLintBaseline` to clear a failure your change caused — [baseline trap](agent-command-policy.md#lint-baseline-trap).
+**Never** run `updateLintBaseline` to clear a failure your change caused — [baseline trap](agent-command-policy.md#lint-baseline-trap).
 
 There is **no** separate agent entrypoint for ktlint/detekt — do not invent one.
 

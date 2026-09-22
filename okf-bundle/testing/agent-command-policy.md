@@ -110,7 +110,7 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 
 ### Lint baseline is pre-existing debt, not an escape hatch
 
-- `auth/lint-baseline.xml` suppresses 180 pre-existing findings (localization: CPRN-432; Compose: CPRN-436). It is the **only** baseline in the repo — every other gated module is clean and declares no `baseline`.
+- No gated module declares a `baseline`. Every one of them is clean, and a new baseline is a human decision tied to a tracked issue, not a way to land a red build.
 - `warningsAsErrors = true` and `abortOnError = true` in every gated module, so a **new** finding fails the build hard. That is the point.
 - Running `updateLintBaseline` to absorb a finding your change introduced defeats the gate. Fix the code instead; regenerating the baseline is a human decision tied to a tracked issue.
 - A baseline's `file=` paths are recorded relative to the module that produced them, and `updateLintBaseline` rewrites the whole file per module — so a shared baseline silently misbehaves in both directions. The old `library/quality/lint-baseline.xml` had one entry (`src/main/AndroidManifest.xml`) that matched *any* module's manifest and one (`auth/src/main/res/...`) recorded root-relative that matched *none*, which is why every module reported `LintBaselineFixed`. Keep baselines per module.

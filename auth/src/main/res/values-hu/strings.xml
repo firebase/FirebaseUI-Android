@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Betöltés…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializálás</string>
+    <string name="fui_verification_code_digit_description">Az ellenőrző kód %1$d. számjegye a(z) %2$d-ből</string>
+    <string name="fui_enter_totp_code">Adja meg a TOTP-kódot</string>
+    <string name="fui_text_field_read_only">Csak olvasható</string>
+    <string name="fui_error_user_disabled">A felhasználói fiók le lett tiltva</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Bejelentkezés vendégként…</string>
+    <string name="fui_loading_signing_in_with_google">Bejelentkezés Google-fiókkal…</string>
+    <string name="fui_loading_signing_in_with_facebook">Bejelentkezés Facebook-fiókkal…</string>
+    <string name="fui_loading_signing_in_with_provider">Bejelentkezés a következővel: %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Telefonszám igazolása…</string>
+    <string name="fui_loading_submitting_verification_code">Igazolókód küldése…</string>
+    <string name="fui_loading_signing_in_with_phone">Bejelentkezés telefonnal…</string>
+    <string name="fui_loading_creating_user">Fiók létrehozása…</string>
+    <string name="fui_loading_signing_in">Bejelentkezés…</string>
+    <string name="fui_loading_linking_credential">Bejelentkezés…</string>
+    <string name="fui_loading_sending_email_link">Bejelentkezési link küldése…</string>
+    <string name="fui_loading_signing_in_with_email_link">Bejelentkezés e-mail linkkel…</string>
+    <string name="fui_loading_sending_password_reset">Jelszó-visszaállítási e-mail küldése…</string>
+    <string name="fui_loading_signing_out">Kijelentkezés…</string>
+    <string name="fui_loading_reauth_retrying">A művelet befejezése…</string>
+    <string name="fui_loading_deleting_account">Fiók törlése…</string>
     <string name="fui_sign_in_default">Bejelentkezés</string>
     <string name="fui_continue">Tovább</string>
     <string name="fui_tos_and_pp">A folytatással elfogadja a következő dokumentumokat: %1$s és %2$s.</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Próbáld újra</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A fiókot össze kell kapcsolni. Próbáljon meg egy másik bejelentkezési módot.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Igazolja személyazonosságát</string>
+    <string name="fui_reauth_dialog_message">Biztonsága érdekében adja meg újra jelszavát a folytatáshoz.</string>
+    <string name="fui_reauth_account_label">Fiók: %1$s</string>
+    <string name="fui_reauth_generic_error">A hitelesítés sikertelen. Próbálja újra.</string>
+    <string name="fui_reauth_password_required_notice">Személyazonosságának megerősítéséhez itt a fiók jelszavára van szükség. Ha jelszó helyett e-mail-linkkel jelentkezik be, ez a fiók nem erősíthető meg jelszóval.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Az elérhető bejelentkezési módok egyike sincs összekapcsolva a fiókjával.</string>
+    <string name="fui_error_reauth_incomplete">Személyazonossága nem lett megerősítve ehhez a fiókhoz. Próbálja újra.</string>
+    <string name="fui_error_reauth_interrupted">Személyazonosságának megerősítése megszakadt. Próbálja újra a műveletet.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Nem hozhat létre új fiókot a személyazonosság megerősítése közben.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A hitelesítés megszakadt. Próbálja újra, amikor készen áll.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-ellenőrzés beállítása</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Hitelesítő alkalmazás beállítása</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Kód ellenőrzése</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Kétfaktoros hitelesítés kezelése</string>
+    <string name="fui_mfa_manage_factors_description">Hitelesítési módszerek hozzáadása vagy eltávolítása a fiókjához</string>
+    <string name="fui_mfa_active_methods_title">Aktív módszerek</string>
+    <string name="fui_mfa_add_new_method_title">Új módszer hozzáadása</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Az összes elérhető hitelesítési módszer regisztrálva van</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-hitelesítés</string>
+    <string name="fui_mfa_label_totp_authentication">Hitelesítő alkalmazás</string>
+    <string name="fui_mfa_label_unknown_method">Ismeretlen módszer</string>
+    <string name="fui_mfa_enrolled_on">Regisztrálva: %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Olvassa be a QR-kódot, vagy adja meg a titkos kulcsot a hitelesítő alkalmazásban</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Válasszon második hitelesítési módszert fiókja védelme érdekében</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Adja meg telefonszámát az ellenőrző kódok fogadásához</string>
@@ -169,6 +214,9 @@
     <string name="fui_skip_action">Kihagyás</string>
     <string name="fui_use_different_method_action">Másik módszer használata</string>
     <string name="fui_verification_code_label">Ellenőrző kód</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">A folytatáshoz töltse ki profiladatait.</string>
+    <string name="fui_profile_missing_fields_message">Hiányzó mezők: %1$s</string>
     <string name="fui_verified_email_action">E-mail ellenőrizve</string>
     <string name="fui_verify_action">Ellenőrzés</string>
     <string name="fui_verify_email_instruction">Ellenőrző e-mailt küldtünk a következő címre: %1$s</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Se încarcă…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Se inițializează</string>
+    <string name="fui_verification_code_digit_description">Cifra %1$d din %2$d a codului de verificare</string>
+    <string name="fui_enter_totp_code">Introduceți codul TOTP</string>
+    <string name="fui_text_field_read_only">Doar în citire</string>
+    <string name="fui_error_user_disabled">Contul de utilizator a fost dezactivat</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Se conectează ca invitat…</string>
+    <string name="fui_loading_signing_in_with_google">Se conectează cu Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Se conectează cu Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Se conectează cu %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Se verifică numărul de telefon…</string>
+    <string name="fui_loading_submitting_verification_code">Se trimite codul de verificare…</string>
+    <string name="fui_loading_signing_in_with_phone">Se conectează prin telefon…</string>
+    <string name="fui_loading_creating_user">Se creează contul…</string>
+    <string name="fui_loading_signing_in">Se conectează…</string>
+    <string name="fui_loading_linking_credential">Se conectează…</string>
+    <string name="fui_loading_sending_email_link">Se trimite linkul de conectare…</string>
+    <string name="fui_loading_signing_in_with_email_link">Se conectează cu linkul din e-mail…</string>
+    <string name="fui_loading_sending_password_reset">Se trimite e-mailul de resetare a parolei…</string>
+    <string name="fui_loading_signing_out">Se deconectează…</string>
+    <string name="fui_loading_reauth_retrying">Se finalizează acțiunea…</string>
+    <string name="fui_loading_deleting_account">Se șterge contul…</string>
     <string name="fui_sign_in_default">Conectați-vă</string>
     <string name="fui_continue">Continuați</string>
     <string name="fui_tos_and_pp">Dacă alegeți să continuați, sunteți de acord cu %1$s și cu %2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Încercați din nou</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Este necesară o verificare suplimentară. Finalizați autentificarea cu mai mulți factori.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Contul trebuie asociat. Încercați altă metodă de conectare.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verificați-vă identitatea</string>
+    <string name="fui_reauth_dialog_message">Pentru siguranța dvs., introduceți din nou parola pentru a continua.</string>
+    <string name="fui_reauth_account_label">Cont: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentificarea a eșuat. Încercați din nou.</string>
+    <string name="fui_reauth_password_required_notice">Confirmarea identității dvs. aici necesită parola acestui cont. Dacă vă conectați cu un link din e-mail în loc de parolă, acest cont nu poate fi confirmat cu o parolă.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Niciuna dintre metodele de conectare disponibile nu este asociată contului dvs.</string>
+    <string name="fui_error_reauth_incomplete">Identitatea dvs. nu a fost confirmată pentru acest cont. Încercați din nou.</string>
+    <string name="fui_error_reauth_interrupted">Confirmarea identității dvs. a fost întreruptă. Reîncercați acțiunea.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Nu puteți crea un cont nou în timpul confirmării identității.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentificarea a fost anulată. Încercați din nou când sunteți gata.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configurați verificarea prin SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configurați aplicația de autentificare</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verificați codul</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Gestionați autentificarea în doi pași</string>
+    <string name="fui_mfa_manage_factors_description">Adăugați sau eliminați metode de autentificare pentru contul dvs.</string>
+    <string name="fui_mfa_active_methods_title">Metode active</string>
+    <string name="fui_mfa_add_new_method_title">Adăugați o metodă nouă</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Toate metodele de autentificare disponibile sunt înregistrate</string>
+    <string name="fui_mfa_label_sms_authentication">Autentificare prin SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Aplicație de autentificare</string>
+    <string name="fui_mfa_label_unknown_method">Metodă necunoscută</string>
+    <string name="fui_mfa_enrolled_on">Înregistrat pe %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scanați codul QR sau introduceți cheia secretă în aplicația de autentificare</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selectați o a doua metodă de autentificare pentru a vă securiza contul</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduceți numărul de telefon pentru a primi coduri de verificare</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Omite</string>
     <string name="fui_use_different_method_action">Folosiți o altă metodă</string>
     <string name="fui_verification_code_label">Cod de verificare</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Completați informațiile profilului pentru a continua.</string>
+    <string name="fui_profile_missing_fields_message">Câmpuri lipsă: %1$s</string>
     <string name="fui_verified_email_action">E-mail verificat</string>
     <string name="fui_verify_action">Verificare</string>
     <string name="fui_verify_email_instruction">Am trimis un e-mail de verificare la %1$s</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">読み込んでいます…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">初期化しています</string>
+    <string name="fui_verification_code_digit_description">確認コードの %2$d 桁中 %1$d 桁目</string>
+    <string name="fui_enter_totp_code">TOTPコードを入力</string>
+    <string name="fui_text_field_read_only">読み取り専用</string>
+    <string name="fui_error_user_disabled">ユーザー アカウントは無効になっています</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">ゲストとしてログインしています…</string>
+    <string name="fui_loading_signing_in_with_google">Google でログインしています…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook でログインしています…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s でログインしています…</string>
+    <string name="fui_loading_verifying_phone_number">電話番号を確認しています…</string>
+    <string name="fui_loading_submitting_verification_code">確認コードを送信しています…</string>
+    <string name="fui_loading_signing_in_with_phone">電話番号でログインしています…</string>
+    <string name="fui_loading_creating_user">アカウントを作成しています…</string>
+    <string name="fui_loading_signing_in">ログインしています…</string>
+    <string name="fui_loading_linking_credential">ログインしています…</string>
+    <string name="fui_loading_sending_email_link">ログインリンクを送信しています…</string>
+    <string name="fui_loading_signing_in_with_email_link">メールリンクでログインしています…</string>
+    <string name="fui_loading_sending_password_reset">パスワード再設定メールを送信しています…</string>
+    <string name="fui_loading_signing_out">ログアウトしています…</string>
+    <string name="fui_loading_reauth_retrying">操作を完了しています…</string>
+    <string name="fui_loading_deleting_account">アカウントを削除しています…</string>
     <string name="fui_sign_in_default">ログイン</string>
     <string name="fui_continue">続行</string>
     <string name="fui_tos_and_pp">続行すると、%1$s と %2$s に同意したことになります。</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">再試行</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">追加の認証が必要です。多要素認証を完了してください。</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">アカウントをリンクする必要があります。別のサインイン方法をお試しください。</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">本人確認</string>
+    <string name="fui_reauth_dialog_message">セキュリティのため、パスワードを再入力して続行してください。</string>
+    <string name="fui_reauth_account_label">アカウント: %1$s</string>
+    <string name="fui_reauth_generic_error">認証に失敗しました。再試行してください。</string>
+    <string name="fui_reauth_password_required_notice">ここで本人確認を行うには、このアカウントのパスワードが必要です。パスワードではなくメールリンクでログインしている場合、このアカウントはパスワードで確認できません。</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">利用可能なログイン方法のいずれもアカウントにリンクされていません。</string>
+    <string name="fui_error_reauth_incomplete">このアカウントの本人確認ができませんでした。再試行してください。</string>
+    <string name="fui_error_reauth_interrupted">本人確認が中断されました。操作を再試行してください。</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">本人確認中に新しいアカウントを作成することはできません。</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">認証がキャンセルされました。準備ができたら再度お試しください。</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS認証を設定</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">認証アプリを設定</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">コードを確認</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">2段階認証を管理</string>
+    <string name="fui_mfa_manage_factors_description">アカウントの認証方法を追加または削除します</string>
+    <string name="fui_mfa_active_methods_title">有効な方法</string>
+    <string name="fui_mfa_add_new_method_title">新しい方法を追加</string>
+    <string name="fui_mfa_all_methods_enrolled_message">利用可能なすべての認証方法が登録されています</string>
+    <string name="fui_mfa_label_sms_authentication">SMS認証</string>
+    <string name="fui_mfa_label_totp_authentication">認証アプリ</string>
+    <string name="fui_mfa_label_unknown_method">不明な方法</string>
+    <string name="fui_mfa_enrolled_on">%1$s に登録</string>
+    <string name="fui_mfa_setup_authenticator_description">QRコードをスキャンするか、認証アプリにシークレットキーを入力してください</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">アカウントを保護するため、2つ目の認証方法を選択してください</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">確認コードを受け取るために電話番号を入力してください</string>
@@ -169,6 +214,9 @@
     <string name="fui_skip_action">スキップ</string>
     <string name="fui_use_different_method_action">別の方法を使用</string>
     <string name="fui_verification_code_label">確認コード</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">続行するにはプロフィール情報を入力してください。</string>
+    <string name="fui_profile_missing_fields_message">未入力の項目: %1$s</string>
     <string name="fui_verified_email_action">メールアドレスを確認済み</string>
     <string name="fui_verify_action">確認</string>
     <string name="fui_verify_email_instruction">%1$s に確認メールを送信しました</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Įkeliama…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicijuojama</string>
+    <string name="fui_verification_code_digit_description">%1$d skaitmuo iš %2$d patvirtinimo kodo</string>
+    <string name="fui_enter_totp_code">Įveskite TOTP kodą</string>
+    <string name="fui_text_field_read_only">Tik skaitymas</string>
+    <string name="fui_error_user_disabled">Naudotojo paskyra išjungta</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Prisijungiama kaip svečias…</string>
+    <string name="fui_loading_signing_in_with_google">Prisijungiama per „Google“…</string>
+    <string name="fui_loading_signing_in_with_facebook">Prisijungiama per „Facebook“…</string>
+    <string name="fui_loading_signing_in_with_provider">Prisijungiama per %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Patvirtinamas telefono numeris…</string>
+    <string name="fui_loading_submitting_verification_code">Siunčiamas patvirtinimo kodas…</string>
+    <string name="fui_loading_signing_in_with_phone">Prisijungiama telefonu…</string>
+    <string name="fui_loading_creating_user">Kuriama paskyra…</string>
+    <string name="fui_loading_signing_in">Prisijungiama…</string>
+    <string name="fui_loading_linking_credential">Prisijungiama…</string>
+    <string name="fui_loading_sending_email_link">Siunčiama prisijungimo nuoroda…</string>
+    <string name="fui_loading_signing_in_with_email_link">Prisijungiama el. pašto nuoroda…</string>
+    <string name="fui_loading_sending_password_reset">Siunčiamas slaptažodžio atkūrimo el. laiškas…</string>
+    <string name="fui_loading_signing_out">Atsijungiama…</string>
+    <string name="fui_loading_reauth_retrying">Baigiamas veiksmas…</string>
+    <string name="fui_loading_deleting_account">Naikinama paskyra…</string>
     <string name="fui_sign_in_default">Prisijungti</string>
     <string name="fui_continue">Tęsti</string>
     <string name="fui_tos_and_pp">Tęsdami nurodote, kad sutinkate su %1$s ir %2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Bandykite dar kartą</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Reikalingas papildomas patvirtinimas. Užbaikite kelių veiksnių autentifikavimą.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Paskyrą reikia susieti. Išbandykite kitą prisijungimo būdą.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Patvirtinkite savo tapatybę</string>
+    <string name="fui_reauth_dialog_message">Saugumo sumetimais dar kartą įveskite slaptažodį, kad tęstumėte.</string>
+    <string name="fui_reauth_account_label">Paskyra: %1$s</string>
+    <string name="fui_reauth_generic_error">Nepavyko autentifikuoti. Bandykite dar kartą.</string>
+    <string name="fui_reauth_password_required_notice">Norint čia patvirtinti jūsų tapatybę, reikia šios paskyros slaptažodžio. Jei prisijungiate el. pašto nuoroda, o ne slaptažodžiu, šios paskyros patvirtinti slaptažodžiu negalima.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Nė vienas iš galimų prisijungimo būdų nesusietas su jūsų paskyra.</string>
+    <string name="fui_error_reauth_incomplete">Jūsų tapatybė šiai paskyrai nepatvirtinta. Bandykite dar kartą.</string>
+    <string name="fui_error_reauth_interrupted">Jūsų tapatybės patvirtinimas nutrauktas. Bandykite dar kartą.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Negalite sukurti naujos paskyros, kol patvirtinate tapatybę.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikavimas buvo atšauktas. Kai būsite pasirengę, bandykite dar kartą.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nustatyti SMS patvirtinimą</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nustatyti autentifikatoriaus programą</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Patvirtinkite kodą</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Tvarkyti dviejų veiksnių autentifikavimą</string>
+    <string name="fui_mfa_manage_factors_description">Pridėkite arba pašalinkite paskyros autentifikavimo metodus</string>
+    <string name="fui_mfa_active_methods_title">Aktyvūs metodai</string>
+    <string name="fui_mfa_add_new_method_title">Pridėti naują metodą</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Visi galimi autentifikavimo metodai užregistruoti</string>
+    <string name="fui_mfa_label_sms_authentication">Autentifikavimas SMS žinute</string>
+    <string name="fui_mfa_label_totp_authentication">Autentifikavimo programa</string>
+    <string name="fui_mfa_label_unknown_method">Nežinomas metodas</string>
+    <string name="fui_mfa_enrolled_on">Užregistruota %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Nuskaitykite QR kodą arba įveskite slaptąjį raktą autentifikavimo programoje</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pasirinkite antrą autentifikavimo metodą, kad apsaugotumėte paskyrą</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Įveskite telefono numerį, kad gautumėte patvirtinimo kodus</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Praleisti</string>
     <string name="fui_use_different_method_action">Naudoti kitą metodą</string>
     <string name="fui_verification_code_label">Patvirtinimo kodas</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Užpildykite profilio informaciją, kad tęstumėte.</string>
+    <string name="fui_profile_missing_fields_message">Trūksta laukų: %1$s</string>
     <string name="fui_verified_email_action">El. paštas patvirtintas</string>
     <string name="fui_verify_action">Patvirtinti</string>
     <string name="fui_verify_email_instruction">Išsiuntėme patvirtinimo el. laišką adresu %1$s</string>

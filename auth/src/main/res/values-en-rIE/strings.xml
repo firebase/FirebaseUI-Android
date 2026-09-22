@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Loading…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initializing</string>
+    <string name="fui_verification_code_digit_description">Verification code digit %1$d of %2$d</string>
+    <string name="fui_enter_totp_code">Enter TOTP code</string>
+    <string name="fui_text_field_read_only">Read-only</string>
+    <string name="fui_error_user_disabled">User account has been disabled</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Signing in as guest…</string>
+    <string name="fui_loading_signing_in_with_google">Signing in with Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Signing in with Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Signing in with %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Verifying phone number…</string>
+    <string name="fui_loading_submitting_verification_code">Submitting verification code…</string>
+    <string name="fui_loading_signing_in_with_phone">Signing in with phone…</string>
+    <string name="fui_loading_creating_user">Creating account…</string>
+    <string name="fui_loading_signing_in">Signing in…</string>
+    <string name="fui_loading_linking_credential">Signing in…</string>
+    <string name="fui_loading_sending_email_link">Sending sign-in link…</string>
+    <string name="fui_loading_signing_in_with_email_link">Signing in with email link…</string>
+    <string name="fui_loading_sending_password_reset">Sending password reset email…</string>
+    <string name="fui_loading_signing_out">Signing out…</string>
+    <string name="fui_loading_reauth_retrying">Finishing that action…</string>
+    <string name="fui_loading_deleting_account">Deleting account…</string>
     <string name="fui_sign_in_default">Sign in</string>
     <string name="fui_continue">Continue</string>
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s.</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verify your identity</string>
+    <string name="fui_reauth_dialog_message">For your security, please re-enter your password to continue.</string>
+    <string name="fui_reauth_account_label">Account: %1$s</string>
+    <string name="fui_reauth_generic_error">Authentication failed. Please try again.</string>
+    <string name="fui_reauth_password_required_notice">Confirming your identity here needs this account\'s password. If you sign in with an email link instead of a password, this account cannot be confirmed with a password.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">None of the available sign-in methods is linked to your account.</string>
+    <string name="fui_error_reauth_incomplete">That did not confirm your identity for this account. Please try again.</string>
+    <string name="fui_error_reauth_interrupted">Confirming your identity was interrupted. Please try that action again.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">You cannot create a new account while confirming your identity.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Set Up SMS Verification</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Set Up Authenticator App</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verify Your Code</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Manage two-factor authentication</string>
+    <string name="fui_mfa_manage_factors_description">Add or remove authentication methods for your account</string>
+    <string name="fui_mfa_active_methods_title">Active methods</string>
+    <string name="fui_mfa_add_new_method_title">Add new method</string>
+    <string name="fui_mfa_all_methods_enrolled_message">All available authentication methods are enrolled</string>
+    <string name="fui_mfa_label_sms_authentication">SMS authentication</string>
+    <string name="fui_mfa_label_totp_authentication">Authenticator app</string>
+    <string name="fui_mfa_label_unknown_method">Unknown method</string>
+    <string name="fui_mfa_enrolled_on">Enrolled on %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scan the QR code or enter the secret key in your authenticator app</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Select a second authentication method to secure your account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Enter your phone number to receive verification codes</string>
@@ -162,6 +207,9 @@
     <string name="fui_skip_action">Skip</string>
     <string name="fui_use_different_method_action">Use a different method</string>
     <string name="fui_verification_code_label">Verification code</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Please complete your profile information to continue.</string>
+    <string name="fui_profile_missing_fields_message">Missing fields: %1$s</string>
     <string name="fui_verified_email_action">Email verified</string>
     <string name="fui_verify_action">Verify</string>
     <string name="fui_verify_email_instruction">We sent a verification email to %1$s</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">درحال بارگیری…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">درحال راه‌اندازی</string>
+    <string name="fui_verification_code_digit_description">رقم %1$d از %2$d کد تأیید</string>
+    <string name="fui_enter_totp_code">کد TOTP را وارد کنید</string>
+    <string name="fui_text_field_read_only">فقط‌خواندنی</string>
+    <string name="fui_error_user_disabled">حساب کاربر غیرفعال شده است</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">درحال ورود به سیستم به‌عنوان مهمان…</string>
+    <string name="fui_loading_signing_in_with_google">درحال ورود به سیستم با Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">درحال ورود به سیستم با Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">درحال ورود به سیستم با %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">درحال تأیید شماره تلفن…</string>
+    <string name="fui_loading_submitting_verification_code">درحال ارسال کد تأیید…</string>
+    <string name="fui_loading_signing_in_with_phone">درحال ورود به سیستم با تلفن…</string>
+    <string name="fui_loading_creating_user">درحال ایجاد حساب…</string>
+    <string name="fui_loading_signing_in">درحال ورود به سیستم…</string>
+    <string name="fui_loading_linking_credential">درحال ورود به سیستم…</string>
+    <string name="fui_loading_sending_email_link">درحال ارسال پیوند ورود…</string>
+    <string name="fui_loading_signing_in_with_email_link">درحال ورود با پیوند ایمیل…</string>
+    <string name="fui_loading_sending_password_reset">درحال ارسال ایمیل بازنشانی گذرواژه…</string>
+    <string name="fui_loading_signing_out">درحال خروج…</string>
+    <string name="fui_loading_reauth_retrying">درحال تکمیل عملیات…</string>
+    <string name="fui_loading_deleting_account">درحال حذف حساب…</string>
     <string name="fui_sign_in_default">ورود به سیستم</string>
     <string name="fui_continue">ادامه</string>
     <string name="fui_tos_and_pp">درصورت ادامه‌دادن، موافقتتان را با %1$s و %2$s اعلام می‌کنید.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوباره امتحان کنید</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">تأیید بیشتری لازم است. لطفاً احراز هویت چندعاملی را کامل کنید.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">حساب باید پیوند داده شود. لطفاً روش ورود دیگری را امتحان کنید.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">هویت خود را تأیید کنید</string>
+    <string name="fui_reauth_dialog_message">برای امنیت شما، لطفاً گذرواژه خود را دوباره وارد کنید تا ادامه دهید.</string>
+    <string name="fui_reauth_account_label">حساب: %1$s</string>
+    <string name="fui_reauth_generic_error">احراز هویت ناموفق بود. دوباره امتحان کنید.</string>
+    <string name="fui_reauth_password_required_notice">تأیید هویت شما در اینجا به گذرواژه این حساب نیاز دارد. اگر به‌جای گذرواژه با پیوند ایمیل وارد می‌شوید، این حساب را نمی‌توان با گذرواژه تأیید کرد.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">هیچ‌یک از روش‌های ورود موجود به حساب شما پیوند داده نشده است.</string>
+    <string name="fui_error_reauth_incomplete">هویت شما برای این حساب تأیید نشد. دوباره امتحان کنید.</string>
+    <string name="fui_error_reauth_interrupted">تأیید هویت شما قطع شد. دوباره امتحان کنید.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">هنگام تأیید هویت نمی‌توانید حساب جدیدی ایجاد کنید.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">احراز هویت لغو شد. هروقت آماده بودید، دوباره امتحان کنید.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">تأیید پیامک را راه‌اندازی کنید</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">برنامه احراز هویت را راه‌اندازی کنید</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">کد خود را تأیید کنید</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">مدیریت احراز هویت دو مرحله‌ای</string>
+    <string name="fui_mfa_manage_factors_description">افزودن یا حذف روش‌های احراز هویت برای حسابتان</string>
+    <string name="fui_mfa_active_methods_title">روش‌های فعال</string>
+    <string name="fui_mfa_add_new_method_title">افزودن روش جدید</string>
+    <string name="fui_mfa_all_methods_enrolled_message">همه روش‌های احراز هویت موجود ثبت شده‌اند</string>
+    <string name="fui_mfa_label_sms_authentication">احراز هویت با پیامک</string>
+    <string name="fui_mfa_label_totp_authentication">برنامه احراز هویت</string>
+    <string name="fui_mfa_label_unknown_method">روش نامشخص</string>
+    <string name="fui_mfa_enrolled_on">ثبت‌شده در %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">کد QR را اسکن کنید یا کلید مخفی را در برنامه احراز هویت خود وارد کنید</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">برای ایمن کردن حساب خود، روش دوم احراز هویت را انتخاب کنید</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">شماره تلفن خود را وارد کنید تا کدهای تأیید دریافت کنید</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">رد شدن</string>
     <string name="fui_use_different_method_action">استفاده از روش دیگر</string>
     <string name="fui_verification_code_label">کد تأیید</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">برای ادامه، اطلاعات نمایه خود را کامل کنید.</string>
+    <string name="fui_profile_missing_fields_message">فیلدهای ناقص: %1$s</string>
     <string name="fui_verified_email_action">ایمیل تأیید شده</string>
     <string name="fui_verify_action">تأیید</string>
     <string name="fui_verify_email_instruction">ایمیل تأیید به %1$s ارسال کردیم</string>
