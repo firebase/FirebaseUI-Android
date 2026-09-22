@@ -151,7 +151,7 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
             Spacer(modifier = Modifier.height(24.dp))
 
             CtaButton(
-                text = "Sign Up",
+                text = "Send code",
                 onClick = state.onSendCodeClick,
                 enabled = isPhoneValid && !state.isLoading,
                 isLoading = state.isLoading,

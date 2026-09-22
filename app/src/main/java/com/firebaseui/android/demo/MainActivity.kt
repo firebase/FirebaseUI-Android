@@ -38,7 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
     companion object {
-        internal const val USE_AUTH_EMULATOR = false
+        internal const val USE_AUTH_EMULATOR = true
         private const val AUTH_EMULATOR_HOST = "10.0.2.2"
         private const val AUTH_EMULATOR_PORT = 9099
 
