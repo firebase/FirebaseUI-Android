@@ -7,7 +7,7 @@ import org.junit.Test
 
 class UntranslatedResourceDetectorTest {
 
-    private fun configuredLint(): TestLintTask = TestLintTask.lint().withLocalSdk()
+    private fun configuredLint(): TestLintTask = TestLintTask.lint().allowMissingSdk()
 
     private fun base(vararg entries: String) = xml(
         "res/values/strings.xml",

@@ -15,3 +15,7 @@ cp library/google-services.json proguard-tests/google-services.json
 # (.github/workflows/lint.yml) so it runs in parallel with this path rather than
 # adding ~5 minutes to it, and so a lint failure does not mask unit-test results.
 ./gradlew $GRADLE_ARGS testDebugUnitTest -x :e2eTest:testDebugUnitTest
+# :internal:lint is a JVM module, so it has `test` rather than `testDebugUnitTest` and is
+# absent from the line above. Its detectors are only exercised here: a green lintAll does
+# not prove them, because it passes just as happily if a detector stops reporting.
+./gradlew $GRADLE_ARGS :internal:lint:test

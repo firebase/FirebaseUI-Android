@@ -7,7 +7,7 @@ import org.junit.Test
 
 class NonGlobalIdDetectorTest {
 
-    fun configuredLint(): TestLintTask = TestLintTask.lint().withLocalSdk()
+    fun configuredLint(): TestLintTask = TestLintTask.lint().allowMissingSdk()
 
     @Test
     fun `Passes on valid view id`() {
