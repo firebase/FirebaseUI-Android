@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">ลงชื่อเข้าใช้</string>
     <string name="fui_continue">ต่อไป</string>
     <string name="fui_tos_and_pp">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s และ %2$s</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">เกิดข้อผิดพลาดของเครือข่าย โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">ต้องป้อนข้อมูลในช่องนี้</string>
     <string name="fui_invalid_email_address">ที่อยู่อีเมลนี้ไม่ถูกต้อง</string>
     <string name="fui_missing_email_address">ป้อนที่อยู่อีเมลของคุณเพื่อดำเนินการต่อ</string>
-    <string name="fui_missing_first_and_last_name">โปรดป้อนชื่อและนามสกุล</string>
-    <string name="fui_progress_dialog_checking_accounts">กำลังตรวจสอบบัญชีที่มีอยู่…</string>
     <string name="fui_title_register_email">ลงชื่อสมัครใช้</string>
     <string name="fui_name_hint">ชื่อและนามสกุล</string>
     <string name="fui_button_text_save">บันทึก</string>
-    <string name="fui_progress_dialog_signing_up">กำลังลงชื่อสมัครใช้…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> </plurals>
     <string name="fui_email_account_creation_error">การลงทะเบียนบัญชีอีเมลไม่สำเร็จ</string>
     <string name="fui_terms_of_service">ข้อกำหนดในการให้บริการ</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">คุณมีบัญชีอยู่แล้ว</string>
     <string name="fui_welcome_back_email_header">ยินดีต้อนรับอีกครั้ง!</string>
     <string name="fui_welcome_back_email_link_header">คุณมีบัญชีแล้ว\n</string>
-    <string name="fui_welcome_back_idp_prompt">คุณใช้ %1$s อยู่แล้ว ลงชื่อเข้าใช้ด้วย %2$s เพื่อดำเนินการต่อ</string>
-    <string name="fui_welcome_back_password_prompt_body">คุณใช้ %1$s ในการลงชื่อเข้าใช้อยู่แล้ว โปรดป้อนรหัสผ่านสำหรับบัญชีดังกล่าว</string>
-    <string name="fui_welcome_back_email_link_prompt_body">คุณใช้ %1$s แล้ว คุณจะเชื่อมต่อบัญชี %2$s กับ %1$s ได้โดยลงชื่อเข้าใช้ด้วยลิงก์อีเมลด้านล่าง\n\nหากต้องการเชื่อมต่อบัญชี %2$s กับอีเมลนี้ให้สำเร็จ คุณต้องเปิดลิงก์บนอุปกรณ์หรือเบราว์เซอร์เดียวกัน</string>
-    <string name="fui_progress_dialog_signing_in">กำลังลงชื่อเข้าใช้…</string>
     <string name="fui_trouble_signing_in">หากพบปัญหาในการลงชื่อเช้าใช้</string>
     <string name="fui_title_recover_password_activity">กู้คืนรหัสผ่าน</string>
     <string name="fui_title_confirm_recover_password">ตรวจสอบอีเมลของคุณ</string>
     <string name="fui_password_recovery_body">ดูวิธีการที่ส่งไปยังอีเมลนี้ซึ่งอธิบายเกี่ยวกับวิธีรีเซ็ตรหัสผ่านของคุณ</string>
     <string name="fui_button_text_send">ส่ง</string>
     <string name="fui_confirm_recovery_body">ทำตามวิธีการที่ส่งไปยัง %1$s เพื่อกู้คืนรหัสผ่านของคุณ</string>
-    <string name="fui_progress_dialog_sending">กำลังส่ง…</string>
     <string name="fui_error_email_does_not_exist">ที่อยู่อีเมลไม่ตรงกับบัญชีที่มีอยู่</string>
     <string name="fui_error_unknown">เกิดข้อผิดพลาดที่ไม่รู้จัก</string>
     <string name="fui_error_invalid_password">รหัสผ่านไม่ถูกต้อง</string>
@@ -90,25 +81,20 @@
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>
     <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน %1$s</string>
-    <string name="fui_verify_your_phone_title">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_verifying">กำลังยืนยัน…</string>
     <string name="fui_incorrect_code_dialog_body">รหัสไม่ถูกต้อง โปรดลองอีกครั้ง</string>
     <string name="fui_error_too_many_attempts">มีการใช้หมายเลขโทรศัพท์นี้หลายครั้งเกินไป</string>
-    <string name="fui_error_quota_exceeded">เกิดปัญหาในการยืนยันหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_error_session_expired">ไม่สามารถใช้รหัสนี้ได้อีกต่อไป</string>
-    <string name="fui_sign_in_with_phone_number">ลงชื่อเข้าใช้ด้วยหมายเลขโทรศัพท์</string>
-    <string name="fui_auto_verified">ยืนยันหมายเลขโทรศัพท์โดยอัตโนมัติแล้ว</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">ใช้หมายเลขโทรศัพท์อื่น</string>
     <string name="fui_sms_terms_of_service">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s และ %3$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">ข้อผิดพลาดในการตรวจสอบสิทธิ์</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ลองอีกครั้ง</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">ต้องมีการยืนยันเพิ่มเติม โปรดดำเนินการยืนยันตัวตนแบบหลายปัจจัยให้เสร็จสมบูรณ์</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">ต้องลิงก์บัญชี โปรดลองใช้วิธีลงชื่อเข้าใช้วิธีอื่น</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">การตรวจสอบสิทธิ์ถูกยกเลิก โปรดลองอีกครั้งเมื่อคุณพร้อม</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">เลือกวิธีการตรวจสอบสิทธิ์</string>
@@ -144,29 +130,11 @@
     <string name="fui_identity_verified_message">ยืนยันตัวตนแล้ว ลองดำเนินการอีกครั้ง</string>
     <string name="fui_manage_mfa_action">จัดการการยืนยันตัวตนแบบสองปัจจัย</string>
     <string name="fui_incorrect_password_error">รหัสผ่านไม่ถูกต้อง</string>
-    <string name="fui_mfa_choose_method_instruction">เลือกวิธีการยืนยัน</string>
-    <string name="fui_mfa_enrollment_instruction">เพิ่มชั้นความปลอดภัยเพิ่มเติม</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">แอปยืนยันตัวตน</string>
-    <string name="fui_mfa_phone_number_already_exists_error">หมายเลขโทรศัพท์นี้เชื่อมโยงกับบัญชีอื่นอยู่แล้ว</string>
-    <string name="fui_mfa_second_factor_required_error">ต้องการการยืนยัน</string>
-    <string name="fui_mfa_setup_instruction">สแกนรหัส QR ด้วยแอปยืนยันตัวตนของคุณ</string>
-    <string name="fui_mfa_totp_already_exists_error">แอปยืนยันตัวตนได้รับการตั้งค่าแล้ว</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">คุณแน่ใจหรือไม่ว่าต้องการลบวิธีนี้</string>
-    <string name="fui_mfa_unenrollment_error">ไม่สามารถลบวิธีได้</string>
-    <string name="fui_mfa_unenrollment_success_message">ลบวิธีแล้ว</string>
-    <string name="fui_mfa_verification_instruction">ป้อนรหัสยืนยัน</string>
-    <string name="fui_profile_update_error">ไม่สามารถอัปเดตโปรไฟล์ได้</string>
-    <string name="fui_profile_update_success_message">อัปเดตโปรไฟล์แล้ว</string>
-    <string name="fui_reauth_instruction">ยืนยันตัวตนของคุณเพื่อดำเนินการต่อ</string>
-    <string name="fui_reauth_required_error">ต้องการการยืนยันตัวตนอีกครั้ง</string>
-    <string name="fui_reauth_success_message">ยืนยันตัวตนอีกครั้งสำเร็จ</string>
-    <string name="fui_reauthenticate_action">ยืนยันตัวตนอีกครั้ง</string>
     <string name="fui_remove_action">ลบ</string>
     <string name="fui_resend_verification_email_action">ส่งอีเมลยืนยันอีกครั้ง</string>
     <string name="fui_secret_key_label">คีย์ลับ</string>
     <string name="fui_sign_out_action">ออกจากระบบ</string>
-    <string name="fui_signed_in_as">ลงชื่อเข้าใช้ในฐานะ</string>
+    <string name="fui_signed_in_as">ลงชื่อเข้าใช้ในฐานะ %1$s</string>
     <string name="fui_skip_action">ข้าม</string>
     <string name="fui_use_different_method_action">ใช้วิธีอื่น</string>
     <string name="fui_verification_code_label">รหัสยืนยัน</string>
@@ -176,4 +144,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">การรับรองความถูกต้องแบบหลายปัจจัยถูกปิดใช้งานในขณะนี้</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">อีเมลหรือรหัสผ่านไม่ถูกต้อง</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">เซสชันการยืนยันนี้ใช้ไม่ได้อีกต่อไป โปรดขอรหัสใหม่</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">การยืนยันหมายเลขโทรศัพท์ไม่เสร็จสมบูรณ์ โปรดลองอีกครั้ง</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">ข้อมูลเข้าสู่ระบบนี้เป็นของบัญชีอื่น</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">หมายเลขโทรศัพท์นี้ไม่ได้ตั้งค่าไว้สำหรับการยืนยันในบัญชีนี้</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">เซสชันการลงชื่อเข้าใช้หมดอายุแล้ว โปรดลงชื่อเข้าใช้อีกครั้งเพื่อดำเนินการต่อ</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">ลิงก์นี้ใช้ไม่ได้อีกต่อไป โปรดขอลิงก์ใหม่</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">โปรดยืนยันที่อยู่อีเมลก่อนดำเนินการต่อ</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">วิธีการยืนยันนี้ตั้งค่าไว้ในบัญชีนี้แล้ว</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">คุณใช้วิธีการยืนยันถึงขีดจำกัดของบัญชีนี้แล้ว</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">รหัสผ่านของคุณไม่เป็นไปตามข้อกำหนด โปรดลองใช้รหัสผ่านอื่น</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">รหัสผ่านยาวเกินไป ความยาวสูงสุดคือ %1$d</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">ไม่พบพาสคีย์สำหรับบัญชีนี้ โปรดลงชื่อเข้าใช้ด้วยวิธีอื่น</string>
 </resources>

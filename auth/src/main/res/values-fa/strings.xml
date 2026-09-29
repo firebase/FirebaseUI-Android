@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">ورود به سیستم</string>
     <string name="fui_continue">ادامه</string>
     <string name="fui_tos_and_pp">درصورت ادامه‌دادن، موافقتتان را با %1$s و %2$s اعلام می‌کنید.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">خطای شبکه. اتصال اینترنت را بررسی کنید.</string>
     <string name="fui_idp_name_google">Google‏</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">اینجا نباید خالی باشد.</string>
     <string name="fui_invalid_email_address">آن نشانی ایمیل درست نیست</string>
     <string name="fui_missing_email_address">برای ادامه، آدرس ایمیلتان را وارد کنید</string>
-    <string name="fui_missing_first_and_last_name">لطفاً نام و نام خانوادگی را وارد کنید.</string>
-    <string name="fui_progress_dialog_checking_accounts">در حال بررسی حساب‌های موجود…</string>
     <string name="fui_title_register_email">ثبت‌نام</string>
     <string name="fui_name_hint">نام و نام خانوادگی</string>
     <string name="fui_button_text_save">ذخیره</string>
-    <string name="fui_progress_dialog_signing_up">در حال ثبت‌نام…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> </plurals>
     <string name="fui_email_account_creation_error">ثبت حساب ایمیل ناموفق بود</string>
     <string name="fui_terms_of_service">شرایط خدمات</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">از قبل حسابی دارید</string>
     <string name="fui_welcome_back_email_header">باز هم خوش آمدید!</string>
     <string name="fui_welcome_back_email_link_header">از قبل حسابی دارید\n</string>
-    <string name="fui_welcome_back_idp_prompt">قبلاً از %1$s استفاده کرده‌اید. برای ادامه، با %2$s وارد سیستم شوید.</string>
-    <string name="fui_welcome_back_password_prompt_body">قبلاً از %1$s برای ورود به سیستم استفاده کرده‌اید. گذرواژه این حساب را وارد کنید.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">قبلاً از %1$s استفاده کرده‌اید. می‌توانید با ورود به سیستم ازطریق پیوند ایمیل زیر، حساب %2$s را به %1$s وصل کنید.\n\nبرای اینکه این فرایند بتواند با موفقیت حساب %2$s شما را به این ایمیل متصل کند، باید پیوند را در همان دستگاه یا مرورگر باز کنید.</string>
-    <string name="fui_progress_dialog_signing_in">درحال ورود به سیستم…</string>
     <string name="fui_trouble_signing_in">مشکل در ورود به سیستم؟</string>
     <string name="fui_title_recover_password_activity">بازیابی گذرواژه</string>
     <string name="fui_title_confirm_recover_password">رایانامه‌تان را بررسی کنید</string>
     <string name="fui_password_recovery_body">دستورالعمل نحوه بازنشانی گذرواژه‌تان به این ایمیل ارسال شده است، آن را ببینید.</string>
     <string name="fui_button_text_send">ارسال</string>
     <string name="fui_confirm_recovery_body">برای بازیابی گذرواژه‌تان، دستورالعمل‌های ارسال‌شده به %1$s را دنبال کنید.</string>
-    <string name="fui_progress_dialog_sending">درحال ارسال…</string>
     <string name="fui_error_email_does_not_exist">هیچ حسابی منطبق با این نشانی ایمیل وجود ندارد</string>
     <string name="fui_error_unknown">خطای ناشناس رخ داد.</string>
     <string name="fui_error_invalid_password">گذرواژه نادرست</string>
@@ -90,25 +81,20 @@
     <string name="fui_invalid_phone_number">شماره تلفن معتبری وارد کنید</string>
     <string name="fui_enter_confirmation_code">وارد کردن کد ۶ رقمی ارسال‌شده به</string>
     <string name="fui_resend_code_in">کد پس از %1$s:0 مجدداً ارسال می‌شود</string>
-    <string name="fui_verify_your_phone_title">تأیید شماره تلفن</string>
     <string name="fui_verifying">درحال تأیید…</string>
     <string name="fui_incorrect_code_dialog_body">کد اشتباه است. دوباره امتحان کنید.</string>
     <string name="fui_error_too_many_attempts">از این شماره تلفن به دفعات زیاد استفاده شده است</string>
-    <string name="fui_error_quota_exceeded">هنگام تأیید شماره تلفنتان مشکلی پیش آمد</string>
     <string name="fui_error_session_expired">این کد دیگر معتبر نیست</string>
-    <string name="fui_sign_in_with_phone_number">ورود به سیستم با شماره تلفن</string>
-    <string name="fui_auto_verified">شماره تلفن به‌طور خودکار به‌تأیید رسید</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">استفاده از شماره تلفن دیگر</string>
     <string name="fui_sms_terms_of_service">با ضربه زدن روی «%1$s»، پیامکی برایتان ارسال می‌شود. هزینه پیام و داده اعمال می‌شود.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">درصورت ضربه‌زدن روی «%1$s»، موافقتتان را با %2$s و %3$s اعلام می‌کنید. پیامکی ارسال می‌شود. ممکن است هزینه داده و «پیام» محاسبه شود.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطای احراز هویت</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوباره امتحان کنید</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">تأیید بیشتری لازم است. لطفاً احراز هویت چندعاملی را کامل کنید.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">حساب باید پیوند داده شود. لطفاً روش ورود دیگری را امتحان کنید.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">احراز هویت لغو شد. هروقت آماده بودید، دوباره امتحان کنید.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">روش احراز هویت را انتخاب کنید</string>
@@ -144,29 +130,11 @@
     <string name="fui_identity_verified_message">هویت تأیید شد. دوباره امتحان کنید.</string>
     <string name="fui_manage_mfa_action">مدیریت احراز هویت دو مرحله‌ای</string>
     <string name="fui_incorrect_password_error">رمز عبور نادرست</string>
-    <string name="fui_mfa_choose_method_instruction">روش تأیید را انتخاب کنید</string>
-    <string name="fui_mfa_enrollment_instruction">لایه امنیتی اضافی اضافه کنید</string>
-    <string name="fui_mfa_method_sms">پیامک</string>
-    <string name="fui_mfa_method_totp">برنامه احراز هویت</string>
-    <string name="fui_mfa_phone_number_already_exists_error">این شماره تلفن با حساب دیگری مرتبط است</string>
-    <string name="fui_mfa_second_factor_required_error">تأیید لازم است</string>
-    <string name="fui_mfa_setup_instruction">کد QR را با برنامه احراز هویت خود اسکن کنید</string>
-    <string name="fui_mfa_totp_already_exists_error">برنامه احراز هویت قبلاً تنظیم شده است</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">آیا مطمئن هستید که می‌خواهید این روش را حذف کنید؟</string>
-    <string name="fui_mfa_unenrollment_error">نمی‌توان روش را حذف کرد</string>
-    <string name="fui_mfa_unenrollment_success_message">روش حذف شد</string>
-    <string name="fui_mfa_verification_instruction">کد تأیید را وارد کنید</string>
-    <string name="fui_profile_update_error">نمی‌توان نمایه را به‌روزرسانی کرد</string>
-    <string name="fui_profile_update_success_message">نمایه به‌روزرسانی شد</string>
-    <string name="fui_reauth_instruction">برای ادامه، هویت خود را تأیید کنید</string>
-    <string name="fui_reauth_required_error">احراز هویت مجدد لازم است</string>
-    <string name="fui_reauth_success_message">احراز هویت مجدد موفق بود</string>
-    <string name="fui_reauthenticate_action">احراز هویت مجدد</string>
     <string name="fui_remove_action">حذف</string>
     <string name="fui_resend_verification_email_action">ارسال مجدد ایمیل تأیید</string>
     <string name="fui_secret_key_label">کلید مخفی</string>
     <string name="fui_sign_out_action">خروج</string>
-    <string name="fui_signed_in_as">وارد شده به عنوان</string>
+    <string name="fui_signed_in_as">وارد شده به عنوان %1$s</string>
     <string name="fui_skip_action">رد شدن</string>
     <string name="fui_use_different_method_action">استفاده از روش دیگر</string>
     <string name="fui_verification_code_label">کد تأیید</string>
@@ -176,4 +144,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">احراز هویت چند مرحله‌ای در حال حاضر غیرفعال است</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">آن ایمیل یا گذرواژه درست نیست</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">این جلسه تأیید دیگر معتبر نیست. کد جدیدی درخواست کنید.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">تأیید شماره تلفن کامل نشد. دوباره امتحان کنید.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">این اطلاعات ورود به حساب دیگری تعلق دارد.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">این شماره تلفن برای تأیید در این حساب تنظیم نشده است.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">جلسه ورود به سیستم شما منقضی شد. برای ادامه، دوباره وارد سیستم شوید.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">این پیوند دیگر معتبر نیست. پیوند جدیدی درخواست کنید.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">پیش از ادامه، نشانی ایمیلتان را تأیید کنید.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">این روش تأیید قبلاً در این حساب تنظیم شده است.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">به حداکثر تعداد روش‌های تأیید در این حساب رسیده‌اید.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">گذرواژه شما الزامات را برآورده نمی‌کند. گذرواژه دیگری را امتحان کنید.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">گذرواژه خیلی طولانی است. حداکثر طول %1$d است.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">کلید عبوری برای این حساب پیدا نشد. به روش دیگری وارد سیستم شوید.</string>
 </resources>

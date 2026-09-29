@@ -3,14 +3,13 @@
     <string name="fui_sign_in_default">Đăng nhập</string>
     <string name="fui_continue">Tiếp tục</string>
     <string name="fui_tos_and_pp">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s và %2$s của chúng tôi.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Đã xảy ra lỗi mạng, hãy kiểm tra kết nối Internet của bạn.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Điện thoại</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_email">Địa chỉ email</string>
     <string name="fui_sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="fui_continue_with_google">Đăng nhập bằng Google</string>
     <string name="fui_sign_in_with_facebook">Đăng nhập bằng Facebook</string>
@@ -31,7 +30,7 @@
     <string name="fui_sign_in_with_yahoo">Đăng nhập bằng Yahoo</string>
     <string name="fui_continue_with_yahoo">Đăng nhập bằng Yahoo</string>
     <string name="fui_next_default">Tiếp</string>
-    <string name="fui_email_hint">Email</string>
+    <string name="fui_email_hint">Địa chỉ email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
     <string name="fui_country_hint">Quốc gia</string>
     <string name="fui_country_selector_title" translation_description="Country selector modal title">Chọn quốc gia</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Bạn không được để trống trường này.</string>
     <string name="fui_invalid_email_address">Địa chỉ email đó không đúng</string>
     <string name="fui_missing_email_address">Nhập địa chỉ email của bạn để tiếp tục</string>
-    <string name="fui_missing_first_and_last_name">Vui lòng nhập họ và tên.</string>
-    <string name="fui_progress_dialog_checking_accounts">Đang kiểm tra các tài khoản hiện có…</string>
     <string name="fui_title_register_email">Đăng ký</string>
     <string name="fui_name_hint">Họ và tên</string>
     <string name="fui_button_text_save">Lưu</string>
-    <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
     <string name="fui_terms_of_service">Điều khoản dịch vụ</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Bạn đã có tài khoản</string>
     <string name="fui_welcome_back_email_header">Chào mừng bạn quay trở lại!</string>
     <string name="fui_welcome_back_email_link_header">Bạn đã có tài khoản\n</string>
-    <string name="fui_welcome_back_idp_prompt">Bạn đã sử dụng %1$s. Đăng nhập bằng %2$s để tiếp tục.</string>
-    <string name="fui_welcome_back_password_prompt_body">Bạn đã sử dụng %1$s để đăng nhập. Hãy nhập mật khẩu của bạn cho tài khoản đó.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Bạn đã sử dụng %1$s. Bạn có thể kết nối tài khoản %2$s của mình với %1$s bằng cách đăng nhập vào liên kết email bên dưới.\n\nĐể quy trình kết nối tài khoản %2$s của bạn với email này diễn ra thành công, bạn phải mở đường liên kết trên cùng một thiết bị hoặc trình duyệt.</string>
-    <string name="fui_progress_dialog_signing_in">Đang đăng nhập…</string>
     <string name="fui_trouble_signing_in">Bạn gặp sự cố khi đăng nhập?</string>
     <string name="fui_title_recover_password_activity">Khôi phục mật khẩu</string>
     <string name="fui_title_confirm_recover_password">Kiểm tra email của bạn</string>
     <string name="fui_password_recovery_body">Xem hướng dẫn gửi tới email này có giải thích cách đặt lại mật khẩu của bạn.</string>
     <string name="fui_button_text_send">Gửi</string>
     <string name="fui_confirm_recovery_body">Làm theo hướng dẫn gửi tới %1$s để khôi phục mật khẩu của bạn.</string>
-    <string name="fui_progress_dialog_sending">Đang gửi…</string>
     <string name="fui_error_email_does_not_exist">Địa chỉ email đó không khớp với tài khoản hiện có</string>
     <string name="fui_error_unknown">Đã xảy ra lỗi không xác định.</string>
     <string name="fui_error_invalid_password">Sai mật khẩu.</string>
@@ -90,25 +81,20 @@
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>
     <string name="fui_resend_code_in">Gửi lại mã sau %1$s</string>
-    <string name="fui_verify_your_phone_title">Xác minh số điện thoại của bạn</string>
     <string name="fui_verifying">Đang xác minh…</string>
     <string name="fui_incorrect_code_dialog_body">Mã không chính xác. Hãy thử lại.</string>
     <string name="fui_error_too_many_attempts">Số điện thoại này đã được sử dụng quá nhiều lần</string>
-    <string name="fui_error_quota_exceeded">Đã xảy ra sự cố khi xác minh số điện thoại của bạn</string>
     <string name="fui_error_session_expired">Mã này không còn hợp lệ</string>
-    <string name="fui_sign_in_with_phone_number">Đăng nhập bằng số điện thoại</string>
-    <string name="fui_auto_verified">Đã tự động xác minh số điện thoại</string>
     <string name="fui_resend_code">Gửi lại mã</string>
     <string name="fui_verify_phone_number">Xác minh số điện thoại</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Dùng số điện thoại khác</string>
     <string name="fui_sms_terms_of_service">Bằng cách nhấn vào “%1$s”, bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s và %3$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Lỗi xác thực</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Thử lại</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Bạn cần xác minh thêm. Vui lòng hoàn tất quy trình xác thực nhiều yếu tố.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Bạn cần liên kết tài khoản. Vui lòng thử một phương thức đăng nhập khác.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Quá trình xác thực đã bị hủy. Vui lòng thử lại khi bạn sẵn sàng.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Chọn phương thức xác thực</string>
@@ -144,29 +130,11 @@
     <string name="fui_identity_verified_message">Đã xác minh danh tính. Thử lại hành động của bạn.</string>
     <string name="fui_manage_mfa_action">Quản lý xác thực hai yếu tố</string>
     <string name="fui_incorrect_password_error">Mật khẩu không đúng</string>
-    <string name="fui_mfa_choose_method_instruction">Chọn phương thức xác minh</string>
-    <string name="fui_mfa_enrollment_instruction">Thêm lớp bảo mật bổ sung</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Ứng dụng xác thực</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Số điện thoại này được liên kết với tài khoản khác</string>
-    <string name="fui_mfa_second_factor_required_error">Yêu cầu xác minh</string>
-    <string name="fui_mfa_setup_instruction">Quét mã QR bằng ứng dụng xác thực của bạn</string>
-    <string name="fui_mfa_totp_already_exists_error">Ứng dụng xác thực đã được thiết lập</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Bạn có chắc chắn muốn xóa phương thức này không?</string>
-    <string name="fui_mfa_unenrollment_error">Không thể xóa phương thức</string>
-    <string name="fui_mfa_unenrollment_success_message">Đã xóa phương thức</string>
-    <string name="fui_mfa_verification_instruction">Nhập mã xác minh</string>
-    <string name="fui_profile_update_error">Không thể cập nhật hồ sơ</string>
-    <string name="fui_profile_update_success_message">Đã cập nhật hồ sơ</string>
-    <string name="fui_reauth_instruction">Xác nhận danh tính của bạn để tiếp tục</string>
-    <string name="fui_reauth_required_error">Yêu cầu xác thực lại</string>
-    <string name="fui_reauth_success_message">Xác thực lại thành công</string>
-    <string name="fui_reauthenticate_action">Xác thực lại</string>
     <string name="fui_remove_action">Xóa</string>
     <string name="fui_resend_verification_email_action">Gửi lại email xác minh</string>
     <string name="fui_secret_key_label">Khóa bí mật</string>
     <string name="fui_sign_out_action">Đăng xuất</string>
-    <string name="fui_signed_in_as">Đã đăng nhập với tư cách</string>
+    <string name="fui_signed_in_as">Đã đăng nhập với tư cách %1$s</string>
     <string name="fui_skip_action">Bỏ qua</string>
     <string name="fui_use_different_method_action">Sử dụng phương thức khác</string>
     <string name="fui_verification_code_label">Mã xác minh</string>
@@ -176,4 +144,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Xác thực đa yếu tố hiện đang bị vô hiệu hóa</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Email hoặc mật khẩu không chính xác</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Phiên xác minh này không còn hợp lệ. Hãy yêu cầu mã mới.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Quá trình xác minh số điện thoại chưa hoàn tất. Hãy thử lại.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Thông tin đăng nhập này thuộc về một tài khoản khác.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Số điện thoại này chưa được thiết lập để xác minh trên tài khoản này.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Phiên đăng nhập của bạn đã hết hạn. Hãy đăng nhập lại để tiếp tục.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Đường liên kết này không còn hợp lệ. Hãy yêu cầu một đường liên kết mới.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Hãy xác minh địa chỉ email của bạn trước khi tiếp tục.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Phương thức xác minh này đã được thiết lập trên tài khoản này.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Bạn đã đạt đến giới hạn số phương thức xác minh trên tài khoản này.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Mật khẩu của bạn không đáp ứng các yêu cầu. Hãy thử mật khẩu khác.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Mật khẩu quá dài. Độ dài tối đa là %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Không tìm thấy mã xác thực cho tài khoản này. Hãy đăng nhập bằng cách khác.</string>
 </resources>

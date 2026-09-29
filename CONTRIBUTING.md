@@ -46,6 +46,7 @@ This will:
 - Copy the necessary `google-services.json` files
 - Download all dependencies
 - Build all modules
+- Run the R8/ProGuard gate
 - Run checkstyle
 - Run unit tests
 
@@ -145,6 +146,7 @@ commands can be run locally to highlight any issues before committing your code:
 This script runs:
 - `./gradlew clean`
 - `./gradlew assembleDebug` - Build all modules
+- `./gradlew proguard-tests:build` - Check the libraries' consumer ProGuard rules against R8
 - `./gradlew checkstyle` - Run code style checks
 - `./gradlew testDebugUnitTest -x :e2eTest:testDebugUnitTest` - Run unit tests
 

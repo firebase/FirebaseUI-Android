@@ -6,8 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
     id("kotlin-kapt")
-    // The slot demos host the auth screens on their own Navigation 3 back stacks, and a
-    // rememberNavBackStack key has to be @Serializable to survive process death.
+    // Nav3 back-stack keys must be @Serializable to survive process death.
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -39,6 +38,26 @@ android {
             }
         }
     }
+
+    lint {
+        // Module specific
+        disable += mutableSetOf(
+            // Reads the root wrapper, but only the application module analyses it, so it
+            // belongs here rather than in the shared policy. For reproducible builds.
+            "AndroidGradlePluginVersion",
+            // The demos log their auth callbacks unconditionally on purpose — watching
+            // logcat is how you see one fire. Unlike :auth's, none of these log user data.
+            "LogConditional",
+            // Glide's KSP processor does not generate GlideApp, which the storage demo and
+            // storage/README.md are both written around. Migration tracked separately.
+            "KaptUsageInsteadOfKsp",
+            // A themed icon needs a flat silhouette drawn for the purpose. The only
+            // candidate here is ic_launcher_foreground, whose opaque region is a solid
+            // plate, so it tints to a featureless block — worse than no monochrome layer.
+            "MonochromeLauncherIcon"
+        )
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -71,6 +90,7 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
 
     // Facebook
     implementation(libs.facebook.login)

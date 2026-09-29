@@ -23,6 +23,8 @@ import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -32,6 +34,7 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWebException
 import com.google.firebase.auth.FirebaseUser
@@ -444,4 +447,60 @@ class OAuthProviderFirebaseAuthUITest {
 
         assertThat(reportedFailures).isEmpty()
     }
+
+    // =============================================================================================
+    // Error message routing — the configured AuthUIStringProvider, not the device
+    // =============================================================================================
+
+    @Test
+    fun `signInWithProvider - failure message comes from the configured string provider`() =
+        runTest {
+            // "Those credentials are not valid", in Japanese.
+            val localizedMessage = "その認証情報は有効ではありません"
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setException(
+                FirebaseAuthInvalidCredentialsException(
+                    "ERROR_INVALID_CREDENTIAL",
+                    "The supplied auth credential is malformed or has expired."
+                )
+            )
+            `when`(mockFirebaseAuth.pendingAuthResult).thenReturn(null)
+            `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+            `when`(
+                mockFirebaseAuth.startActivityForSignInWithProvider(
+                    any<Activity>(),
+                    any<OAuthProvider>()
+                )
+            ).thenReturn(taskCompletionSource.task)
+
+            val githubProvider = AuthProvider.Github(customParameters = emptyMap())
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(githubProvider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorInvalidCredentials: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithProvider(
+                    applicationContext,
+                    activity = mockActivity,
+                    provider = githubProvider
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.InvalidCredentialsException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
 }

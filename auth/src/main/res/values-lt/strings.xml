@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Prisijungti</string>
     <string name="fui_continue">Tęsti</string>
     <string name="fui_tos_and_pp">Tęsdami nurodote, kad sutinkate su %1$s ir %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Tinklo klaida: patikrinkite interneto ryšį.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Šį lauką būtina užpildyti.</string>
     <string name="fui_invalid_email_address">Šis el. pašto adresas netinkamas</string>
     <string name="fui_missing_email_address">Norėdami tęsti įveskite el. pašto adresą</string>
-    <string name="fui_missing_first_and_last_name">Įveskite vardą ir pavardę.</string>
-    <string name="fui_progress_dialog_checking_accounts">Tikrinama, ar yra esamų paskyrų…</string>
     <string name="fui_title_register_email">Prisiregistruoti</string>
     <string name="fui_name_hint">Vardas ir pavardė</string>
     <string name="fui_button_text_save">Išsaugoti</string>
-    <string name="fui_progress_dialog_signing_up">Prisiregistruojama…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item> <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item> <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item> <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item> </plurals>
     <string name="fui_email_account_creation_error">El. pašto paskyros užregistruoti nepavyko</string>
     <string name="fui_terms_of_service">Paslaugų teikimo sąlygomis</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Jūs jau turite paskyrą</string>
     <string name="fui_welcome_back_email_header">Sveiki sugrįžę!</string>
     <string name="fui_welcome_back_email_link_header">Jau turite paskyrą\n</string>
-    <string name="fui_welcome_back_idp_prompt">Jau panaudojote %1$s.Jei norite tęsti, prisijunkite per „%2$s“.</string>
-    <string name="fui_welcome_back_password_prompt_body">Jūs jau prisijungėte naudodami %1$s. Įveskite tos paskyros slaptažodį.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Jau esate naudoję %1$s. Galite susieti „%2$s“ paskyrą su %1$s: prisijunkite naudodami el. laiško nuorodą toliau.\n\nJei norite vykdydami šį procesą sėkmingai susieti „%2$s“ paskyrą naudodami šį el. laišką, turite atidaryti nuorodą tame pačiame įrenginyje ar naršyklėje.</string>
-    <string name="fui_progress_dialog_signing_in">Prisijungiama…</string>
     <string name="fui_trouble_signing_in">Kyla problemų prisijungiant?</string>
     <string name="fui_title_recover_password_activity">Atkurti slaptažodį</string>
     <string name="fui_title_confirm_recover_password">Patikrinkite el. paštą</string>
     <string name="fui_password_recovery_body">Gaukite instrukcijas su nurodymais, kaip pakeisti slaptažodį, šiuo el. pašto adresu.</string>
     <string name="fui_button_text_send">Siųsti</string>
     <string name="fui_confirm_recovery_body">Vadovaudamiesi el. pašto adresu %1$s išsiųstais nurodymais atkurkite slaptažodį.</string>
-    <string name="fui_progress_dialog_sending">Siunčiama…</string>
     <string name="fui_error_email_does_not_exist">Šis el. pašto adresas neatitinka esamos paskyros</string>
     <string name="fui_error_unknown">Įvyko nežinoma klaida.</string>
     <string name="fui_error_invalid_password">Netinkamas slaptažodis.</string>
@@ -90,25 +81,20 @@
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>
     <string name="fui_resend_code_in">Siųsti kodą iš naujo po %1$s</string>
-    <string name="fui_verify_your_phone_title">Patvirtinti telefono numerį</string>
     <string name="fui_verifying">Patvirtinama…</string>
     <string name="fui_incorrect_code_dialog_body">Klaidingas kodas. Bandykite dar kartą.</string>
     <string name="fui_error_too_many_attempts">Šis telefono numeris panaudotas per daug kartų</string>
-    <string name="fui_error_quota_exceeded">Patvirtinant telefono numerį kilo problema</string>
     <string name="fui_error_session_expired">Šis kodas nebegalioja</string>
-    <string name="fui_sign_in_with_phone_number">Prisijungti nurodant telefono numerį</string>
-    <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Naudoti kitą telefono numerį</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
 
-    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
-    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
-    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
-    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
-    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentifikavimo klaida</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Bandykite dar kartą</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Reikalingas papildomas patvirtinimas. Užbaikite kelių veiksnių autentifikavimą.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Paskyrą reikia susieti. Išbandykite kitą prisijungimo būdą.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikavimas buvo atšauktas. Kai būsite pasirengę, bandykite dar kartą.</string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Pasirinkite autentifikavimo metodą</string>
@@ -144,29 +130,11 @@
     <string name="fui_identity_verified_message">Tapatybė patvirtinta. Bandykite dar kartą.</string>
     <string name="fui_manage_mfa_action">Tvarkyti dviejų veiksnių autentifikavimą</string>
     <string name="fui_incorrect_password_error">Neteisingas slaptažodis</string>
-    <string name="fui_mfa_choose_method_instruction">Pasirinkite patvirtinimo metodą</string>
-    <string name="fui_mfa_enrollment_instruction">Pridėkite papildomą saugumo sluoksnį</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Autentifikavimo programa</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Šis telefono numeris susietas su kita paskyra</string>
-    <string name="fui_mfa_second_factor_required_error">Reikalingas patvirtinimas</string>
-    <string name="fui_mfa_setup_instruction">Nuskaitykite QR kodą autentifikavimo programa</string>
-    <string name="fui_mfa_totp_already_exists_error">Autentifikavimo programa jau nustatyta</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Ar tikrai norite pašalinti šį metodą?</string>
-    <string name="fui_mfa_unenrollment_error">Nepavyko pašalinti metodo</string>
-    <string name="fui_mfa_unenrollment_success_message">Metodas pašalintas</string>
-    <string name="fui_mfa_verification_instruction">Įveskite patvirtinimo kodą</string>
-    <string name="fui_profile_update_error">Nepavyko atnaujinti profilio</string>
-    <string name="fui_profile_update_success_message">Profilis atnaujintas</string>
-    <string name="fui_reauth_instruction">Patvirtinkite savo tapatybę, kad tęstumėte</string>
-    <string name="fui_reauth_required_error">Reikalingas pakartotinis autentifikavimas</string>
-    <string name="fui_reauth_success_message">Pakartotinis autentifikavimas sėkmingas</string>
-    <string name="fui_reauthenticate_action">Autentifikuoti iš naujo</string>
     <string name="fui_remove_action">Pašalinti</string>
     <string name="fui_resend_verification_email_action">Siųsti patvirtinimo el. laišką iš naujo</string>
     <string name="fui_secret_key_label">Slaptasis raktas</string>
     <string name="fui_sign_out_action">Atsijungti</string>
-    <string name="fui_signed_in_as">Prisijungta kaip</string>
+    <string name="fui_signed_in_as">Prisijungta kaip %1$s</string>
     <string name="fui_skip_action">Praleisti</string>
     <string name="fui_use_different_method_action">Naudoti kitą metodą</string>
     <string name="fui_verification_code_label">Patvirtinimo kodas</string>
@@ -176,4 +144,17 @@
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Daugiafaktoris tapatybės nustatymas šiuo metu išjungtas</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Šis el. pašto adresas arba slaptažodis neteisingas</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Šis patvirtinimo seansas nebegalioja. Paprašykite naujo kodo.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Telefono numerio patvirtinimas nebuvo baigtas. Bandykite dar kartą.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Šie prisijungimo duomenys priklauso kitai paskyrai.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Šis telefono numeris nenustatytas kaip patvirtinimo būdas šioje paskyroje.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Jūsų prisijungimo seansas baigėsi. Norėdami tęsti, prisijunkite dar kartą.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Ši nuoroda nebegalioja. Paprašykite naujos.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Prieš tęsdami patvirtinkite savo el. pašto adresą.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Šis patvirtinimo būdas šioje paskyroje jau nustatytas.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Pasiekėte šios paskyros patvirtinimo būdų ribą.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Jūsų slaptažodis neatitinka reikalavimų. Išbandykite kitą.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Slaptažodis per ilgas. Didžiausias ilgis yra %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Nepavyko rasti šios paskyros prieigos rakto. Prisijunkite kitu būdu.</string>
 </resources>

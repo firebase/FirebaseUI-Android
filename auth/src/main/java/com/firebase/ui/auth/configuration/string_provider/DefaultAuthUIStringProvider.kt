@@ -26,6 +26,10 @@ class DefaultAuthUIStringProvider(
     /**
      * Allows overriding locale.
      */
+    // AppBundleLocaleChanges tells app modules to pair a dynamic locale change with a Play Core
+    // language download. A library cannot: the bundle configuration and any Play Core dependency
+    // belong to the app that embeds us, so there is nothing here to fix.
+    @Suppress("AppBundleLocaleChanges")
     private val localizedContext = locale?.let { locale ->
         context.createConfigurationContext(
             Configuration(context.resources.configuration).apply {
@@ -154,6 +158,9 @@ class DefaultAuthUIStringProvider(
 
     override fun passwordTooShort(minimumLength: Int): String =
         localizedContext.getString(R.string.fui_error_password_too_short, minimumLength)
+
+    override fun passwordTooLong(maximumLength: Int): String =
+        localizedContext.getString(R.string.fui_error_password_too_long, maximumLength)
 
     override val passwordMissingUppercase: String
         get() = localizedContext.getString(R.string.fui_error_password_missing_uppercase)
@@ -567,4 +574,43 @@ class DefaultAuthUIStringProvider(
 
     override val errorAuthCancelled: String
         get() = localizedContext.getString(R.string.fui_error_auth_cancelled)
+
+    override val errorIncorrectEmailOrPassword: String
+        get() = localizedContext.getString(R.string.fui_error_incorrect_email_or_password)
+
+    override val errorInvalidVerificationId: String
+        get() = localizedContext.getString(R.string.fui_error_invalid_verification_id)
+
+    override val errorRetryPhoneAuth: String
+        get() = localizedContext.getString(R.string.fui_error_retry_phone_auth)
+
+    override val errorUserMismatch: String
+        get() = localizedContext.getString(R.string.fui_error_user_mismatch)
+
+    override val errorPhoneNumberNotEnrolled: String
+        get() = localizedContext.getString(R.string.fui_error_phone_number_not_enrolled)
+
+    override val errorSessionExpired: String
+        get() = localizedContext.getString(R.string.fui_error_session_expired)
+
+    override val errorMultiFactorSessionExpired: String
+        get() = localizedContext.getString(R.string.fui_error_multi_factor_session_expired)
+
+    override val errorActionCodeInvalid: String
+        get() = localizedContext.getString(R.string.fui_error_action_code_invalid)
+
+    override val errorUnverifiedEmail: String
+        get() = localizedContext.getString(R.string.fui_error_unverified_email)
+
+    override val errorSecondFactorAlreadyEnrolled: String
+        get() = localizedContext.getString(R.string.fui_error_second_factor_already_enrolled)
+
+    override val errorMaximumSecondFactorCountExceeded: String
+        get() = localizedContext.getString(R.string.fui_error_maximum_second_factor_count_exceeded)
+
+    override val errorPasswordPolicyGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_password_policy_generic)
+
+    override val errorPasskeyNotFound: String
+        get() = localizedContext.getString(R.string.fui_error_passkey_not_found)
 }

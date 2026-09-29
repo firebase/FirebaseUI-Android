@@ -22,7 +22,6 @@ import kotlinx.coroutines.tasks.await
 internal fun AuthFlowScope.rememberAnonymousSignInHandler(
     onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
-    val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     return {
         coroutineScope.launch {
@@ -33,7 +32,7 @@ internal fun AuthFlowScope.rememberAnonymousSignInHandler(
                 emit(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
-                val authException = AuthException.from(e, context)
+                val authException = AuthException.from(e, config.stringProvider)
                 emit(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
@@ -63,7 +62,7 @@ internal suspend fun AuthFlowScope.signInAnonymously() {
         emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, config.stringProvider)
         emit(AuthState.Error(authException))
         throw authException
     }
