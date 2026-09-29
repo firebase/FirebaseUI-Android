@@ -152,6 +152,12 @@ dependencies {
     testImplementation(libs.kotlinx.serialization.json)
 
     debugImplementation(project(":internal:lintchecks"))
+
+    // Directly, not via :internal:lintchecks. That module declares lintChecks too, but
+    // lintChecks only applies to the module declaring it, and a debugImplementation
+    // dependency does not carry lint checks to the consumer — so the custom rules were never
+    // running here.
+    lintChecks(project(":internal:lint"))
 }
 
 kotlin {
