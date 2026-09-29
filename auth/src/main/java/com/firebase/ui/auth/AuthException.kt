@@ -329,7 +329,7 @@ abstract class AuthException(
      */
     class InvalidEmailLinkException(
         cause: Throwable? = null
-    ) : AuthException("You are are attempting to sign in with an invalid email link", cause)
+    ) : AuthException("You are attempting to sign in with an invalid email link", cause)
 
     /**
      * The email link is being used on a different device than where it was requested.
@@ -398,7 +398,7 @@ abstract class AuthException(
      */
     class EmailMismatchException(
         cause: Throwable? = null
-    ) : AuthException("You are are attempting to sign in a different email " +
+    ) : AuthException("You are attempting to sign in with a different email " +
             "than previously provided", cause)
 
     companion object {
