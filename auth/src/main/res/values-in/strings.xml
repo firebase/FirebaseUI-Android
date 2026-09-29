@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuat…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Melakukan inisialisasi</string>
+    <string name="fui_verification_code_digit_description">Digit %1$d dari %2$d kode verifikasi</string>
+    <string name="fui_enter_totp_code">Masukkan kode TOTP</string>
+    <string name="fui_text_field_read_only">Hanya baca</string>
+    <string name="fui_error_user_disabled">Akun pengguna telah dinonaktifkan</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Login sebagai tamu…</string>
+    <string name="fui_loading_signing_in_with_google">Login dengan Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Login dengan Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Login dengan %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Memverifikasi nomor telepon…</string>
+    <string name="fui_loading_submitting_verification_code">Mengirim kode verifikasi…</string>
+    <string name="fui_loading_signing_in_with_phone">Login dengan telepon…</string>
+    <string name="fui_loading_creating_user">Membuat akun…</string>
+    <string name="fui_loading_signing_in">Login…</string>
+    <string name="fui_loading_linking_credential">Login…</string>
+    <string name="fui_loading_sending_email_link">Mengirim link login…</string>
+    <string name="fui_loading_signing_in_with_email_link">Login dengan link email…</string>
+    <string name="fui_loading_sending_password_reset">Mengirim email reset sandi…</string>
+    <string name="fui_loading_signing_out">Keluar…</string>
+    <string name="fui_loading_reauth_retrying">Menyelesaikan tindakan…</string>
+    <string name="fui_loading_deleting_account">Menghapus akun…</string>
     <string name="fui_sign_in_default">Login</string>
     <string name="fui_continue">Lanjutkan</string>
     <string name="fui_tos_and_pp">Dengan melanjutkan, Anda menyatakan bahwa Anda menyetujui %1$s dan %2$s kami.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Coba lagi</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verifikasi tambahan diperlukan. Harap selesaikan autentikasi multi-faktor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Akun perlu ditautkan. Harap coba metode login yang lain.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifikasi identitas Anda</string>
+    <string name="fui_reauth_dialog_message">Demi keamanan Anda, masukkan kembali sandi untuk melanjutkan.</string>
+    <string name="fui_reauth_account_label">Akun: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentikasi gagal. Coba lagi.</string>
+    <string name="fui_reauth_password_required_notice">Mengonfirmasi identitas Anda di sini memerlukan sandi akun ini. Jika Anda login dengan link email, bukan sandi, akun ini tidak dapat dikonfirmasi dengan sandi.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Tidak ada metode login yang tersedia yang ditautkan ke akun Anda.</string>
+    <string name="fui_error_reauth_incomplete">Identitas Anda tidak dikonfirmasi untuk akun ini. Coba lagi.</string>
+    <string name="fui_error_reauth_interrupted">Konfirmasi identitas Anda terputus. Coba lagi tindakan Anda.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Anda tidak dapat membuat akun baru saat mengonfirmasi identitas Anda.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentikasi dibatalkan. Harap coba lagi saat Anda siap.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Siapkan Verifikasi SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Siapkan Aplikasi Autentikator</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifikasi Kode Anda</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Kelola autentikasi dua faktor</string>
+    <string name="fui_mfa_manage_factors_description">Tambahkan atau hapus metode autentikasi untuk akun Anda</string>
+    <string name="fui_mfa_active_methods_title">Metode aktif</string>
+    <string name="fui_mfa_add_new_method_title">Tambahkan metode baru</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Semua metode autentikasi yang tersedia telah didaftarkan</string>
+    <string name="fui_mfa_label_sms_authentication">Autentikasi SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Aplikasi autentikator</string>
+    <string name="fui_mfa_label_unknown_method">Metode tidak dikenal</string>
+    <string name="fui_mfa_enrolled_on">Didaftarkan pada %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Pindai kode QR atau masukkan kunci rahasia di aplikasi autentikator Anda</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pilih metode autentikasi kedua untuk mengamankan akun Anda</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Masukkan nomor telepon Anda untuk menerima kode verifikasi</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Lewati</string>
     <string name="fui_use_different_method_action">Gunakan metode lain</string>
     <string name="fui_verification_code_label">Kode verifikasi</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Lengkapi informasi profil Anda untuk melanjutkan.</string>
+    <string name="fui_profile_missing_fields_message">Kolom yang belum diisi: %1$s</string>
     <string name="fui_verified_email_action">Email terverifikasi</string>
     <string name="fui_verify_action">Verifikasi</string>
     <string name="fui_verify_email_instruction">Kami telah mengirim email verifikasi ke %1$s</string>

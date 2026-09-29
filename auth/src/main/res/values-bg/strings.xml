@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Зарежда се…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Инициализира се</string>
+    <string name="fui_verification_code_digit_description">Цифра %1$d от %2$d на кода за потвърждение</string>
+    <string name="fui_enter_totp_code">Въведете TOTP кода</string>
+    <string name="fui_text_field_read_only">Само за четене</string>
+    <string name="fui_error_user_disabled">Потребителският профил е деактивиран</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Влизате като гост…</string>
+    <string name="fui_loading_signing_in_with_google">Влизате с Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Влизате с Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Влизате с %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Телефонният номер се потвърждава…</string>
+    <string name="fui_loading_submitting_verification_code">Кодът за потвърждение се изпраща…</string>
+    <string name="fui_loading_signing_in_with_phone">Влизате с телефон…</string>
+    <string name="fui_loading_creating_user">Профилът се създава…</string>
+    <string name="fui_loading_signing_in">Влизате…</string>
+    <string name="fui_loading_linking_credential">Влизате…</string>
+    <string name="fui_loading_sending_email_link">Връзката за вход се изпраща…</string>
+    <string name="fui_loading_signing_in_with_email_link">Влизате чрез имейл връзка…</string>
+    <string name="fui_loading_sending_password_reset">Имейлът за нулиране на паролата се изпраща…</string>
+    <string name="fui_loading_signing_out">Излизате…</string>
+    <string name="fui_loading_reauth_retrying">Действието се завършва…</string>
+    <string name="fui_loading_deleting_account">Профилът се изтрива…</string>
     <string name="fui_sign_in_default">Вход</string>
     <string name="fui_continue">Напред</string>
     <string name="fui_tos_and_pp">Продължавайки, приемате нашите %1$s и %2$s.</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Опитай отново</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Необходима е допълнителна проверка. Моля, завършете многофакторното удостоверяване.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Акаунтът трябва да бъде свързан. Опитайте различен метод за влизане.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Потвърдете самоличността си</string>
+    <string name="fui_reauth_dialog_message">За вашата сигурност въведете отново паролата си, за да продължите.</string>
+    <string name="fui_reauth_account_label">Профил: %1$s</string>
+    <string name="fui_reauth_generic_error">Удостоверяването е неуспешно. Опитайте отново.</string>
+    <string name="fui_reauth_password_required_notice">Потвърждаването на самоличността ви тук изисква паролата на този профил. Ако влизате чрез имейл връзка вместо с парола, този профил не може да бъде потвърден с парола.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Нито един от наличните методи за влизане не е свързан с профила ви.</string>
+    <string name="fui_error_reauth_incomplete">Самоличността ви не беше потвърдена за този профил. Опитайте отново.</string>
+    <string name="fui_error_reauth_interrupted">Потвърждаването на самоличността ви беше прекъснато. Опитайте отново действието си.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Не можете да създадете нов профил, докато потвърждавате самоличността си.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Удостоверяването беше отменено. Опитайте отново, когато сте готови.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Настройте SMS проверка</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Настройте приложение за удостоверяване</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Потвърдете кода си</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Управление на двуфакторното удостоверяване</string>
+    <string name="fui_mfa_manage_factors_description">Добавяне или премахване на методи за удостоверяване за профила ви</string>
+    <string name="fui_mfa_active_methods_title">Активни методи</string>
+    <string name="fui_mfa_add_new_method_title">Добавяне на нов метод</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Всички налични методи за удостоверяване са регистрирани</string>
+    <string name="fui_mfa_label_sms_authentication">Удостоверяване чрез SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Приложение за удостоверяване</string>
+    <string name="fui_mfa_label_unknown_method">Неизвестен метод</string>
+    <string name="fui_mfa_enrolled_on">Регистриран на %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Сканирайте QR кода или въведете секретния ключ в приложението си за удостоверяване</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Изберете втори метод за удостоверяване, за да защитите акаунта си</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Въведете телефонния си номер, за да получавате кодове за проверка</string>
@@ -169,6 +214,9 @@
     <string name="fui_skip_action">Пропускане</string>
     <string name="fui_use_different_method_action">Използване на друг метод</string>
     <string name="fui_verification_code_label">Код за потвърждение</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Попълнете информацията в профила си, за да продължите.</string>
+    <string name="fui_profile_missing_fields_message">Липсващи полета: %1$s</string>
     <string name="fui_verified_email_action">Имейлът е потвърден</string>
     <string name="fui_verify_action">Потвърждаване</string>
     <string name="fui_verify_email_instruction">Изпратихме имейл за потвърждение до %1$s</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laden…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initialiseren</string>
+    <string name="fui_verification_code_digit_description">Cijfer %1$d van %2$d van de verificatiecode</string>
+    <string name="fui_enter_totp_code">Voer TOTP-code in</string>
+    <string name="fui_text_field_read_only">Alleen-lezen</string>
+    <string name="fui_error_user_disabled">Het gebruikersaccount is uitgeschakeld</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Inloggen als gast…</string>
+    <string name="fui_loading_signing_in_with_google">Inloggen met Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Inloggen met Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Inloggen met %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Telefoonnummer verifiëren…</string>
+    <string name="fui_loading_submitting_verification_code">Verificatiecode verzenden…</string>
+    <string name="fui_loading_signing_in_with_phone">Inloggen met telefoon…</string>
+    <string name="fui_loading_creating_user">Account maken…</string>
+    <string name="fui_loading_signing_in">Inloggen…</string>
+    <string name="fui_loading_linking_credential">Inloggen…</string>
+    <string name="fui_loading_sending_email_link">Inloglink verzenden…</string>
+    <string name="fui_loading_signing_in_with_email_link">Inloggen met e-maillink…</string>
+    <string name="fui_loading_sending_password_reset">E-mail voor wachtwoordherstel verzenden…</string>
+    <string name="fui_loading_signing_out">Uitloggen…</string>
+    <string name="fui_loading_reauth_retrying">Actie voltooien…</string>
+    <string name="fui_loading_deleting_account">Account verwijderen…</string>
     <string name="fui_sign_in_default">Inloggen</string>
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>
@@ -107,6 +130,18 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Opnieuw proberen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account moet worden gekoppeld. Probeer een andere inlogmethode.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifieer je identiteit</string>
+    <string name="fui_reauth_dialog_message">Voer voor je veiligheid je wachtwoord opnieuw in om door te gaan.</string>
+    <!-- Identical to English: "account" is the word in this language. -->
+    <string name="fui_reauth_account_label" tools:ignore="UntranslatedResource">Account: %1$s</string>
+    <string name="fui_reauth_generic_error">Authenticatie mislukt. Probeer het opnieuw.</string>
+    <string name="fui_reauth_password_required_notice">Het bevestigen van je identiteit vereist hier het wachtwoord van dit account. Als je inlogt met een e-maillink in plaats van een wachtwoord, kan dit account niet met een wachtwoord worden bevestigd.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Geen van de beschikbare inlogmethoden is gekoppeld aan je account.</string>
+    <string name="fui_error_reauth_incomplete">Je identiteit is niet bevestigd voor dit account. Probeer het opnieuw.</string>
+    <string name="fui_error_reauth_interrupted">Het bevestigen van je identiteit is onderbroken. Probeer je actie opnieuw.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Je kunt geen nieuw account maken terwijl je je identiteit bevestigt.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authenticatie is geannuleerd. Probeer opnieuw wanneer u klaar bent.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-verificatie instellen</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-app instellen</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code verifiëren</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Tweefactorauthenticatie beheren</string>
+    <string name="fui_mfa_manage_factors_description">Authenticatiemethoden voor je account toevoegen of verwijderen</string>
+    <string name="fui_mfa_active_methods_title">Actieve methoden</string>
+    <string name="fui_mfa_add_new_method_title">Nieuwe methode toevoegen</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alle beschikbare authenticatiemethoden zijn geregistreerd</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-authenticatie</string>
+    <string name="fui_mfa_label_totp_authentication">Authenticatie-app</string>
+    <string name="fui_mfa_label_unknown_method">Onbekende methode</string>
+    <string name="fui_mfa_enrolled_on">Geregistreerd op %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Scan de QR-code of voer de geheime sleutel in je authenticatie-app in</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selecteer een tweede authenticatiemethode om je account te beveiligen</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Voer je telefoonnummer in om verificatiecodes te ontvangen</string>
@@ -169,6 +215,9 @@
     <string name="fui_skip_action">Overslaan</string>
     <string name="fui_use_different_method_action">Gebruik een andere methode</string>
     <string name="fui_verification_code_label">Verificatiecode</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Vul je profielgegevens in om door te gaan.</string>
+    <string name="fui_profile_missing_fields_message">Ontbrekende velden: %1$s</string>
     <string name="fui_verified_email_action">E-mail geverifieerd</string>
     <string name="fui_verify_action">Verifiëren</string>
     <string name="fui_verify_email_instruction">We hebben een verificatie-e-mail verzonden naar %1$s</string>

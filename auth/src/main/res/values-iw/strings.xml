@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">טוען…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">מאתחל</string>
+    <string name="fui_verification_code_digit_description">ספרה %1$d מתוך %2$d של קוד האימות</string>
+    <string name="fui_enter_totp_code">הזן קוד TOTP</string>
+    <string name="fui_text_field_read_only">לקריאה בלבד</string>
+    <string name="fui_error_user_disabled">חשבון המשתמש הושבת</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">נכנס כאורח…</string>
+    <string name="fui_loading_signing_in_with_google">נכנס באמצעות Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">נכנס באמצעות Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">נכנס באמצעות %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">מאמת את מספר הטלפון…</string>
+    <string name="fui_loading_submitting_verification_code">שולח את קוד האימות…</string>
+    <string name="fui_loading_signing_in_with_phone">נכנס באמצעות טלפון…</string>
+    <string name="fui_loading_creating_user">יוצר חשבון…</string>
+    <string name="fui_loading_signing_in">נכנס…</string>
+    <string name="fui_loading_linking_credential">נכנס…</string>
+    <string name="fui_loading_sending_email_link">שולח קישור כניסה…</string>
+    <string name="fui_loading_signing_in_with_email_link">נכנס באמצעות קישור אימייל…</string>
+    <string name="fui_loading_sending_password_reset">שולח אימייל לאיפוס הסיסמה…</string>
+    <string name="fui_loading_signing_out">מתנתק…</string>
+    <string name="fui_loading_reauth_retrying">משלים את הפעולה…</string>
+    <string name="fui_loading_deleting_account">מוחק את החשבון…</string>
     <string name="fui_sign_in_default">כניסה</string>
     <string name="fui_continue">המשך</string>
     <string name="fui_tos_and_pp">המשך התהליך יפורש כהסכמתך ל%1$s ול%2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">נסה שוב</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">נדרש אימות נוסף. יש להשלים אימות רב-שלבי.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">יש לקשר את החשבון. יש לנסות שיטת כניסה אחרת.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">אימות הזהות שלך</string>
+    <string name="fui_reauth_dialog_message">למען אבטחתך, יש להזין שוב את הסיסמה כדי להמשיך.</string>
+    <string name="fui_reauth_account_label">חשבון: %1$s</string>
+    <string name="fui_reauth_generic_error">האימות נכשל. יש לנסות שוב.</string>
+    <string name="fui_reauth_password_required_notice">אימות הזהות שלך כאן מחייב את הסיסמה של החשבון הזה. אם נכנסת באמצעות קישור אימייל במקום סיסמה, לא ניתן לאמת את החשבון הזה באמצעות סיסמה.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">אף אחת משיטות הכניסה הזמינות אינה מקושרת לחשבון שלך.</string>
+    <string name="fui_error_reauth_incomplete">זהותך לא אומתה עבור חשבון זה. יש לנסות שוב.</string>
+    <string name="fui_error_reauth_interrupted">אימות הזהות שלך הופסק. יש לנסות שוב את הפעולה.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">לא ניתן ליצור חשבון חדש בזמן אימות הזהות.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">האימות בוטל. יש לנסות שוב כשתהיו מוכנים.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">הגדר אימות SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">הגדר אפליקציית מאמת</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">אמת את הקוד שלך</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">ניהול אימות דו-שלבי</string>
+    <string name="fui_mfa_manage_factors_description">הוספה או הסרה של שיטות אימות לחשבון שלך</string>
+    <string name="fui_mfa_active_methods_title">שיטות פעילות</string>
+    <string name="fui_mfa_add_new_method_title">הוספת שיטה חדשה</string>
+    <string name="fui_mfa_all_methods_enrolled_message">כל שיטות האימות הזמינות רשומות</string>
+    <string name="fui_mfa_label_sms_authentication">אימות באמצעות SMS</string>
+    <string name="fui_mfa_label_totp_authentication">אפליקציית אימות</string>
+    <string name="fui_mfa_label_unknown_method">שיטה לא ידועה</string>
+    <string name="fui_mfa_enrolled_on">נרשם בתאריך %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">סרוק את קוד ה-QR או הזן את המפתח הסודי באפליקציית האימות שלך</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">בחר שיטת אימות שנייה כדי לאבטח את החשבון שלך</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">הזן את מספר הטלפון שלך כדי לקבל קודי אימות</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">דלג</string>
     <string name="fui_use_different_method_action">השתמש בשיטה אחרת</string>
     <string name="fui_verification_code_label">קוד אימות</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">יש להשלים את פרטי הפרופיל שלך כדי להמשיך.</string>
+    <string name="fui_profile_missing_fields_message">שדות חסרים: %1$s</string>
     <string name="fui_verified_email_action">אימייל מאומת</string>
     <string name="fui_verify_action">אמת</string>
     <string name="fui_verify_email_instruction">שלחנו אימייל אימות אל %1$s</string>

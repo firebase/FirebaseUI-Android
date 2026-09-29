@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Läser in…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Initierar</string>
+    <string name="fui_verification_code_digit_description">Siffra %1$d av %2$d i verifieringskoden</string>
+    <string name="fui_enter_totp_code">Ange TOTP-kod</string>
+    <string name="fui_text_field_read_only">Skrivskyddad</string>
+    <string name="fui_error_user_disabled">Användarkontot har inaktiverats</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Loggar in som gäst…</string>
+    <string name="fui_loading_signing_in_with_google">Loggar in med Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Loggar in med Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Loggar in med %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Verifierar telefonnummer…</string>
+    <string name="fui_loading_submitting_verification_code">Skickar verifieringskod…</string>
+    <string name="fui_loading_signing_in_with_phone">Loggar in med telefon…</string>
+    <string name="fui_loading_creating_user">Skapar konto…</string>
+    <string name="fui_loading_signing_in">Loggar in…</string>
+    <string name="fui_loading_linking_credential">Loggar in…</string>
+    <string name="fui_loading_sending_email_link">Skickar inloggningslänk…</string>
+    <string name="fui_loading_signing_in_with_email_link">Loggar in med e-postlänk…</string>
+    <string name="fui_loading_sending_password_reset">Skickar e-post för lösenordsåterställning…</string>
+    <string name="fui_loading_signing_out">Loggar ut…</string>
+    <string name="fui_loading_reauth_retrying">Slutför åtgärden…</string>
+    <string name="fui_loading_deleting_account">Tar bort konto…</string>
     <string name="fui_sign_in_default">Logga in</string>
     <string name="fui_continue">Fortsätt</string>
     <string name="fui_tos_and_pp">Genom att fortsätta godkänner du våra %1$s och vår %2$s.</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Försök igen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontot måste länkas. Försök med en annan inloggningsmetod.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verifiera din identitet</string>
+    <string name="fui_reauth_dialog_message">För din säkerhet, ange ditt lösenord igen för att fortsätta.</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentiseringen misslyckades. Försök igen.</string>
+    <string name="fui_reauth_password_required_notice">För att bekräfta din identitet här krävs lösenordet för det här kontot. Om du loggar in med en e-postlänk i stället för ett lösenord kan det här kontot inte bekräftas med ett lösenord.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Ingen av de tillgängliga inloggningsmetoderna är länkad till ditt konto.</string>
+    <string name="fui_error_reauth_incomplete">Din identitet bekräftades inte för det här kontot. Försök igen.</string>
+    <string name="fui_error_reauth_interrupted">Bekräftelsen av din identitet avbröts. Försök din åtgärd igen.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Du kan inte skapa ett nytt konto medan du bekräftar din identitet.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentisering avbröts. Försök igen när du är redo.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurera SMS-verifiering</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurera autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiera din kod</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Hantera tvåfaktorsautentisering</string>
+    <string name="fui_mfa_manage_factors_description">Lägg till eller ta bort autentiseringsmetoder för ditt konto</string>
+    <string name="fui_mfa_active_methods_title">Aktiva metoder</string>
+    <string name="fui_mfa_add_new_method_title">Lägg till ny metod</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alla tillgängliga autentiseringsmetoder är registrerade</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-autentisering</string>
+    <string name="fui_mfa_label_totp_authentication">Autentiseringsapp</string>
+    <string name="fui_mfa_label_unknown_method">Okänd metod</string>
+    <string name="fui_mfa_enrolled_on">Registrerad %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skanna QR-koden eller ange den hemliga nyckeln i din autentiseringsapp</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Välj en andra autentiseringsmetod för att skydda ditt konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ange ditt telefonnummer för att ta emot verifieringskoder</string>
@@ -169,6 +214,9 @@
     <string name="fui_skip_action">Hoppa över</string>
     <string name="fui_use_different_method_action">Använd en annan metod</string>
     <string name="fui_verification_code_label">Verifieringskod</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Fyll i dina profiluppgifter för att fortsätta.</string>
+    <string name="fui_profile_missing_fields_message">Fält som saknas: %1$s</string>
     <string name="fui_verified_email_action">E-post verifierad</string>
     <string name="fui_verify_action">Verifiera</string>
     <string name="fui_verify_email_instruction">Vi har skickat ett verifieringsmail till %1$s</string>

@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">شروع ہو رہا ہے</string>
+    <string name="fui_verification_code_digit_description">توثیقی کوڈ کا %2$d میں سے %1$d ہندسہ</string>
+    <string name="fui_enter_totp_code">TOTP کوڈ درج کریں</string>
+    <string name="fui_text_field_read_only">صرف پڑھنے کے لیے</string>
+    <string name="fui_error_user_disabled">صارف اکاؤنٹ غیر فعال کر دیا گیا ہے</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">مہمان کے طور پر سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_signing_in_with_google">Google کے ساتھ سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook کے ساتھ سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s کے ساتھ سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_verifying_phone_number">فون نمبر کی توثیق ہو رہی ہے…</string>
+    <string name="fui_loading_submitting_verification_code">توثیقی کوڈ بھیجا جا رہا ہے…</string>
+    <string name="fui_loading_signing_in_with_phone">فون سے سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_creating_user">اکاؤنٹ بنایا جا رہا ہے…</string>
+    <string name="fui_loading_signing_in">سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_linking_credential">سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_sending_email_link">سائن ان لنک بھیجا جا رہا ہے…</string>
+    <string name="fui_loading_signing_in_with_email_link">ای میل لنک سے سائن ان ہو رہا ہے…</string>
+    <string name="fui_loading_sending_password_reset">پاس ورڈ ری سیٹ ای میل بھیجی جا رہی ہے…</string>
+    <string name="fui_loading_signing_out">سائن آؤٹ ہو رہا ہے…</string>
+    <string name="fui_loading_reauth_retrying">کارروائی مکمل ہو رہی ہے…</string>
+    <string name="fui_loading_deleting_account">اکاؤنٹ حذف ہو رہا ہے…</string>
     <string name="fui_sign_in_default">سائن ان کریں</string>
     <string name="fui_continue">جاری رکھیں</string>
     <string name="fui_tos_and_pp">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s اور %2$s کو قبول کرتے ہیں۔</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوبارہ کوشش کریں</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">اضافی تصدیق درکار ہے۔ براہ کرم کثیر عنصری تصدیق مکمل کریں۔</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">اکاؤنٹ کو لنک کرنے کی ضرورت ہے۔ براہ کرم مختلف سائن ان طریقہ آزمائیں۔</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">اپنی شناخت کی توثیق کریں</string>
+    <string name="fui_reauth_dialog_message">آپ کی سیکیورٹی کے لیے، جاری رکھنے کے لیے اپنا پاس ورڈ دوبارہ درج کریں۔</string>
+    <string name="fui_reauth_account_label">اکاؤنٹ: %1$s</string>
+    <string name="fui_reauth_generic_error">توثیق ناکام ہو گئی۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_reauth_password_required_notice">یہاں آپ کی شناخت کی تصدیق کے لیے اس اکاؤنٹ کا پاس ورڈ درکار ہے۔ اگر آپ پاس ورڈ کے بجائے ای میل لنک سے سائن ان کرتے ہیں، تو اس اکاؤنٹ کی تصدیق پاس ورڈ سے نہیں کی جا سکتی۔</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">دستیاب سائن ان طریقوں میں سے کوئی بھی آپ کے اکاؤنٹ سے لنک نہیں ہے۔</string>
+    <string name="fui_error_reauth_incomplete">اس اکاؤنٹ کے لیے آپ کی شناخت کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_error_reauth_interrupted">آپ کی شناخت کی تصدیق میں خلل آیا۔ اپنا عمل دوبارہ آزمائیں۔</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">شناخت کی تصدیق کے دوران آپ نیا اکاؤنٹ نہیں بنا سکتے۔</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تصدیق منسوخ کر دی گئی۔ تیار ہونے پر دوبارہ کوشش کریں۔</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS تصدیق سیٹ اپ کریں</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">تصدیقی ایپ سیٹ اپ کریں</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">اپنا کوڈ تصدیق کریں</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">دو عنصری توثیق کا نظم کریں</string>
+    <string name="fui_mfa_manage_factors_description">اپنے اکاؤنٹ کے لیے توثیق کے طریقے شامل کریں یا ہٹائیں</string>
+    <string name="fui_mfa_active_methods_title">فعال طریقے</string>
+    <string name="fui_mfa_add_new_method_title">نیا طریقہ شامل کریں</string>
+    <string name="fui_mfa_all_methods_enrolled_message">تمام دستیاب توثیقی طریقے رجسٹرڈ ہیں</string>
+    <string name="fui_mfa_label_sms_authentication">SMS توثیق</string>
+    <string name="fui_mfa_label_totp_authentication">تصدیقی ایپ</string>
+    <string name="fui_mfa_label_unknown_method">نامعلوم طریقہ</string>
+    <string name="fui_mfa_enrolled_on">%1$s کو رجسٹر کیا گیا</string>
+    <string name="fui_mfa_setup_authenticator_description">QR کوڈ اسکین کریں یا اپنی تصدیقی ایپ میں خفیہ کلید درج کریں</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اپنے اکاؤنٹ کو محفوظ بنانے کے لیے دوسرا تصدیقی طریقہ منتخب کریں</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">تصدیقی کوڈز وصول کرنے کے لیے اپنا فون نمبر درج کریں</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">چھوڑیں</string>
     <string name="fui_use_different_method_action">ایک مختلف طریقہ استعمال کریں</string>
     <string name="fui_verification_code_label">تصدیقی کوڈ</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">جاری رکھنے کے لیے اپنی پروفائل کی معلومات مکمل کریں۔</string>
+    <string name="fui_profile_missing_fields_message">غائب فیلڈز: %1$s</string>
     <string name="fui_verified_email_action">ای میل تصدیق شدہ</string>
     <string name="fui_verify_action">تصدیق کریں</string>
     <string name="fui_verify_email_instruction">ہم نے %1$s کو تصدیقی ای میل بھیجی</string>

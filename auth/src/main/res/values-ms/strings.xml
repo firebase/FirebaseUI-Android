@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuatkan…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Memulakan</string>
+    <string name="fui_verification_code_digit_description">Digit %1$d daripada %2$d kod pengesahan</string>
+    <string name="fui_enter_totp_code">Masukkan kod TOTP</string>
+    <string name="fui_text_field_read_only">Baca sahaja</string>
+    <string name="fui_error_user_disabled">Akaun pengguna telah dilumpuhkan</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Log masuk sebagai tetamu…</string>
+    <string name="fui_loading_signing_in_with_google">Log masuk dengan Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Log masuk dengan Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Log masuk dengan %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Mengesahkan nombor telefon…</string>
+    <string name="fui_loading_submitting_verification_code">Menghantar kod pengesahan…</string>
+    <string name="fui_loading_signing_in_with_phone">Log masuk dengan telefon…</string>
+    <string name="fui_loading_creating_user">Mencipta akaun…</string>
+    <string name="fui_loading_signing_in">Log masuk…</string>
+    <string name="fui_loading_linking_credential">Log masuk…</string>
+    <string name="fui_loading_sending_email_link">Menghantar pautan log masuk…</string>
+    <string name="fui_loading_signing_in_with_email_link">Log masuk dengan pautan e-mel…</string>
+    <string name="fui_loading_sending_password_reset">Menghantar e-mel tetapan semula kata laluan…</string>
+    <string name="fui_loading_signing_out">Log keluar…</string>
+    <string name="fui_loading_reauth_retrying">Menyelesaikan tindakan…</string>
+    <string name="fui_loading_deleting_account">Memadamkan akaun…</string>
     <string name="fui_sign_in_default">Log masuk</string>
     <string name="fui_continue">Teruskan</string>
     <string name="fui_tos_and_pp">Dengan meneruskan, anda menyatakan bahawa anda menerima %1$s dan %2$s kami.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Cuba lagi</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Pengesahan tambahan diperlukan. Sila lengkapkan pengesahan berbilang faktor.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Akaun perlu dipautkan. Sila cuba kaedah log masuk yang lain.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Sahkan identiti anda</string>
+    <string name="fui_reauth_dialog_message">Demi keselamatan anda, masukkan semula kata laluan anda untuk meneruskan.</string>
+    <string name="fui_reauth_account_label">Akaun: %1$s</string>
+    <string name="fui_reauth_generic_error">Pengesahan gagal. Cuba lagi.</string>
+    <string name="fui_reauth_password_required_notice">Mengesahkan identiti anda di sini memerlukan kata laluan akaun ini. Jika anda log masuk dengan pautan e-mel dan bukan kata laluan, akaun ini tidak boleh disahkan dengan kata laluan.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Tiada satu pun kaedah log masuk yang tersedia dipautkan ke akaun anda.</string>
+    <string name="fui_error_reauth_incomplete">Identiti anda tidak disahkan untuk akaun ini. Cuba lagi.</string>
+    <string name="fui_error_reauth_interrupted">Pengesahan identiti anda terganggu. Cuba tindakan anda semula.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Anda tidak boleh mencipta akaun baharu semasa mengesahkan identiti anda.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Pengesahan dibatalkan. Sila cuba lagi apabila anda bersedia.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Sediakan Pengesahan SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Sediakan Aplikasi Pengesah</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Sahkan Kod Anda</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Urus pengesahan dua faktor</string>
+    <string name="fui_mfa_manage_factors_description">Tambah atau alih keluar kaedah pengesahan untuk akaun anda</string>
+    <string name="fui_mfa_active_methods_title">Kaedah aktif</string>
+    <string name="fui_mfa_add_new_method_title">Tambah kaedah baharu</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Semua kaedah pengesahan yang tersedia telah didaftarkan</string>
+    <string name="fui_mfa_label_sms_authentication">Pengesahan SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Apl pengesahan</string>
+    <string name="fui_mfa_label_unknown_method">Kaedah tidak diketahui</string>
+    <string name="fui_mfa_enrolled_on">Didaftarkan pada %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Imbas kod QR atau masukkan kunci rahsia dalam apl pengesahan anda</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pilih kaedah pengesahan kedua untuk melindungi akaun anda</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Masukkan nombor telefon anda untuk menerima kod pengesahan</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Langkau</string>
     <string name="fui_use_different_method_action">Gunakan kaedah lain</string>
     <string name="fui_verification_code_label">Kod pengesahan</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Lengkapkan maklumat profil anda untuk meneruskan.</string>
+    <string name="fui_profile_missing_fields_message">Medan yang tiada: %1$s</string>
     <string name="fui_verified_email_action">E-mel disahkan</string>
     <string name="fui_verify_action">Sahkan</string>
     <string name="fui_verify_email_instruction">Kami menghantar e-mel pengesahan ke %1$s</string>

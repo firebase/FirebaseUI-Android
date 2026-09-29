@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítava sa…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializuje sa</string>
+    <string name="fui_verification_code_digit_description">Číslica %1$d z %2$d overovacieho kódu</string>
+    <string name="fui_enter_totp_code">Zadajte kód TOTP</string>
+    <string name="fui_text_field_read_only">Iba na čítanie</string>
+    <string name="fui_error_user_disabled">Používateľský účet bol deaktivovaný</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Prihlasovanie ako hosť…</string>
+    <string name="fui_loading_signing_in_with_google">Prihlasovanie účtom Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Prihlasovanie účtom Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Prihlasovanie účtom %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Overuje sa telefónne číslo…</string>
+    <string name="fui_loading_submitting_verification_code">Odosiela sa overovací kód…</string>
+    <string name="fui_loading_signing_in_with_phone">Prihlasovanie telefónom…</string>
+    <string name="fui_loading_creating_user">Vytvára sa účet…</string>
+    <string name="fui_loading_signing_in">Prihlasovanie…</string>
+    <string name="fui_loading_linking_credential">Prihlasovanie…</string>
+    <string name="fui_loading_sending_email_link">Odosiela sa odkaz na prihlásenie…</string>
+    <string name="fui_loading_signing_in_with_email_link">Prihlasovanie pomocou e-mailového odkazu…</string>
+    <string name="fui_loading_sending_password_reset">Odosiela sa e-mail na obnovenie hesla…</string>
+    <string name="fui_loading_signing_out">Odhlasovanie…</string>
+    <string name="fui_loading_reauth_retrying">Dokončuje sa akcia…</string>
+    <string name="fui_loading_deleting_account">Odstraňuje sa účet…</string>
     <string name="fui_sign_in_default">Prihlásiť sa</string>
     <string name="fui_continue">Pokračovať</string>
     <string name="fui_tos_and_pp">Pokračovaním vyjadrujete súhlas s dokumentmi %1$s a %2$s.</string>
@@ -107,6 +130,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Skúsiť znova</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžaduje sa dodatočné overenie. Dokončite prosím viacfaktorové overenie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je potrebné prepojiť. Skúste iný spôsob prihlásenia.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Overte svoju identitu</string>
+    <string name="fui_reauth_dialog_message">Z bezpečnostných dôvodov zadajte znova heslo a pokračujte.</string>
+    <string name="fui_reauth_account_label">Účet: %1$s</string>
+    <string name="fui_reauth_generic_error">Overenie zlyhalo. Skúste to znova.</string>
+    <string name="fui_reauth_password_required_notice">Potvrdenie vašej identity tu vyžaduje heslo tohto účtu. Ak sa prihlasujete pomocou e-mailového odkazu namiesto hesla, tento účet nie je možné potvrdiť heslom.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Žiadny z dostupných spôsobov prihlásenia nie je prepojený s vaším účtom.</string>
+    <string name="fui_error_reauth_incomplete">Vašu identitu sa pre tento účet nepodarilo potvrdiť. Skúste to znova.</string>
+    <string name="fui_error_reauth_interrupted">Potvrdzovanie vašej identity bolo prerušené. Skúste akciu znova.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Počas potvrdzovania identity nemôžete vytvoriť nový účet.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Overenie bolo zrušené. Skúste znova keď budete pripravení.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +148,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastaviť overenie SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastaviť overovaciu aplikáciu</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Overte svoj kód</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Spravovať dvojfaktorové overenie</string>
+    <string name="fui_mfa_manage_factors_description">Pridanie alebo odstránenie metód overenia pre váš účet</string>
+    <string name="fui_mfa_active_methods_title">Aktívne metódy</string>
+    <string name="fui_mfa_add_new_method_title">Pridať novú metódu</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Všetky dostupné metódy overenia sú zaregistrované</string>
+    <string name="fui_mfa_label_sms_authentication">Overenie pomocou SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Overovacia aplikácia</string>
+    <string name="fui_mfa_label_unknown_method">Neznáma metóda</string>
+    <string name="fui_mfa_enrolled_on">Zaregistrované %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Naskenujte QR kód alebo zadajte tajný kľúč v overovacej aplikácii</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vyberte druhú metódu overenia na zabezpečenie účtu</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Zadajte telefónne číslo na príjem overovacích kódov</string>
@@ -169,6 +214,9 @@
     <string name="fui_skip_action">Preskočiť</string>
     <string name="fui_use_different_method_action">Použiť inú metódu</string>
     <string name="fui_verification_code_label">Overovací kód</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Doplňte informácie vo svojom profile a pokračujte.</string>
+    <string name="fui_profile_missing_fields_message">Chýbajúce polia: %1$s</string>
     <string name="fui_verified_email_action">E-mail overený</string>
     <string name="fui_verify_action">Overiť</string>
     <string name="fui_verify_email_instruction">Poslali sme overovací e-mail na adresu %1$s</string>

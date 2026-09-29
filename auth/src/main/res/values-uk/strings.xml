@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Завантаження…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Ініціалізація</string>
+    <string name="fui_verification_code_digit_description">Цифра %1$d з %2$d коду підтвердження</string>
+    <string name="fui_enter_totp_code">Введіть код TOTP</string>
+    <string name="fui_text_field_read_only">Лише для читання</string>
+    <string name="fui_error_user_disabled">Обліковий запис користувача вимкнено</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Виконується вхід як гість…</string>
+    <string name="fui_loading_signing_in_with_google">Виконується вхід через Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Виконується вхід через Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Виконується вхід через %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Підтвердження номера телефону…</string>
+    <string name="fui_loading_submitting_verification_code">Надсилання коду підтвердження…</string>
+    <string name="fui_loading_signing_in_with_phone">Виконується вхід за номером телефону…</string>
+    <string name="fui_loading_creating_user">Створення облікового запису…</string>
+    <string name="fui_loading_signing_in">Виконується вхід…</string>
+    <string name="fui_loading_linking_credential">Виконується вхід…</string>
+    <string name="fui_loading_sending_email_link">Надсилання посилання для входу…</string>
+    <string name="fui_loading_signing_in_with_email_link">Виконується вхід за посиланням з електронного листа…</string>
+    <string name="fui_loading_sending_password_reset">Надсилання листа для скидання пароля…</string>
+    <string name="fui_loading_signing_out">Виконується вихід…</string>
+    <string name="fui_loading_reauth_retrying">Завершення дії…</string>
+    <string name="fui_loading_deleting_account">Видалення облікового запису…</string>
     <string name="fui_sign_in_default">Увійти</string>
     <string name="fui_continue">Продовжити</string>
     <string name="fui_tos_and_pp">Продовжуючи, ви приймаєте такі документи: %1$s і %2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторити спробу</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Потрібне додаткове підтвердження. Виконайте багатофакторну автентифікацію.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Обліковий запис потрібно зв\'язати. Спробуйте інший спосіб входу.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Підтвердіть свою особу</string>
+    <string name="fui_reauth_dialog_message">З міркувань безпеки введіть пароль ще раз, щоб продовжити.</string>
+    <string name="fui_reauth_account_label">Обліковий запис: %1$s</string>
+    <string name="fui_reauth_generic_error">Не вдалося виконати автентифікацію. Повторіть спробу.</string>
+    <string name="fui_reauth_password_required_notice">Щоб підтвердити тут вашу особу, потрібен пароль цього облікового запису. Якщо ви входите за посиланням з електронного листа, а не за паролем, цей обліковий запис не можна підтвердити паролем.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Жоден із доступних способів входу не зв\'язаний з вашим обліковим записом.</string>
+    <string name="fui_error_reauth_incomplete">Не вдалося підтвердити вашу особу для цього облікового запису. Повторіть спробу.</string>
+    <string name="fui_error_reauth_interrupted">Підтвердження вашої особи було перервано. Повторіть дію.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Ви не можете створити новий обліковий запис під час підтвердження особи.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Автентифікацію скасовано. Повторіть спробу, коли будете готові.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Налаштувати підтвердження через SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Налаштувати додаток автентифікації</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Підтвердіть свій код</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Керування двофакторною автентифікацією</string>
+    <string name="fui_mfa_manage_factors_description">Додайте або видаліть способи автентифікації для свого облікового запису</string>
+    <string name="fui_mfa_active_methods_title">Активні способи</string>
+    <string name="fui_mfa_add_new_method_title">Додати новий спосіб</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Усі доступні способи автентифікації зареєстровано</string>
+    <string name="fui_mfa_label_sms_authentication">Автентифікація через SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Додаток для автентифікації</string>
+    <string name="fui_mfa_label_unknown_method">Невідомий спосіб</string>
+    <string name="fui_mfa_enrolled_on">Зареєстровано %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Скануйте QR-код або введіть секретний ключ у додатку для автентифікації</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Виберіть другий спосіб автентифікації для захисту облікового запису</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Введіть номер телефону для отримання кодів підтвердження</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Пропустити</string>
     <string name="fui_use_different_method_action">Використати інший спосіб</string>
     <string name="fui_verification_code_label">Код підтвердження</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Заповніть інформацію профілю, щоб продовжити.</string>
+    <string name="fui_profile_missing_fields_message">Відсутні поля: %1$s</string>
     <string name="fui_verified_email_action">Електронну пошту підтверджено</string>
     <string name="fui_verify_action">Підтвердити</string>
     <string name="fui_verify_email_instruction">Ми надіслали лист підтвердження на %1$s</string>

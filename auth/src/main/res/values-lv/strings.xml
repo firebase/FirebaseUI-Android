@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Notiek ielāde…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Notiek inicializēšana</string>
+    <string name="fui_verification_code_digit_description">Verifikācijas koda %1$d. cipars no %2$d</string>
+    <string name="fui_enter_totp_code">Ievadiet TOTP kodu</string>
+    <string name="fui_text_field_read_only">Tikai lasāms</string>
+    <string name="fui_error_user_disabled">Lietotāja konts ir atspējots</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Notiek pierakstīšanās kā viesim…</string>
+    <string name="fui_loading_signing_in_with_google">Notiek pierakstīšanās ar Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Notiek pierakstīšanās ar Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Notiek pierakstīšanās ar %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Notiek tālruņa numura verifikācija…</string>
+    <string name="fui_loading_submitting_verification_code">Notiek verifikācijas koda nosūtīšana…</string>
+    <string name="fui_loading_signing_in_with_phone">Notiek pierakstīšanās ar tālruni…</string>
+    <string name="fui_loading_creating_user">Notiek konta izveide…</string>
+    <string name="fui_loading_signing_in">Notiek pierakstīšanās…</string>
+    <string name="fui_loading_linking_credential">Notiek pierakstīšanās…</string>
+    <string name="fui_loading_sending_email_link">Notiek pierakstīšanās saites nosūtīšana…</string>
+    <string name="fui_loading_signing_in_with_email_link">Notiek pierakstīšanās ar e-pasta saiti…</string>
+    <string name="fui_loading_sending_password_reset">Notiek paroles atiestatīšanas e-pasta nosūtīšana…</string>
+    <string name="fui_loading_signing_out">Notiek izrakstīšanās…</string>
+    <string name="fui_loading_reauth_retrying">Notiek darbības pabeigšana…</string>
+    <string name="fui_loading_deleting_account">Notiek konta dzēšana…</string>
     <string name="fui_sign_in_default">Pierakstīties</string>
     <string name="fui_continue">Tālāk</string>
     <string name="fui_tos_and_pp">Turpinot jūs norādāt, ka piekrītat šādiem dokumentiem: %1$s un %2$s.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Mēģiniet vēlreiz</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Nepieciešama papildu verifikācija. Lūdzu, pabeidziet vairāku faktoru autentifikāciju.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konts ir jāsaista. Lūdzu, izmēģiniet citu pierakstīšanās metodi.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Verificējiet savu identitāti</string>
+    <string name="fui_reauth_dialog_message">Jūsu drošībai vēlreiz ievadiet paroli, lai turpinātu.</string>
+    <string name="fui_reauth_account_label">Konts: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentifikācija neizdevās. Mēģiniet vēlreiz.</string>
+    <string name="fui_reauth_password_required_notice">Lai šeit apstiprinātu jūsu identitāti, nepieciešama šī konta parole. Ja pierakstāties ar e-pasta saiti, nevis paroli, šo kontu nevar apstiprināt ar paroli.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Neviena no pieejamajām pierakstīšanās metodēm nav saistīta ar jūsu kontu.</string>
+    <string name="fui_error_reauth_incomplete">Jūsu identitāte netika apstiprināta šim kontam. Mēģiniet vēlreiz.</string>
+    <string name="fui_error_reauth_interrupted">Jūsu identitātes apstiprināšana tika pārtraukta. Mēģiniet vēlreiz.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Identitātes apstiprināšanas laikā nevarat izveidot jaunu kontu.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentifikācija tika atcelta. Lūdzu, mēģiniet vēlreiz, kad būsiet gatavs.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Iestatīt SMS verifikāciju</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Iestatīt autentifikatora lietotni</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verificējiet savu kodu</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Pārvaldīt divfaktoru autentifikāciju</string>
+    <string name="fui_mfa_manage_factors_description">Pievienojiet vai noņemiet konta autentifikācijas metodes</string>
+    <string name="fui_mfa_active_methods_title">Aktīvās metodes</string>
+    <string name="fui_mfa_add_new_method_title">Pievienot jaunu metodi</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Visas pieejamās autentifikācijas metodes ir reģistrētas</string>
+    <string name="fui_mfa_label_sms_authentication">Autentifikācija ar SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Autentifikācijas lietotne</string>
+    <string name="fui_mfa_label_unknown_method">Nezināma metode</string>
+    <string name="fui_mfa_enrolled_on">Reģistrēts %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skenējiet QR kodu vai ievadiet slepeno atslēgu autentifikācijas lietotnē</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Izvēlieties otro autentifikācijas metodi, lai aizsargātu savu kontu</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ievadiet savu tālruņa numuru, lai saņemtu verificēšanas kodus</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">Izlaist</string>
     <string name="fui_use_different_method_action">Izmantot citu metodi</string>
     <string name="fui_verification_code_label">Verifikācijas kods</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Aizpildiet sava profila informāciju, lai turpinātu.</string>
+    <string name="fui_profile_missing_fields_message">Trūkstošie lauki: %1$s</string>
     <string name="fui_verified_email_action">E-pasts apstiprināts</string>
     <string name="fui_verify_action">Verificēt</string>
     <string name="fui_verify_email_instruction">Nosūtījām verifikācijas e-pastu uz %1$s</string>

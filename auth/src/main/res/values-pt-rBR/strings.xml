@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Carregando…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicializando</string>
+    <string name="fui_verification_code_digit_description">Dígito %1$d de %2$d do código de verificação</string>
+    <string name="fui_enter_totp_code">Insira o código TOTP</string>
+    <string name="fui_text_field_read_only">Somente leitura</string>
+    <string name="fui_error_user_disabled">A conta de usuário foi desativada</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Fazendo login como convidado…</string>
+    <string name="fui_loading_signing_in_with_google">Fazendo login com o Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Fazendo login com o Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Fazendo login com %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Confirmando o número de telefone…</string>
+    <string name="fui_loading_submitting_verification_code">Enviando o código de verificação…</string>
+    <string name="fui_loading_signing_in_with_phone">Fazendo login com o telefone…</string>
+    <string name="fui_loading_creating_user">Criando a conta…</string>
+    <string name="fui_loading_signing_in">Fazendo login…</string>
+    <string name="fui_loading_linking_credential">Fazendo login…</string>
+    <string name="fui_loading_sending_email_link">Enviando o link de login…</string>
+    <string name="fui_loading_signing_in_with_email_link">Fazendo login com link de e-mail…</string>
+    <string name="fui_loading_sending_password_reset">Enviando o e-mail de redefinição de senha…</string>
+    <string name="fui_loading_signing_out">Saindo…</string>
+    <string name="fui_loading_reauth_retrying">Concluindo a ação…</string>
+    <string name="fui_loading_deleting_account">Excluindo a conta…</string>
     <string name="fui_sign_in_default">Fazer login</string>
     <string name="fui_continue">Continuar</string>
     <string name="fui_tos_and_pp">Ao continuar, você concorda com nossos %1$s e a %2$s.</string>
@@ -108,6 +131,11 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tentar novamente</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verificação adicional necessária. Conclua a autenticação de vários fatores.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A conta precisa ser vinculada. Tente um método de login diferente.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Nenhum dos métodos de login disponíveis está vinculado à sua conta.</string>
+    <string name="fui_error_reauth_incomplete">Não foi possível confirmar sua identidade para esta conta. Tente novamente.</string>
+    <string name="fui_error_reauth_interrupted">A confirmação da sua identidade foi interrompida. Tente sua ação novamente.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Não é possível criar uma conta durante a confirmação de identidade.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A autenticação foi cancelada. Tente novamente quando estiver pronto.</string>
 
     <!-- MFA Enrollment -->
@@ -161,6 +189,7 @@
     <string name="fui_reauth_dialog_message">Para sua segurança, insira sua senha novamente para continuar.</string>
     <string name="fui_reauth_dialog_title">Verifique sua identidade</string>
     <string name="fui_reauth_generic_error">Falha na autenticação. Tente novamente.</string>
+    <string name="fui_reauth_password_required_notice">Confirmar sua identidade aqui exige a senha desta conta. Se você fizer login com um link de e-mail em vez de uma senha, esta conta não poderá ser confirmada com uma senha.</string>
     <string name="fui_remove_action">Remover</string>
     <string name="fui_resend_verification_email_action">Reenviar e-mail de verificação</string>
     <string name="fui_secret_key_label">Chave secreta</string>

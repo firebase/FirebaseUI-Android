@@ -1,5 +1,28 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड करत आहे…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">सुरू करत आहे</string>
+    <string name="fui_verification_code_digit_description">पडताळणी कोडचा %2$d पैकी %1$d अंक</string>
+    <string name="fui_enter_totp_code">TOTP कोड एंटर करा</string>
+    <string name="fui_text_field_read_only">फक्त वाचनासाठी</string>
+    <string name="fui_error_user_disabled">वापरकर्ता खाते बंद केले आहे</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">अतिथी म्हणून साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_google">Google ने साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_facebook">Facebook ने साइन इन करत आहे…</string>
+    <string name="fui_loading_signing_in_with_provider">%1$s ने साइन इन करत आहे…</string>
+    <string name="fui_loading_verifying_phone_number">फोन नंबरची पडताळणी करत आहे…</string>
+    <string name="fui_loading_submitting_verification_code">पडताळणी कोड पाठवत आहे…</string>
+    <string name="fui_loading_signing_in_with_phone">फोनने साइन इन करत आहे…</string>
+    <string name="fui_loading_creating_user">खाते तयार करत आहे…</string>
+    <string name="fui_loading_signing_in">साइन इन करत आहे…</string>
+    <string name="fui_loading_linking_credential">साइन इन करत आहे…</string>
+    <string name="fui_loading_sending_email_link">साइन इन लिंक पाठवत आहे…</string>
+    <string name="fui_loading_signing_in_with_email_link">ईमेल लिंक वापरून साइन इन करत आहे…</string>
+    <string name="fui_loading_sending_password_reset">पासवर्ड रीसेट ईमेल पाठवत आहे…</string>
+    <string name="fui_loading_signing_out">साइन आउट करत आहे…</string>
+    <string name="fui_loading_reauth_retrying">क्रिया पूर्ण करत आहे…</string>
+    <string name="fui_loading_deleting_account">खाते हटवत आहे…</string>
     <string name="fui_sign_in_default">साइन इन करा</string>
     <string name="fui_continue">सुरू ठेवा</string>
     <string name="fui_tos_and_pp">पुढे सुरू ठेवून, तुम्ही सूचित करता की तुम्ही आमचे %1$s आणि %2$s स्वीकारता.</string>
@@ -108,6 +131,17 @@
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">पुन्हा प्रयत्न करा</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">अतिरिक्त पडताळणी आवश्यक आहे. कृपया मल्टी-फॅक्टर प्रमाणीकरण पूर्ण करा.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">खाते लिंक करणे आवश्यक आहे. कृपया वेगळी साइन इन पद्धत वापरून पहा.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">तुमची ओळख सत्यापित करा</string>
+    <string name="fui_reauth_dialog_message">तुमच्या सुरक्षिततेसाठी, सुरू ठेवण्यासाठी तुमचा पासवर्ड पुन्हा एंटर करा.</string>
+    <string name="fui_reauth_account_label">खाते: %1$s</string>
+    <string name="fui_reauth_generic_error">प्रमाणीकरण अयशस्वी झाले. पुन्हा प्रयत्न करा.</string>
+    <string name="fui_reauth_password_required_notice">येथे तुमची ओळख पुष्टी करण्यासाठी या खात्याचा पासवर्ड आवश्यक आहे. तुम्ही पासवर्डऐवजी ईमेल लिंक वापरून साइन इन करत असल्यास, या खात्याची पुष्टी पासवर्डने करता येणार नाही.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">उपलब्ध साइन इन पद्धतींपैकी कोणतीही तुमच्या खात्याशी लिंक केलेली नाही.</string>
+    <string name="fui_error_reauth_incomplete">या खात्यासाठी तुमची ओळख पुष्टी झाली नाही. पुन्हा प्रयत्न करा.</string>
+    <string name="fui_error_reauth_interrupted">तुमच्या ओळखीची पुष्टी करण्यात व्यत्यय आला. तुमची क्रिया पुन्हा प्रयत्न करा.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">ओळखीची पुष्टी करत असताना तुम्ही नवीन खाते तयार करू शकत नाही.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">प्रमाणीकरण रद्द केले गेले. तुम्ही तयार असाल तेव्हा कृपया पुन्हा प्रयत्न करा.</string>
 
     <!-- MFA Enrollment -->
@@ -115,6 +149,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS पडताळणी सेट करा</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">प्रमाणीकरणकर्ता अॅप सेट करा</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">तुमचा कोड पडताळा</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">दोन-घटक प्रमाणीकरण व्यवस्थापित करा</string>
+    <string name="fui_mfa_manage_factors_description">तुमच्या खात्यासाठी प्रमाणीकरण पद्धती जोडा किंवा काढून टाका</string>
+    <string name="fui_mfa_active_methods_title">सक्रिय पद्धती</string>
+    <string name="fui_mfa_add_new_method_title">नवीन पद्धत जोडा</string>
+    <string name="fui_mfa_all_methods_enrolled_message">सर्व उपलब्ध प्रमाणीकरण पद्धती नोंदवल्या आहेत</string>
+    <string name="fui_mfa_label_sms_authentication">SMS प्रमाणीकरण</string>
+    <string name="fui_mfa_label_totp_authentication">प्रमाणीकरण ॲप</string>
+    <string name="fui_mfa_label_unknown_method">अज्ञात पद्धत</string>
+    <string name="fui_mfa_enrolled_on">%1$s रोजी नोंदवले</string>
+    <string name="fui_mfa_setup_authenticator_description">QR कोड स्कॅन करा किंवा तुमच्या प्रमाणीकरण ॲपमध्ये गुप्त की टाका</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">तुमचे खाते सुरक्षित करण्यासाठी दुसरी प्रमाणीकरण पद्धत निवडा</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">पडताळणी कोड प्राप्त करण्यासाठी तुमचा फोन नंबर प्रविष्ट करा</string>
@@ -170,6 +215,9 @@
     <string name="fui_skip_action">वगळा</string>
     <string name="fui_use_different_method_action">वेगळी पद्धत वापरा</string>
     <string name="fui_verification_code_label">सत्यापन कोड</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">सुरू ठेवण्यासाठी तुमची प्रोफाइल माहिती पूर्ण करा.</string>
+    <string name="fui_profile_missing_fields_message">गहाळ फील्ड: %1$s</string>
     <string name="fui_verified_email_action">ईमेल सत्यापित</string>
     <string name="fui_verify_action">सत्यापित करा</string>
     <string name="fui_verify_email_instruction">आम्ही %1$s वर सत्यापन ईमेल पाठवला</string>
