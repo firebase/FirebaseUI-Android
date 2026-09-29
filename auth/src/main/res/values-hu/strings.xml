@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Bejelentkezés</string>
     <string name="fui_continue">Tovább</string>
     <string name="fui_tos_and_pp">A folytatással elfogadja a következő dokumentumokat: %1$s és %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Hálózati hiba; ellenőrizze az internetkapcsolatot.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
     <string name="fui_invalid_email_address">Az e-mail-cím helytelen.</string>
     <string name="fui_missing_email_address">A folytatáshoz adja meg e-mail-címét.</string>
-    <string name="fui_missing_first_and_last_name">Írja be utónevét és vezetéknevét.</string>
-    <string name="fui_progress_dialog_checking_accounts">Meglévő fiókok ellenőrzése…</string>
     <string name="fui_title_register_email">Regisztráció</string>
     <string name="fui_name_hint">Utónév és vezetéknév</string>
     <string name="fui_button_text_save">Mentés</string>
-    <string name="fui_progress_dialog_signing_up">Regisztráció…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
     <string name="fui_email_account_creation_error">Az e-mail-fiók regisztrációja sikertelen volt.</string>
     <string name="fui_terms_of_service">Általános Szerződési Feltételek</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Már rendelkezik fiókkal</string>
     <string name="fui_welcome_back_email_header">Örülünk, hogy visszatért!</string>
     <string name="fui_welcome_back_email_link_header">Már rendelkezik fiókkal\n</string>
-    <string name="fui_welcome_back_idp_prompt">Már használta a következő e-mail-címet: %1$s. A folytatáshoz jelentkezzen be %2$s-fiókjával.</string>
-    <string name="fui_welcome_back_password_prompt_body">Ezt az e-mail-fiókot (%1$s) már használta bejelentkezésre. Adja meg a fiókhoz tartozó jelszót.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Már használta a következő e-mail-címet: %1$s. Most már összekapcsolhatja %2$s-fiókját a(z) %1$s e-mail-címmel, ha az alábbi e-mail-linkkel jelentkezik be.\n %2$s-fiókjának és az e-mail-címnek az összekapcsolásához a linket ugyanazon az eszközön vagy ugyanabban a böngészőben kell megnyitni.</string>
-    <string name="fui_progress_dialog_signing_in">Bejelentkezés…</string>
     <string name="fui_trouble_signing_in">Problémái vannak a bejelentkezéssel?</string>
     <string name="fui_title_recover_password_activity">Jelszó visszaállítása</string>
     <string name="fui_title_confirm_recover_password">Ellenőrizze az e-mailjeit.</string>
     <string name="fui_password_recovery_body">Olvassa el az e-mailben elküldött utasításokat, amelyekből megtudhatja, hogyan állíthatja vissza a jelszavát.</string>
     <string name="fui_button_text_send">Küldés</string>
     <string name="fui_confirm_recovery_body">A jelszó visszaállításához kövesse az ide (%1$s) elküldött utasításokat.</string>
-    <string name="fui_progress_dialog_sending">Küldés…</string>
     <string name="fui_error_email_does_not_exist">Ehhez az e-mail-címhez egyetlen meglévő fiók sem tartozik.</string>
     <string name="fui_error_unknown">Ismeretlen hiba történt.</string>
     <string name="fui_error_invalid_password">Helytelen jelszó</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Érvényes telefonszámot adjon meg.</string>
     <string name="fui_enter_confirmation_code">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>
     <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: %1$s</string>
-    <string name="fui_verify_your_phone_title">Telefonszám igazolása</string>
     <string name="fui_verifying">Ellenőrzés…</string>
     <string name="fui_incorrect_code_dialog_body">Hibás kód. Próbálja újra.</string>
     <string name="fui_error_too_many_attempts">Ezt a telefonszámot már túl sokszor használták.</string>
-    <string name="fui_error_quota_exceeded">Hiba történt a telefonszám ellenőrzésekor.</string>
     <string name="fui_error_session_expired">Ez a kód már nem érvényes.</string>
-    <string name="fui_sign_in_with_phone_number">Bejelentkezés telefonszámmal</string>
-    <string name="fui_auto_verified">A telefonszám automatikusan ellenőrizve</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
     <string name="fui_change_phone_number">Másik telefonszám használata</string>
     <string name="fui_sms_terms_of_service">Ha a(z) „%1$s” gombra koppint, a rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">A(z) „%1$s” gombra való koppintással elfogadja a következő dokumentumokat: %2$s és %3$s. A rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Hitelesítési hiba</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Próbáld újra</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Személyazonosság ellenőrizve. Próbálja újra a műveletet.</string>
     <string name="fui_manage_mfa_action">Kétfaktoros hitelesítés kezelése</string>
     <string name="fui_incorrect_password_error">Helytelen jelszó</string>
-    <string name="fui_mfa_choose_method_instruction">Válasszon ellenőrzési módszert</string>
-    <string name="fui_mfa_enrollment_instruction">Adjon hozzá egy extra biztonsági réteget</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Hitelesítő alkalmazás</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Ez a telefonszám másik fiókhoz van társítva</string>
-    <string name="fui_mfa_second_factor_required_error">Ellenőrzés szükséges</string>
-    <string name="fui_mfa_setup_instruction">Olvassa be a QR-kódot a hitelesítő alkalmazással</string>
-    <string name="fui_mfa_totp_already_exists_error">A hitelesítő alkalmazás már be van állítva</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Biztosan eltávolítja ezt a módszert?</string>
-    <string name="fui_mfa_unenrollment_error">A módszer nem távolítható el</string>
-    <string name="fui_mfa_unenrollment_success_message">Módszer eltávolítva</string>
-    <string name="fui_mfa_verification_instruction">Adja meg az ellenőrző kódot</string>
-    <string name="fui_profile_update_error">A profil nem frissíthető</string>
-    <string name="fui_profile_update_success_message">Profil frissítve</string>
-    <string name="fui_reauth_instruction">Erősítse meg személyazonosságát a folytatáshoz</string>
-    <string name="fui_reauth_required_error">Újrahitelesítés szükséges</string>
-    <string name="fui_reauth_success_message">Újrahitelesítés sikeres</string>
-    <string name="fui_reauthenticate_action">Újrahitelesítés</string>
     <string name="fui_remove_action">Eltávolítás</string>
     <string name="fui_resend_verification_email_action">Ellenőrző e-mail újraküldése</string>
     <string name="fui_secret_key_label">Titkos kulcs</string>

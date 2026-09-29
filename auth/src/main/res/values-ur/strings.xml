@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">سائن ان کریں</string>
     <string name="fui_continue">جاری رکھیں</string>
     <string name="fui_tos_and_pp">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s اور %2$s کو قبول کرتے ہیں۔</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">نیٹ ورک میں خرابی، اپنا انٹرنیٹ کنکشن چیک کریں۔</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">آپ اسے خالی نہیں چھوڑ سکتے۔</string>
     <string name="fui_invalid_email_address">یہ ای میل پتہ غلط ہے</string>
     <string name="fui_missing_email_address">جاری رکھنے کے لیے اپنا ای میل پتہ درج کریں</string>
-    <string name="fui_missing_first_and_last_name">براہ کرم پہلا اور آخری نام درج کریں۔</string>
-    <string name="fui_progress_dialog_checking_accounts">موجودہ اکاؤنٹس چیک ہو رہے ہیں…</string>
     <string name="fui_title_register_email">سائن اپ کریں</string>
     <string name="fui_name_hint">پہلا اور آخری نام</string>
     <string name="fui_button_text_save">محفوظ کریں</string>
-    <string name="fui_progress_dialog_signing_up">سائن اپ ہو رہا ہے…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
     <string name="fui_email_account_creation_error">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
     <string name="fui_terms_of_service">سروس کی شرائط</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
     <string name="fui_welcome_back_email_header">واپسی پر خوش آمدید!</string>
     <string name="fui_welcome_back_email_link_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ ہے‎\n</string>
-    <string name="fui_welcome_back_idp_prompt">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔ جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
-    <string name="fui_welcome_back_password_prompt_body">آپ نے پہلے ہی %1$s استعمال کر لیا ہے سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
-    <string name="fui_welcome_back_email_link_prompt_body">آپ پہلے ہی %1$s استعمال کر چکے ہیں۔ ذیل میں موجود ای میل کے لنک کے ساتھ سائن ان کر کے آپ اپنے %2$s اکاؤنٹ کو %1$s سے منسلک کر سکتے ہیں۔‎\n\nاس فلو کو کامیابی کے ساتھ آپ کے %2$s اکاؤنٹ کو اس ای میل کے ساتھ شامل کرنے کیلئے آپ کو اسی آلہ یا براؤزر پر لنک کھولنا ہوگا۔</string>
-    <string name="fui_progress_dialog_signing_in">سائن ان ہو رہا ہے…</string>
     <string name="fui_trouble_signing_in">سائن ان کرنے میں دشواری؟</string>
     <string name="fui_title_recover_password_activity">پاس ورڈ بازیافت کریں</string>
     <string name="fui_title_confirm_recover_password">اپنا ای میل چیک کریں</string>
     <string name="fui_password_recovery_body">اس ای میل پر بھیجی گئی وہ ہدایات حاصل کریں جن میں اس بات کی وضاحت ہے کہ کیسے اپنا پاس ورڈ دوبارہ ترتیب دیں۔</string>
     <string name="fui_button_text_send">بھیجیں</string>
     <string name="fui_confirm_recovery_body">اپنے پاس ورڈ کو بازیافت کرنے کے لیے %1$s پر بھیجی گئی ہدایات کی پیروی کریں۔</string>
-    <string name="fui_progress_dialog_sending">بھیجا جا رہا ہے…</string>
     <string name="fui_error_email_does_not_exist">یہ ای میل پتہ کسی موجودہ اکاؤنٹ کے مماثل نہیں ہے</string>
     <string name="fui_error_unknown">ایک نامعلوم خرابی پیش آ گئی۔</string>
     <string name="fui_error_invalid_password">غلط پاس ورڈ۔</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>
     <string name="fui_resend_code_in">%1$s میں دوبارہ کوڈ بھیجیں</string>
-    <string name="fui_verify_your_phone_title">اپنے فون نمبر کی توثیق کریں</string>
     <string name="fui_verifying">توثیق ہو رہی ہے…</string>
     <string name="fui_incorrect_code_dialog_body">غلط کوڈ۔ دوبارہ کوشش کریں۔</string>
     <string name="fui_error_too_many_attempts">یہ فون نمبر پہلے ہی کافی مرتبہ استعمال ہو چکا ہے</string>
-    <string name="fui_error_quota_exceeded">آپ کے فون نمبر کی توثیق کرنے میں ایک مسئلہ تھا</string>
     <string name="fui_error_session_expired">یہ کوڈ اب جائز نہیں رہا</string>
-    <string name="fui_sign_in_with_phone_number">فون نمبر کے ساتھ سائن ان کریں</string>
-    <string name="fui_auto_verified">فون نمبر کی خودکار طور پر توثیق ہو گئی</string>
     <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
     <string name="fui_change_phone_number">مختلف فون نمبر استعمال کریں</string>
     <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s اور %3$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">تصدیق کی خرابی</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">دوبارہ کوشش کریں</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">شناخت تصدیق شدہ۔ اپنا عمل دوبارہ آزمائیں۔</string>
     <string name="fui_manage_mfa_action">دو عنصری توثیق کا نظم کریں</string>
     <string name="fui_incorrect_password_error">غلط پاس ورڈ</string>
-    <string name="fui_mfa_choose_method_instruction">تصدیق کا طریقہ منتخب کریں</string>
-    <string name="fui_mfa_enrollment_instruction">سیکیورٹی کی ایک اضافی پرت شامل کریں</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">تصدیقی ایپ</string>
-    <string name="fui_mfa_phone_number_already_exists_error">یہ فون نمبر دوسرے اکاؤنٹ سے منسلک ہے</string>
-    <string name="fui_mfa_second_factor_required_error">تصدیق درکار ہے</string>
-    <string name="fui_mfa_setup_instruction">اپنی تصدیقی ایپ سے QR کوڈ اسکین کریں</string>
-    <string name="fui_mfa_totp_already_exists_error">تصدیقی ایپ پہلے ہی سیٹ اپ ہے</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">کیا آپ واقعی اس طریقے کو ہٹانا چاہتے ہیں؟</string>
-    <string name="fui_mfa_unenrollment_error">طریقہ ہٹانے سے قاصر</string>
-    <string name="fui_mfa_unenrollment_success_message">طریقہ ہٹا دیا گیا</string>
-    <string name="fui_mfa_verification_instruction">تصدیقی کوڈ درج کریں</string>
-    <string name="fui_profile_update_error">پروفائل اپ ڈیٹ کرنے سے قاصر</string>
-    <string name="fui_profile_update_success_message">پروفائل اپ ڈیٹ ہو گیا</string>
-    <string name="fui_reauth_instruction">جاری رکھنے کے لیے اپنی شناخت کی تصدیق کریں</string>
-    <string name="fui_reauth_required_error">دوبارہ توثیق درکار ہے</string>
-    <string name="fui_reauth_success_message">دوبارہ توثیق کامیاب</string>
-    <string name="fui_reauthenticate_action">دوبارہ توثیق کریں</string>
     <string name="fui_remove_action">ہٹائیں</string>
     <string name="fui_resend_verification_email_action">تصدیقی ای میل دوبارہ بھیجیں</string>
     <string name="fui_secret_key_label">خفیہ کلید</string>

@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">כניסה</string>
     <string name="fui_continue">המשך</string>
     <string name="fui_tos_and_pp">המשך התהליך יפורש כהסכמתך ל%1$s ול%2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">אירעה שגיאת רשת. יש לבדוק את החיבור לאינטרנט.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">אי אפשר להשאיר את השדה הזה ריק.</string>
     <string name="fui_invalid_email_address">כתובת האימייל שגויה</string>
     <string name="fui_missing_email_address">כדי להמשיך, עליך להזין כתובת אימייל</string>
-    <string name="fui_missing_first_and_last_name">יש להזין שם פרטי ושם משפחה.</string>
-    <string name="fui_progress_dialog_checking_accounts">מחפש חשבונות קיימים…</string>
     <string name="fui_title_register_email">הרשמה</string>
     <string name="fui_name_hint">שם מלא</string>
     <string name="fui_button_text_save">שמור</string>
-    <string name="fui_progress_dialog_signing_up">אנחנו רושמים אותך…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item> <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> </plurals>
     <string name="fui_email_account_creation_error">לא הצלחנו להשלים את הרישום לחשבון באמצעות כתובת האימייל</string>
     <string name="fui_terms_of_service">תנאים והגבלות</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">כבר יש לך חשבון</string>
     <string name="fui_welcome_back_email_header">ברוכים השבים!</string>
     <string name="fui_welcome_back_email_link_header">כבר יצרת חשבון\n</string>
-    <string name="fui_welcome_back_idp_prompt">כבר השתמשת בכתובת %1$s. כדי להמשיך, עליך להיכנס באמצעות %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">כבר השתמשת בכתובת %1$s. כדי להיכנס. עליך להזין את הסיסמה לחשבון המשויך אליה.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">כבר השתמשת בכתובת האימייל %1$s. כדי לקשר את חשבון %2$s לכתובת האימייל %1$s, עליך להיכנס לחשבון באמצעות הקישור לאימייל שבהמשך.\n\nצריך לפתוח את הקישור באותו מכשיר או דפדפן כדי לקשר את חשבון %2$s לכתובת האימייל הזו.</string>
-    <string name="fui_progress_dialog_signing_in">נכנס…</string>
     <string name="fui_trouble_signing_in">לא מצליח להיכנס?</string>
     <string name="fui_title_recover_password_activity">שחזור הסיסמה</string>
     <string name="fui_title_confirm_recover_password">שלחנו לך אימייל</string>
     <string name="fui_password_recovery_body">אנחנו יכולים לשלוח לכתובת הזו הוראות לאיפוס הסיסמה.</string>
     <string name="fui_button_text_send">שליחה</string>
     <string name="fui_confirm_recovery_body">כדי לשחזר את הסיסמה, עליך לפעול לפי ההוראות ששלחנו לכתובת %1$s.</string>
-    <string name="fui_progress_dialog_sending">מתבצעת שליחה…</string>
     <string name="fui_error_email_does_not_exist">אין חשבון המשויך לכתובת האימייל הזו</string>
     <string name="fui_error_unknown">אירעה שגיאה לא ידועה.</string>
     <string name="fui_error_invalid_password">סיסמה שגויה.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>
     <string name="fui_resend_code_in">שולח קוד חדש בעוד %1$s:0</string>
-    <string name="fui_verify_your_phone_title">אמת את מספר הטלפון</string>
     <string name="fui_verifying">מאמת…</string>
     <string name="fui_incorrect_code_dialog_body">הקוד שגוי. נסה שוב.</string>
     <string name="fui_error_too_many_attempts">למספר הטלפון הזה כבר נשלחו יותר מדי קודים</string>
-    <string name="fui_error_quota_exceeded">אירעה בעיה באימות של מספר הטלפון</string>
     <string name="fui_error_session_expired">הקוד הזה כבר לא בתוקף</string>
-    <string name="fui_sign_in_with_phone_number">כניסה באמצעות מספר טלפון</string>
-    <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
     <string name="fui_change_phone_number">שימוש במספר טלפון אחר</string>
     <string name="fui_sms_terms_of_service">הקשה על “%1$s” עשויה לגרום לשליחה של הודעת SMS. ייתכן שיחולו תעריפי הודעות והעברת נתונים.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">הקשה על “%1$s”, תפורש כהסכמתך ל%2$s ול%3$s. ייתכן שתישלח הודעת SMS. ייתכנו חיובים בגין שליחת הודעות ושימוש בנתונים.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">שגיאת אימות</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">נסה שוב</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">הזהות אומתה. נסה שוב את הפעולה.</string>
     <string name="fui_manage_mfa_action">ניהול אימות דו-שלבי</string>
     <string name="fui_incorrect_password_error">סיסמה שגויה</string>
-    <string name="fui_mfa_choose_method_instruction">בחר שיטת אימות</string>
-    <string name="fui_mfa_enrollment_instruction">הוסף שכבת אבטחה נוספת</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">אפליקציית אימות</string>
-    <string name="fui_mfa_phone_number_already_exists_error">מספר הטלפון הזה משויך לחשבון אחר</string>
-    <string name="fui_mfa_second_factor_required_error">נדרש אימות</string>
-    <string name="fui_mfa_setup_instruction">סרוק את קוד ה-QR באפליקציית האימות שלך</string>
-    <string name="fui_mfa_totp_already_exists_error">אפליקציית האימות כבר מוגדרת</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">האם אתה בטוח שברצונך להסיר את שיטת האימות הזו?</string>
-    <string name="fui_mfa_unenrollment_error">לא ניתן להסיר את השיטה</string>
-    <string name="fui_mfa_unenrollment_success_message">השיטה הוסרה</string>
-    <string name="fui_mfa_verification_instruction">הזן את קוד האימות</string>
-    <string name="fui_profile_update_error">לא ניתן לעדכן את הפרופיל</string>
-    <string name="fui_profile_update_success_message">הפרופיל עודכן</string>
-    <string name="fui_reauth_instruction">אמת את זהותך כדי להמשיך</string>
-    <string name="fui_reauth_required_error">נדרש אימות מחדש</string>
-    <string name="fui_reauth_success_message">אימות מחדש בוצע בהצלחה</string>
-    <string name="fui_reauthenticate_action">אמת מחדש</string>
     <string name="fui_remove_action">הסר</string>
     <string name="fui_resend_verification_email_action">שלח שוב אימייל אימות</string>
     <string name="fui_secret_key_label">מפתח סודי</string>

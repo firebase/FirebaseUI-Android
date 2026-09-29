@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Увійти</string>
     <string name="fui_continue">Продовжити</string>
     <string name="fui_tos_and_pp">Продовжуючи, ви приймаєте такі документи: %1$s і %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Помилка мережі. Перевірте інтернет-з’єднання.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Потрібно заповнити це поле.</string>
     <string name="fui_invalid_email_address">Електронна адреса неправильна</string>
     <string name="fui_missing_email_address">Щоб продовжити, введіть електронну адресу</string>
-    <string name="fui_missing_first_and_last_name">Введіть ім’я та прізвище.</string>
-    <string name="fui_progress_dialog_checking_accounts">Перевірка наявних облікових записів…</string>
     <string name="fui_title_register_email">Зареєструватися</string>
     <string name="fui_name_hint">Ім’я та прізвище</string>
     <string name="fui_button_text_save">Зберегти</string>
-    <string name="fui_progress_dialog_signing_up">Реєстрація…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item> <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item> <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item> <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item> </plurals>
     <string name="fui_email_account_creation_error">Не вдалося зареєструвати обліковий запис електронної пошти</string>
     <string name="fui_terms_of_service">Умови використання</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">У вас уже є обліковий запис</string>
     <string name="fui_welcome_back_email_header">З поверненням!</string>
     <string name="fui_welcome_back_email_link_header">У вас уже є обліковий запис\n</string>
-    <string name="fui_welcome_back_idp_prompt">Ви вже використовували електронну адресу %1$s. Щоб продовжити, увійдіть в обліковий запис %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Ви вже використовували електронну адресу %1$s для входу. Введіть пароль для цього облікового запису.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Ви вже використовували адресу %1$s. Ви можете зв’язати свій обліковий запис %2$s з адресою %1$s, увійшовши за допомогою посилання нижче.\n\nЩоб зв’язати обліковий запис %2$s з цією електронною адресою, потрібно відкрити посилання на тому ж пристрої або в тому ж веб-переглядачі.</string>
-    <string name="fui_progress_dialog_signing_in">Виконується вхід…</string>
     <string name="fui_trouble_signing_in">Не вдається ввійти?</string>
     <string name="fui_title_recover_password_activity">Відновити пароль</string>
     <string name="fui_title_confirm_recover_password">Перевірте свою електронну пошту</string>
     <string name="fui_password_recovery_body">На цю електронну адресу надійдуть інструкції, як скинути пароль.</string>
     <string name="fui_button_text_send">Надіслати</string>
     <string name="fui_confirm_recovery_body">Виконайте інструкції з відновлення пароля, надіслані на адресу %1$s.</string>
-    <string name="fui_progress_dialog_sending">Надсилання…</string>
     <string name="fui_error_email_does_not_exist">Ця електронна адреса не відповідає адресі наявного облікового запису</string>
     <string name="fui_error_unknown">Сталася невідома помилка.</string>
     <string name="fui_error_invalid_password">Неправильний пароль.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Введіть дійсний номер телефону</string>
     <string name="fui_enter_confirmation_code">Введіть 6-значний код, який ми надіслали на номер</string>
     <string name="fui_resend_code_in">Повторно надіслати код через %1$s</string>
-    <string name="fui_verify_your_phone_title">Підтвердити номер телефону</string>
     <string name="fui_verifying">Підтвердження…</string>
     <string name="fui_incorrect_code_dialog_body">Неправильний код. Повторіть спробу.</string>
     <string name="fui_error_too_many_attempts">Цей номер телефону використовувався забагато разів</string>
-    <string name="fui_error_quota_exceeded">Не вдалося підтвердити ваш номер телефону</string>
     <string name="fui_error_session_expired">Цей код уже не дійсний</string>
-    <string name="fui_sign_in_with_phone_number">Увійти, використовуючи номер телефону</string>
-    <string name="fui_auto_verified">Номер телефону підтверджено автоматично</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
     <string name="fui_change_phone_number">Використати інший номер телефону</string>
     <string name="fui_sms_terms_of_service">Коли ви торкнетесь опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Торкаючись кнопки “%1$s”, ви приймаєте такі документи: %2$s і %3$s. Вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Помилка автентифікації</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторити спробу</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Особу підтверджено. Повторіть дію.</string>
     <string name="fui_manage_mfa_action">Керування двофакторною автентифікацією</string>
     <string name="fui_incorrect_password_error">Неправильний пароль</string>
-    <string name="fui_mfa_choose_method_instruction">Виберіть спосіб підтвердження</string>
-    <string name="fui_mfa_enrollment_instruction">Додайте додатковий рівень безпеки</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Додаток для автентифікації</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Цей номер телефону вже пов\'язаний з іншим обліковим записом</string>
-    <string name="fui_mfa_second_factor_required_error">Потрібне підтвердження</string>
-    <string name="fui_mfa_setup_instruction">Скануйте QR-код додатком для автентифікації</string>
-    <string name="fui_mfa_totp_already_exists_error">Додаток для автентифікації вже налаштовано</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Ви впевнені, що хочете видалити цей спосіб?</string>
-    <string name="fui_mfa_unenrollment_error">Не вдалося видалити спосіб</string>
-    <string name="fui_mfa_unenrollment_success_message">Спосіб видалено</string>
-    <string name="fui_mfa_verification_instruction">Введіть код підтвердження</string>
-    <string name="fui_profile_update_error">Не вдалося оновити профіль</string>
-    <string name="fui_profile_update_success_message">Профіль оновлено</string>
-    <string name="fui_reauth_instruction">Підтвердіть свою особу, щоб продовжити</string>
-    <string name="fui_reauth_required_error">Потрібна повторна автентифікація</string>
-    <string name="fui_reauth_success_message">Повторна автентифікація виконана</string>
-    <string name="fui_reauthenticate_action">Повторна автентифікація</string>
     <string name="fui_remove_action">Видалити</string>
     <string name="fui_resend_verification_email_action">Надіслати лист підтвердження повторно</string>
     <string name="fui_secret_key_label">Секретний ключ</string>

@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Kirjaudu sisään</string>
     <string name="fui_continue">Jatka</string>
     <string name="fui_tos_and_pp">Jatkamalla vahvistat, että hyväksyt seuraavat: %1$s ja %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Verkkovirhe, tarkista internetyhteys.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Tätä ei voi jättää tyhjäksi.</string>
     <string name="fui_invalid_email_address">Virheellinen sähköpostiosoite</string>
     <string name="fui_missing_email_address">Jatka antamalla sähköpostiosoite.</string>
-    <string name="fui_missing_first_and_last_name">Lisää etu- ja sukunimi.</string>
-    <string name="fui_progress_dialog_checking_accounts">Tarkistetaan nykyisiä tilejä…</string>
     <string name="fui_title_register_email">Hanki tili</string>
     <string name="fui_name_hint">Etu- ja sukunimi</string>
     <string name="fui_button_text_save">Tallenna</string>
-    <string name="fui_progress_dialog_signing_up">Rekisteröityminen käynnissä…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> </plurals>
     <string name="fui_email_account_creation_error">Sähköpostitilin rekisteröinti epäonnistui.</string>
     <string name="fui_terms_of_service">Käyttöehdot</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Sinulla on jo tili.</string>
     <string name="fui_welcome_back_email_header">Tervetuloa takaisin!</string>
     <string name="fui_welcome_back_email_link_header">Sinulla on jo tili\n</string>
-    <string name="fui_welcome_back_idp_prompt">Olet jo käyttänyt osoitetta %1$s. Jatka kirjautumalla palvelun %2$s kautta.</string>
-    <string name="fui_welcome_back_password_prompt_body">Olet jo käyttänyt osoitetta %1$s kirjautumiseen. Anna kyseisen tilin salasana.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">%1$s on jo käytössä. Voit yhdistää %2$s ‑tilin sähköpostiosoitteeseen %1$s kirjautumalla sisään alla olevasta sähköpostilinkistä.\n\nJotta palvelun %2$s tilisi voidaan yhdistää tähän sähköpostiosoitteeseen tällä prosessilla, sinun on avattava linkki samalla laitteella tai selaimella.</string>
-    <string name="fui_progress_dialog_signing_in">Kirjaudutaan sisään…</string>
     <string name="fui_trouble_signing_in">Eikö kirjautuminen onnistu?</string>
     <string name="fui_title_recover_password_activity">Palauta salasana</string>
     <string name="fui_title_confirm_recover_password">Tarkista sähköpostisi</string>
     <string name="fui_password_recovery_body">Tilaa tähän sähköpostiin ohjeet, joissa neuvotaan, miten voit nollata salasanan.</string>
     <string name="fui_button_text_send">Lähetä</string>
     <string name="fui_confirm_recovery_body">Palauta salasana noudattamalla osoitteeseen %1$s lähetettyjä ohjeita.</string>
-    <string name="fui_progress_dialog_sending">Lähetetään…</string>
     <string name="fui_error_email_does_not_exist">Sähköpostiosoite ei vastaa aiemmin luotua tiliä.</string>
     <string name="fui_error_unknown">Tapahtui tuntematon virhe.</string>
     <string name="fui_error_invalid_password">Väärä salasana</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Anna voimassa oleva puhelinnumero.</string>
     <string name="fui_enter_confirmation_code">Anna 6 merkin pituinen koodi, jonka lähetimme numeroon</string>
     <string name="fui_resend_code_in">Lähetä koodi uudelleen seuraavan ajan kuluttua: %1$s.</string>
-    <string name="fui_verify_your_phone_title">Puhelinnumeron vahvistaminen</string>
     <string name="fui_verifying">Vahvistetaan…</string>
     <string name="fui_incorrect_code_dialog_body">Väärä koodi. Yritä uudelleen.</string>
     <string name="fui_error_too_many_attempts">Tätä puhelinnumeroa on käytetty liian monta kertaa.</string>
-    <string name="fui_error_quota_exceeded">Puhelinnumerosi vahvistamisessa tapahtui virhe.</string>
     <string name="fui_error_session_expired">Tämä koodi ei ole enää voimassa.</string>
-    <string name="fui_sign_in_with_phone_number">Kirjaudu puhelinnumerolla</string>
-    <string name="fui_auto_verified">Puhelinnumero vahvistettu automaattisesti</string>
     <string name="fui_resend_code">Lähetä koodi uudelleen</string>
     <string name="fui_verify_phone_number">Vahvista puhelinnumero</string>
     <string name="fui_change_phone_number">Käytä toista puhelinnumeroa</string>
     <string name="fui_sms_terms_of_service">Kun napautat %1$s, tekstiviesti voidaan lähettää. Datan ja viestien käyttö voi olla maksullista.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Napauttamalla %1$s vahvistat hyväksyväsi seuraavat: %2$s ja %3$s. Tekstiviesti voidaan lähettää, ja datan ja viestien käyttö voi olla maksullista.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Todennusvirhe</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Yritä uudelleen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Lisävarmistus vaaditaan. Suorita monitekijätodennus loppuun.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Henkilöllisyys vahvistettu. Yritä toimintoasi uudelleen.</string>
     <string name="fui_manage_mfa_action">Hallinnoi kaksivaiheista todennusta</string>
     <string name="fui_incorrect_password_error">Virheellinen salasana</string>
-    <string name="fui_mfa_choose_method_instruction">Valitse vahvistustapa</string>
-    <string name="fui_mfa_enrollment_instruction">Lisää ylimääräinen turvallisuuskerros</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Todennussovellus</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Tämä puhelinnumero on liitetty toiseen tiliin</string>
-    <string name="fui_mfa_second_factor_required_error">Vahvistus vaaditaan</string>
-    <string name="fui_mfa_setup_instruction">Skannaa QR-koodi todennussovelluksellasi</string>
-    <string name="fui_mfa_totp_already_exists_error">Todennussovellus on jo määritetty</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Haluatko varmasti poistaa tämän menetelmän?</string>
-    <string name="fui_mfa_unenrollment_error">Menetelmää ei voitu poistaa</string>
-    <string name="fui_mfa_unenrollment_success_message">Menetelmä poistettu</string>
-    <string name="fui_mfa_verification_instruction">Syötä vahvistuskoodi</string>
-    <string name="fui_profile_update_error">Profiilia ei voitu päivittää</string>
-    <string name="fui_profile_update_success_message">Profiili päivitetty</string>
-    <string name="fui_reauth_instruction">Vahvista henkilöllisyytesi jatkaaksesi</string>
-    <string name="fui_reauth_required_error">Uudelleentodennus vaaditaan</string>
-    <string name="fui_reauth_success_message">Uudelleentodennus onnistui</string>
-    <string name="fui_reauthenticate_action">Todenna uudelleen</string>
     <string name="fui_remove_action">Poista</string>
     <string name="fui_resend_verification_email_action">Lähetä vahvistussähköposti uudelleen</string>
     <string name="fui_secret_key_label">Salainen avain</string>
