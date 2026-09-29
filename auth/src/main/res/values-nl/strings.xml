@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Inloggen</string>
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Er is een netwerkfout opgetreden. Controleer uw internetverbinding.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Dit veld mag niet leeg zijn.</string>
     <string name="fui_invalid_email_address">Dit e-mailadres is niet juist</string>
     <string name="fui_missing_email_address">Voer uw e-mailadres in om verder te gaan</string>
-    <string name="fui_missing_first_and_last_name">Voer een voor- en achternaam in.</string>
-    <string name="fui_progress_dialog_checking_accounts">Controleren op bestaande accounts…</string>
     <string name="fui_title_register_email">Aanmelden</string>
     <string name="fui_name_hint">Voor- en achternaam</string>
     <string name="fui_button_text_save">Opslaan</string>
-    <string name="fui_progress_dialog_signing_up">Aanmelden…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d teken en een combinatie van letters en cijfers.</item> <item quantity="other">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d tekens en een combinatie van letters en cijfers.</item> </plurals>
     <string name="fui_email_account_creation_error">Registratie van e-mailaccount is mislukt</string>
     <string name="fui_terms_of_service">Servicevoorwaarden</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">U heeft al een account</string>
     <string name="fui_welcome_back_email_header">Welkom terug.</string>
     <string name="fui_welcome_back_email_link_header">U heeft al een account\n</string>
-    <string name="fui_welcome_back_idp_prompt">U heeft %1$s al gebruikt. Log in met %2$s om verder te gaan.</string>
-    <string name="fui_welcome_back_password_prompt_body">U heeft al ingelogd met %1$s. Voer uw wachtwoord in voor dit account.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">U heeft %1$s al gebruikt. U kunt uw %2$s-account aan %1$s koppelen door in te loggen via de e-mail link hieronder.\n\nAls u uw %2$s-account aan dit e-mailadres wilt koppelen, moet u de link openen op hetzelfde apparaat of in dezelfde browser.</string>
-    <string name="fui_progress_dialog_signing_in">Inloggen…</string>
     <string name="fui_trouble_signing_in">Problemen met inloggen?</string>
     <string name="fui_title_recover_password_activity">Wachtwoord herstellen</string>
     <string name="fui_title_confirm_recover_password">Controleer uw inbox</string>
     <string name="fui_password_recovery_body">Er wordt een e-mail naar dit adres verzonden met instructies om uw wachtwoord te resetten.</string>
     <string name="fui_button_text_send">Verzenden</string>
     <string name="fui_confirm_recovery_body">Volg de instructies die we naar %1$s hebben verzonden om uw wachtwoord te herstellen.</string>
-    <string name="fui_progress_dialog_sending">Verzenden…</string>
     <string name="fui_error_email_does_not_exist">Dit e-mailadres komt niet overeen met een bestaand account</string>
     <string name="fui_error_unknown">Er is een onbekende fout opgetreden.</string>
     <string name="fui_error_invalid_password">Onjuist wachtwoord.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Voer een geldig telefoonnummer in</string>
     <string name="fui_enter_confirmation_code">Voer de zescijferige code in die we hebben verzonden naar</string>
     <string name="fui_resend_code_in">Code opnieuw verzenden over %1$s</string>
-    <string name="fui_verify_your_phone_title">Uw telefoonnummer verifiëren</string>
     <string name="fui_verifying">Verifiëren…</string>
     <string name="fui_incorrect_code_dialog_body">Onjuiste code. Probeer het opnieuw.</string>
     <string name="fui_error_too_many_attempts">Dit telefoonnummer is te vaak gebruikt</string>
-    <string name="fui_error_quota_exceeded">Er is een probleem met de verificatie van uw telefoonnummer</string>
     <string name="fui_error_session_expired">Deze code is niet meer geldig</string>
-    <string name="fui_sign_in_with_phone_number">Inloggen met telefoonnummer</string>
-    <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
     <string name="fui_change_phone_number">Gebruik een ander telefoonnummer</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op "%1$s" tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authenticatiefout</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Opnieuw proberen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Identiteit geverifieerd. Probeer je actie opnieuw.</string>
     <string name="fui_manage_mfa_action">Tweefactorauthenticatie beheren</string>
     <string name="fui_incorrect_password_error">Onjuist wachtwoord</string>
-    <string name="fui_mfa_choose_method_instruction">Kies een verificatiemethode</string>
-    <string name="fui_mfa_enrollment_instruction">Voeg een extra beveiligingslaag toe</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Authenticatie-app</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Dit telefoonnummer is al gekoppeld aan een ander account</string>
-    <string name="fui_mfa_second_factor_required_error">Verificatie vereist</string>
-    <string name="fui_mfa_setup_instruction">Scan de QR-code met je authenticatie-app</string>
-    <string name="fui_mfa_totp_already_exists_error">Authenticatie-app is al ingesteld</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Weet je zeker dat je deze methode wilt verwijderen?</string>
-    <string name="fui_mfa_unenrollment_error">Kan methode niet verwijderen</string>
-    <string name="fui_mfa_unenrollment_success_message">Methode verwijderd</string>
-    <string name="fui_mfa_verification_instruction">Voer de verificatiecode in</string>
-    <string name="fui_profile_update_error">Kan profiel niet bijwerken</string>
-    <string name="fui_profile_update_success_message">Profiel bijgewerkt</string>
-    <string name="fui_reauth_instruction">Bevestig je identiteit om door te gaan</string>
-    <string name="fui_reauth_required_error">Herauthenticatie vereist</string>
-    <string name="fui_reauth_success_message">Herauthenticatie geslaagd</string>
-    <string name="fui_reauthenticate_action">Opnieuw authenticeren</string>
     <string name="fui_remove_action">Verwijderen</string>
     <string name="fui_resend_verification_email_action">Verificatie-e-mail opnieuw verzenden</string>
     <string name="fui_secret_key_label">Geheime sleutel</string>

@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Pierakstīties</string>
     <string name="fui_continue">Tālāk</string>
     <string name="fui_tos_and_pp">Turpinot jūs norādāt, ka piekrītat šādiem dokumentiem: %1$s un %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Tīkla kļūda. Pārbaudiet interneta savienojumu.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Šo laukumu nedrīkst atstāt tukšu.</string>
     <string name="fui_invalid_email_address">Šī e-pasta adrese nav pareiza</string>
     <string name="fui_missing_email_address">Lai turpinātu, ievadiet e-pasta adresi</string>
-    <string name="fui_missing_first_and_last_name">Lūdzu, ievadiet vārdu un uzvārdu.</string>
-    <string name="fui_progress_dialog_checking_accounts">Tiek pārbaudīti esošie konti…</string>
     <string name="fui_title_register_email">Reģistrācija</string>
     <string name="fui_name_hint">Vārds un uzvārds</string>
     <string name="fui_button_text_save">Saglabāt</string>
-    <string name="fui_progress_dialog_signing_up">Notiek reģistrācija…</string>
     <plurals name="fui_error_weak_password"> <item quantity="zero">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> <item quantity="one">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmi un burtu un ciparu kombināciju</item> <item quantity="other">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> </plurals>
     <string name="fui_email_account_creation_error">Nesekmīga e-pasta konta reģistrācija</string>
     <string name="fui_terms_of_service">Pakalpojumu sniegšanas noteikumi</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Jums jau ir konts</string>
     <string name="fui_welcome_back_email_header">Laipni lūdzam atpakaļ!</string>
     <string name="fui_welcome_back_email_link_header">Jums jau ir konts\n</string>
-    <string name="fui_welcome_back_idp_prompt">Esat jau izmantojis e-pasta adresi %1$s. Pierakstieties pakalpojumā %2$s, lai turpinātu.</string>
-    <string name="fui_welcome_back_password_prompt_body">Esat jau izmantojis e-pasta adresi %1$s, lai pierakstītos. Ievadiet šī konta paroli.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Esat jau izmantojis e-pasta adresi %1$s. Varat saistīt savu %2$s kontu ar e-pasta adresi %1$s, pierakstoties ar tālāk norādīto e-pasta saiti.\n\nLai šī plūsma varētu sekmīgi saistīt jūsu %2$s kontu ar šo e-pasta adresi, jums ir jāatver saite tajā pašā ierīcē vai pārlūkprogrammā.</string>
-    <string name="fui_progress_dialog_signing_in">Notiek pierakstīšanās…</string>
     <string name="fui_trouble_signing_in">Vai jums ir problēmas ar pierakstīšanos?</string>
     <string name="fui_title_recover_password_activity">Paroles atgūšana</string>
     <string name="fui_title_confirm_recover_password">Pārbaudiet savu e-pastu</string>
     <string name="fui_password_recovery_body">Saņemiet uz šo e-pasta adresi nosūtītus norādījumus ar skaidrojumu, kā atiestatīt paroli.</string>
     <string name="fui_button_text_send">Sūtīt</string>
     <string name="fui_confirm_recovery_body">Izpildiet uz e-pasta adresi %1$s nosūtītos norādījumus, lai atgūtu paroli.</string>
-    <string name="fui_progress_dialog_sending">Notiek sūtīšana…</string>
     <string name="fui_error_email_does_not_exist">E-pasta adrese neatbilst esošam kontam</string>
     <string name="fui_error_unknown">Radās nezināma kļūda.</string>
     <string name="fui_error_invalid_password">Nepareiza parole.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Ievadiet derīgu tālruņa numuru</string>
     <string name="fui_enter_confirmation_code">Ievadiet 6 ciparu kodu, ko nosūtījām</string>
     <string name="fui_resend_code_in">Vēlreiz nosūtīt kodu pēc %1$s</string>
-    <string name="fui_verify_your_phone_title">Verificēt tālruņa numuru</string>
     <string name="fui_verifying">Notiek verifikācija…</string>
     <string name="fui_incorrect_code_dialog_body">Nepareizs kods. Mēģiniet vēlreiz.</string>
     <string name="fui_error_too_many_attempts">Šis tālruņa numurs ir izmantots pārāk daudz reižu</string>
-    <string name="fui_error_quota_exceeded">Verificējot jūsu tālruņa numuru, radās problēma</string>
     <string name="fui_error_session_expired">Šis kods vairs nav derīgs</string>
-    <string name="fui_sign_in_with_phone_number">Pierakstieties ar tālruņa numuru</string>
-    <string name="fui_auto_verified">Tālruņa numurs tika automātiski verificēts</string>
     <string name="fui_resend_code">Vēlreiz nosūtīt kodu</string>
     <string name="fui_verify_phone_number">Verificēt tālruņa numuru</string>
     <string name="fui_change_phone_number">Izmantot citu tālruņa numuru</string>
     <string name="fui_sms_terms_of_service">Pieskaroties pogai %1$s, var tikt nosūtīta īsziņa. Var tikt piemērota maksa par ziņojumiem un datu pārsūtīšanu.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Pieskaroties pogai “%1$s”, jūs norādāt, ka piekrītat šādiem dokumentiem: %2$s un %3$s. Var tikt nosūtīta īsziņa. Var tikt piemērota maksa par ziņojumiem un datu pārsūtīšanu.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentifikācijas kļūda</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Mēģiniet vēlreiz</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Identitāte apstiprināta. Mēģiniet vēlreiz.</string>
     <string name="fui_manage_mfa_action">Pārvaldīt divfaktoru autentifikāciju</string>
     <string name="fui_incorrect_password_error">Nepareiza parole</string>
-    <string name="fui_mfa_choose_method_instruction">Izvēlieties verifikācijas metodi</string>
-    <string name="fui_mfa_enrollment_instruction">Pievienojiet papildu drošības slāni</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Autentifikācijas lietotne</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Šis tālruņa numurs ir saistīts ar citu kontu</string>
-    <string name="fui_mfa_second_factor_required_error">Nepieciešama verifikācija</string>
-    <string name="fui_mfa_setup_instruction">Skenējiet QR kodu ar autentifikācijas lietotni</string>
-    <string name="fui_mfa_totp_already_exists_error">Autentifikācijas lietotne jau ir iestatīta</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Vai tiešām vēlaties noņemt šo metodi?</string>
-    <string name="fui_mfa_unenrollment_error">Nevar noņemt metodi</string>
-    <string name="fui_mfa_unenrollment_success_message">Metode noņemta</string>
-    <string name="fui_mfa_verification_instruction">Ievadiet verifikācijas kodu</string>
-    <string name="fui_profile_update_error">Nevar atjaunināt profilu</string>
-    <string name="fui_profile_update_success_message">Profils atjaunināts</string>
-    <string name="fui_reauth_instruction">Apstipriniet savu identitāti, lai turpinātu</string>
-    <string name="fui_reauth_required_error">Nepieciešama atkārtota autentifikācija</string>
-    <string name="fui_reauth_success_message">Atkārtota autentifikācija veiksmīga</string>
-    <string name="fui_reauthenticate_action">Autentificēt atkārtoti</string>
     <string name="fui_remove_action">Noņemt</string>
     <string name="fui_resend_verification_email_action">Atkārtoti nosūtīt verifikācijas e-pastu</string>
     <string name="fui_secret_key_label">Slepenā atslēga</string>
