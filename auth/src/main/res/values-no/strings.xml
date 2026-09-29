@@ -62,7 +62,8 @@
     <string name="fui_title_recover_password_activity">Gjenopprett passordet</string>
     <string name="fui_title_confirm_recover_password">Sjekk e-posten din</string>
     <string name="fui_password_recovery_body">Få instruksjoner sendt til denne e-postadressen for hvordan du tilbakestiller passordet ditt.</string>
-    <string name="fui_button_text_send">Send</string>
+    <!-- Identical to English: this is the imperative of "sende". -->
+    <string name="fui_button_text_send" tools:ignore="UntranslatedResource">Send</string>
     <string name="fui_confirm_recovery_body">Følg veiledningen som er sendt til %1$s, for å gjenopprette passordet ditt.</string>
     <string name="fui_progress_dialog_sending">Sender…</string>
     <string name="fui_error_email_does_not_exist">Denne e-postadressen samsvarer ikke med en eksisterende konto</string>
