@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">تسجيل الدخول</string>
     <string name="fui_continue">متابعة</string>
     <string name="fui_tos_and_pp">تشير المتابعة إلى موافقتك على %1$s و%2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">حدث خطأ في الشبكة، يُرجى التحقّق من اتصال الإنترنت.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>
     <string name="fui_invalid_email_address">عنوان البريد الإلكتروني هذا غير صحيح</string>
     <string name="fui_missing_email_address">يجب إدخال عنوان بريدك الإلكتروني للمتابعة</string>
-    <string name="fui_missing_first_and_last_name">يُرجى إدخال الاسم الأول واسم العائلة.</string>
-    <string name="fui_progress_dialog_checking_accounts">جارٍ البحث عن حسابات حالية…</string>
     <string name="fui_title_register_email">اشتراك</string>
     <string name="fui_name_hint">الاسم الأول واسم العائلة</string>
     <string name="fui_button_text_save">حفظ</string>
-    <string name="fui_progress_dialog_signing_up">جارٍ الاشتراك…</string>
     <plurals name="fui_error_weak_password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
     <string name="fui_email_account_creation_error">فشل تسجيل حساب البريد الإلكتروني</string>
     <string name="fui_terms_of_service">بنود الخدمة</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">لديك حساب حاليًا</string>
     <string name="fui_welcome_back_email_header">تسرّنا عودتك!</string>
     <string name="fui_welcome_back_email_link_header">لديك حساب حاليًا\n</string>
-    <string name="fui_welcome_back_idp_prompt">لقد سبق أن استخدمت %1$s. سجّل الدخول باستخدام %2$s للمتابعة.</string>
-    <string name="fui_welcome_back_password_prompt_body">لقد سبق أن استخدمت %1$s لتسجيل الدخول. يُرجى إدخال كلمة المرور لهذا الحساب.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">سبق واستخدمت العنوان %1$s. يمكنك ربط حسابك على %2$s بحساب %1$s عبر تسجيل الدخول باستخدام رابط البريد الإلكتروني المضمّن في الرسالة الإلكترونية أدناه.\n\nلكي تنجح في ربط حسابك على %2$s بهذا البريد الإلكتروني، عليك فتح الرابط على الجهاز أو المتصفّح نفسه.</string>
-    <string name="fui_progress_dialog_signing_in">جارٍ تسجيل الدخول…</string>
     <string name="fui_trouble_signing_in">هل تواجه مشكلة في تسجيل الدخول؟</string>
     <string name="fui_title_recover_password_activity">استرداد كلمة المرور</string>
     <string name="fui_title_confirm_recover_password">إثبات ملكية بريدك الإلكتروني</string>
     <string name="fui_password_recovery_body">تم إرسال تعليمات إلى البريد الإلكتروني هذا تشرح كيفية إعادة ضبط كلمة المرور.</string>
     <string name="fui_button_text_send">إرسال</string>
     <string name="fui_confirm_recovery_body">اتبع التعليمات التي تم إرسالها إلى %1$s لاسترداد كلمة المرور.</string>
-    <string name="fui_progress_dialog_sending">جارٍ الإرسال…</string>
     <string name="fui_error_email_does_not_exist">لا يتطابق عنوان البريد الإلكتروني هذا مع حساب حالي</string>
     <string name="fui_error_unknown">حدث خطأ غير معروف.</string>
     <string name="fui_error_invalid_password">كلمة المرور غير صحيحة.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
     <string name="fui_resend_code_in">إعادة إرسال الرمز بعد %1$s</string>
-    <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
     <string name="fui_error_too_many_attempts">تم استخدام رقم الهاتف هذا لعدد كبير جدًا من المرات</string>
-    <string name="fui_error_quota_exceeded">حدثت مشكلة أثناء إثبات ملكية رقم هاتفك</string>
     <string name="fui_error_session_expired">لم يعد هذا الرمز صالحًا</string>
-    <string name="fui_sign_in_with_phone_number">تسجيل الدخول عبر رقم الهاتف</string>
-    <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
     <string name="fui_change_phone_number">استخدام رقم هاتف آخر</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على "%1$s" إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطأ في المصادقة</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">أعد المحاولة</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">مطلوب تحقق إضافي. يرجى إكمال المصادقة متعددة العوامل.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">تم التحقق من الهوية. أعد المحاولة.</string>
     <string name="fui_manage_mfa_action">إدارة المصادقة الثنائية</string>
     <string name="fui_incorrect_password_error">كلمة المرور غير صحيحة</string>
-    <string name="fui_mfa_choose_method_instruction">اختر طريقة التحقق</string>
-    <string name="fui_mfa_enrollment_instruction">أضف طبقة أمان إضافية</string>
-    <string name="fui_mfa_method_sms">رسالة نصية</string>
-    <string name="fui_mfa_method_totp">تطبيق المصادقة</string>
-    <string name="fui_mfa_phone_number_already_exists_error">رقم الهاتف هذا مرتبط بحساب آخر</string>
-    <string name="fui_mfa_second_factor_required_error">التحقق مطلوب</string>
-    <string name="fui_mfa_setup_instruction">امسح رمز الاستجابة السريعة باستخدام تطبيق المصادقة</string>
-    <string name="fui_mfa_totp_already_exists_error">تطبيق المصادقة معد بالفعل</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">هل أنت متأكد من إزالة طريقة التحقق هذه؟</string>
-    <string name="fui_mfa_unenrollment_error">تعذرت إزالة طريقة التحقق</string>
-    <string name="fui_mfa_unenrollment_success_message">تمت إزالة طريقة التحقق</string>
-    <string name="fui_mfa_verification_instruction">أدخل رمز التحقق</string>
-    <string name="fui_profile_update_error">تعذر تحديث الملف الشخصي</string>
-    <string name="fui_profile_update_success_message">تم تحديث الملف الشخصي</string>
-    <string name="fui_reauth_instruction">أكد هويتك للمتابعة</string>
-    <string name="fui_reauth_required_error">إعادة المصادقة مطلوبة</string>
-    <string name="fui_reauth_success_message">نجحت إعادة المصادقة</string>
-    <string name="fui_reauthenticate_action">إعادة المصادقة</string>
     <string name="fui_remove_action">إزالة</string>
     <string name="fui_resend_verification_email_action">إعادة إرسال بريد التحقق</string>
     <string name="fui_secret_key_label">المفتاح السري</string>

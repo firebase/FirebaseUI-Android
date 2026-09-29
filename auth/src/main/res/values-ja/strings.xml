@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">ログイン</string>
     <string name="fui_continue">続行</string>
     <string name="fui_tos_and_pp">続行すると、%1$s と %2$s に同意したことになります。</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">ネットワーク エラー。インターネット接続を確認してください。</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">入力必須項目です。</string>
     <string name="fui_invalid_email_address">メールアドレスが正しくありません</string>
     <string name="fui_missing_email_address">続行するにはメールアドレスを入力してください</string>
-    <string name="fui_missing_first_and_last_name">姓と名を入力してください。</string>
-    <string name="fui_progress_dialog_checking_accounts">既存のアカウントを確認しています…</string>
     <string name="fui_title_register_email">登録</string>
     <string name="fui_name_hint">あなたの名前</string>
     <string name="fui_button_text_save">保存</string>
-    <string name="fui_progress_dialog_signing_up">登録しています…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> <item quantity="other">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> </plurals>
     <string name="fui_email_account_creation_error">メール アカウントの登録に失敗しました</string>
     <string name="fui_terms_of_service">利用規約</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">アカウントをすでにお持ちです</string>
     <string name="fui_welcome_back_email_header">こんにちは</string>
     <string name="fui_welcome_back_email_link_header">すでにアカウントをお持ちです\n</string>
-    <string name="fui_welcome_back_idp_prompt">%1$s をすでに使用しています。%2$s でログインして続行してください。</string>
-    <string name="fui_welcome_back_password_prompt_body">すでに %1$s を使用してログインしています。このアカウントのパスワードを入力してください。</string>
-    <string name="fui_welcome_back_email_link_prompt_body">すでに %1$s をお使いです。以下のメールリンクを使用してログインすると、%2$s アカウントを %1$s に接続できます。\n\nこのフローで %2$s アカウントをこのメールアドレスに正常に接続するには、同じデバイスまたはブラウザでリンクを開く必要があります。</string>
-    <string name="fui_progress_dialog_signing_in">ログインしています…</string>
     <string name="fui_trouble_signing_in">ログインできない場合</string>
     <string name="fui_title_recover_password_activity">パスワードの復元</string>
     <string name="fui_title_confirm_recover_password">メールをご確認ください</string>
     <string name="fui_password_recovery_body">このメールアドレスに送信された、パスワードの再設定方法をご確認ください。</string>
     <string name="fui_button_text_send">送信</string>
     <string name="fui_confirm_recovery_body">%1$s に送信された手順に沿ってパスワードを復元してください</string>
-    <string name="fui_progress_dialog_sending">送信しています…</string>
     <string name="fui_error_email_does_not_exist">メールアドレスが既存のアカウントと一致しません</string>
     <string name="fui_error_unknown">不明なエラーが発生しました。</string>
     <string name="fui_error_invalid_password">パスワードが正しくありません。</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>
     <string name="fui_resend_code_in">%1$s 秒後にコードを再送信します</string>
-    <string name="fui_verify_your_phone_title">電話番号を確認</string>
     <string name="fui_verifying">確認しています…</string>
     <string name="fui_incorrect_code_dialog_body">コードが間違っています。もう一度お試しください。</string>
     <string name="fui_error_too_many_attempts">この電話番号は何度も使用されています</string>
-    <string name="fui_error_quota_exceeded">電話番号の確認中に問題が発生しました</string>
     <string name="fui_error_session_expired">このコードは無効になりました</string>
-    <string name="fui_sign_in_with_phone_number">電話番号でログイン</string>
-    <string name="fui_auto_verified">電話番号は自動的に確認されました</string>
     <string name="fui_resend_code">コードを再送信</string>
     <string name="fui_verify_phone_number">電話番号を確認</string>
     <string name="fui_change_phone_number">別の電話番号を使用</string>
     <string name="fui_sms_terms_of_service">[%1$s] をタップすると、SMS が送信されます。データ通信料がかかることがあります。</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">[%1$s] をタップすると、%2$s と %3$s に同意したことになり、SMS が送信されます。データ通信料がかかることがあります。</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">認証エラー</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">再試行</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">追加の認証が必要です。多要素認証を完了してください。</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">本人確認が完了しました。操作を再試行してください。</string>
     <string name="fui_manage_mfa_action">2段階認証を管理</string>
     <string name="fui_incorrect_password_error">パスワードが正しくありません</string>
-    <string name="fui_mfa_choose_method_instruction">確認方法を選択してください</string>
-    <string name="fui_mfa_enrollment_instruction">セキュリティをさらに強化</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">認証アプリ</string>
-    <string name="fui_mfa_phone_number_already_exists_error">この電話番号は別のアカウントに関連付けられています</string>
-    <string name="fui_mfa_second_factor_required_error">確認が必要です</string>
-    <string name="fui_mfa_setup_instruction">認証アプリでQRコードをスキャンしてください</string>
-    <string name="fui_mfa_totp_already_exists_error">認証アプリは既に設定されています</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">この確認方法を削除してもよろしいですか？</string>
-    <string name="fui_mfa_unenrollment_error">確認方法を削除できません</string>
-    <string name="fui_mfa_unenrollment_success_message">確認方法を削除しました</string>
-    <string name="fui_mfa_verification_instruction">確認コードを入力してください</string>
-    <string name="fui_profile_update_error">プロフィールを更新できません</string>
-    <string name="fui_profile_update_success_message">プロフィールを更新しました</string>
-    <string name="fui_reauth_instruction">本人確認を行って続行してください</string>
-    <string name="fui_reauth_required_error">再認証が必要です</string>
-    <string name="fui_reauth_success_message">再認証に成功しました</string>
-    <string name="fui_reauthenticate_action">再認証</string>
     <string name="fui_remove_action">削除</string>
     <string name="fui_resend_verification_email_action">確認メールを再送信</string>
     <string name="fui_secret_key_label">シークレットキー</string>

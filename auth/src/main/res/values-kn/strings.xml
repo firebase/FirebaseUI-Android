@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">ಸೈನ್ ಇನ್‌</string>
     <string name="fui_continue">ಮುಂದುವರಿಸಿ</string>
     <string name="fui_tos_and_pp">ಮುಂದುವರಿಸುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %1$s ಮತ್ತು %2$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ದೋಷ, ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>
     <string name="fui_invalid_email_address">ಆ ಇಮೇಲ್ ವಿಳಾಸ ಸರಿಯಾಗಿಲ್ಲ</string>
     <string name="fui_missing_email_address">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ</string>
-    <string name="fui_missing_first_and_last_name">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.</string>
-    <string name="fui_progress_dialog_checking_accounts">ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_title_register_email">ಸೈನ್ ಅಪ್</string>
     <string name="fui_name_hint">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರು</string>
     <string name="fui_button_text_save">ಉಳಿಸಿ</string>
-    <string name="fui_progress_dialog_signing_up">ಸೈನ್ ಅಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> </plurals>
     <string name="fui_email_account_creation_error">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
     <string name="fui_terms_of_service">ಸೇವಾ ನಿಯಮಗಳು</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ</string>
     <string name="fui_welcome_back_email_header">ಮರಳಿ ಸುಸ್ವಾಗತ!</string>
     <string name="fui_welcome_back_email_link_header">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ\n</string>
-    <string name="fui_welcome_back_idp_prompt">ನೀವು ಈಗಾಗಲೇ %1$s ಅನ್ನು ಬಳಸುತ್ತಿರುವಿರಿ. ಮುಂದುವರಿಸಲು %2$s ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
-    <string name="fui_welcome_back_password_prompt_body">ನೀವು ಈಗಾಗಲೇ ಸೈನ್ ಇನ್ ಮಾಡಲು %1$sನ್ನು ಬಳಸಿದ್ದೀರಿ. ಆ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಆಗಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">ನೀವು ಈಗಾಗಲೇ %1$s ಇಮೇಲ್ ಅನ್ನು ಬಳಸಿರುವಿರಿ. ಕೆಳಗಿನ ಇಮೇಲ್ ಲಿಂಕ್ ಬಳಸಿಕೊಂಡು ಸೈನ್ ಇನ್ ಮಾಡುವ ಮೂಲಕ ನಿಮ್ಮ %2$s ಖಾತೆಯನ್ನು %1$s ಜೊತೆಗೆ ನೀವು ಸಂಪರ್ಕಿಸಬಹುದು.\n\nಇದು ಯಶಸ್ವಿಯಾಗಿ ನೆರವೇರಲು ಈ ಇಮೇಲ್ ಜೊತೆಗೆ ನಿಮ್ಮ %2$s ಖಾತೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ, ನೀವು ಒಂದೇ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಲಿಂಕ್ ಅನ್ನು ತೆರೆಯಬೇಕು.</string>
-    <string name="fui_progress_dialog_signing_in">ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_trouble_signing_in">ಸೈನ್ ಇನ್ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆಯೇ?</string>
     <string name="fui_title_recover_password_activity">ಪಾಸ್‌ವರ್ಡ್ ಹಿಂಪಡೆಯಿರಿ</string>
     <string name="fui_title_confirm_recover_password">ನಿಮ್ಮ ಇಮೇಲ್‌ ಅನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_password_recovery_body">ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಸುವ ಸೂಚನೆಗಳನ್ನು ಈ ಇಮೇಲ್‌ ಮೂಲಕ ಪಡೆಯಿರಿ.</string>
     <string name="fui_button_text_send">ಕಳುಹಿಸಿ</string>
     <string name="fui_confirm_recovery_body">ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಪಡೆಯಲು %1$s ಗೆ ಕಳುಹಿಸಲಾದ ಸೂಚನೆಗಳನ್ನು ಅನುಸರಿಸಿ.</string>
-    <string name="fui_progress_dialog_sending">ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_error_email_does_not_exist">ಆ ಇಮೇಲ್‌ ವಿಳಾಸವು ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗೆ ಹೊಂದಾಣಿಕೆಯಾಗುವುದಿಲ್ಲ</string>
     <string name="fui_error_unknown">ಅಪರಿಚಿತ ದೋಷವೊಂದು ಸಂಭವಿಸಿದೆ.</string>
     <string name="fui_error_invalid_password">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>
     <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ %1$s</string>
-    <string name="fui_verify_your_phone_title">ನಿಮ್ಮ ಪೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_verifying">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_incorrect_code_dialog_body">ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="fui_error_too_many_attempts">ಈ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಈಗಾಗಲೇ ಹಲವಾರು ಬಾರಿ ಬಳಸಲಾಗಿದೆ</string>
-    <string name="fui_error_quota_exceeded">ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸುವಲ್ಲಿ ತೊಂದರೆ ಇದೆ</string>
     <string name="fui_error_session_expired">ಈ ಕೋಡ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿರುವುದಿಲ್ಲ</string>
-    <string name="fui_sign_in_with_phone_number">ಫೋನ್‌ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
-    <string name="fui_auto_verified">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_change_phone_number">ಬೇರೆ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಬಳಸಿ</string>
     <string name="fui_sms_terms_of_service">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %2$s ಮತ್ತು %3$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ. ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">ಪ್ರಮಾಣೀಕರಣ ದೋಷ</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">ಗುರುತನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಕ್ರಿಯೆಯನ್ನು ಮರುಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="fui_manage_mfa_action">ಎರಡು-ಅಂಶ ಪ್ರಮಾಣೀಕರಣವನ್ನು ನಿರ್ವಹಿಸಿ</string>
     <string name="fui_incorrect_password_error">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್</string>
-    <string name="fui_mfa_choose_method_instruction">ಪರಿಶೀಲನೆ ವಿಧಾನವನ್ನು ಆರಿಸಿ</string>
-    <string name="fui_mfa_enrollment_instruction">ಹೆಚ್ಚುವರಿ ಭದ್ರತಾ ಪದರವನ್ನು ಸೇರಿಸಿ</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್</string>
-    <string name="fui_mfa_phone_number_already_exists_error">ಈ ಫೋನ್ ಸಂಖ್ಯೆ ಮತ್ತೊಂದು ಖಾತೆಯೊಂದಿಗೆ ಸಂಬಂಧ ಹೊಂದಿದೆ</string>
-    <string name="fui_mfa_second_factor_required_error">ಪರಿಶೀಲನೆ ಅಗತ್ಯವಿದೆ</string>
-    <string name="fui_mfa_setup_instruction">ನಿಮ್ಮ ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
-    <string name="fui_mfa_totp_already_exists_error">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಈಗಾಗಲೇ ಸೆಟಪ್ ಆಗಿದೆ</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">ನೀವು ಈ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?</string>
-    <string name="fui_mfa_unenrollment_error">ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
-    <string name="fui_mfa_unenrollment_success_message">ವಿಧಾನ ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>
-    <string name="fui_mfa_verification_instruction">ಪರಿಶೀಲನೆ ಕೋಡ್ ನಮೂದಿಸಿ</string>
-    <string name="fui_profile_update_error">ಪ್ರೊಫೈಲ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
-    <string name="fui_profile_update_success_message">ಪ್ರೊಫೈಲ್ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆ</string>
-    <string name="fui_reauth_instruction">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಗುರುತನ್ನು ದೃಢೀಕರಿಸಿ</string>
-    <string name="fui_reauth_required_error">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಅಗತ್ಯವಿದೆ</string>
-    <string name="fui_reauth_success_message">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
-    <string name="fui_reauthenticate_action">ಮರು-ಪ್ರಮಾಣೀಕರಣ</string>
     <string name="fui_remove_action">ತೆಗೆದುಹಾಕಿ</string>
     <string name="fui_resend_verification_email_action">ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಮರುಕಳುಹಿಸಿ</string>
     <string name="fui_secret_key_label">ರಹಸ್ಯ ಕೀ</string>

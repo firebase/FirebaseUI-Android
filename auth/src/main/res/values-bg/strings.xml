@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Вход</string>
     <string name="fui_continue">Напред</string>
     <string name="fui_tos_and_pp">Продължавайки, приемате нашите %1$s и %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Грешка в мрежата – проверете връзката с интернет.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Трябва да се попълни.</string>
     <string name="fui_invalid_email_address">Този имейл адрес е неправилен</string>
     <string name="fui_missing_email_address">Въведете имейл адреса си, за да продължите</string>
-    <string name="fui_missing_first_and_last_name">Моля, въведете име и фамилия.</string>
-    <string name="fui_progress_dialog_checking_accounts">Проверява се за съществуващи профили…</string>
     <string name="fui_title_register_email">Регистрация</string>
     <string name="fui_name_hint">Име и фамилия</string>
     <string name="fui_button_text_save">Запазване</string>
-    <string name="fui_progress_dialog_signing_up">Създава се регистрация…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item> <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item> </plurals>
     <string name="fui_email_account_creation_error">Регистрацията с имейл адрес не бе успешна</string>
     <string name="fui_terms_of_service">Общите условия</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Вече имате профил</string>
     <string name="fui_welcome_back_email_header">Добре дошли отново!</string>
     <string name="fui_welcome_back_email_link_header">Вече имате профил\n</string>
-    <string name="fui_welcome_back_idp_prompt">Вече използвахте %1$s. За да продължите, влезте с %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Вече използвахте %1$s за вход. Въведете паролата си за този профил.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Вече използвахте %1$s. Можете да свържете профила си в(ъв) %2$s с имейл адреса %1$s чрез посочената по-долу връзка за вход.\n\nЗа успешното свързване на профила си в(ъв) %2$s с този имейл адрес, трябва да отворите връзката на същото устройство или браузър.</string>
-    <string name="fui_progress_dialog_signing_in">Влизате…</string>
     <string name="fui_trouble_signing_in">Имате проблем при влизането?</string>
     <string name="fui_title_recover_password_activity">Възстановяване на паролата</string>
     <string name="fui_title_confirm_recover_password">Проверете електронната си поща</string>
     <string name="fui_password_recovery_body">На този имейл адрес ще получите инструкции за повторно задаване на паролата.</string>
     <string name="fui_button_text_send">Изпращане</string>
     <string name="fui_confirm_recovery_body">За да възстановите паролата си, изпълнете инструкциите, изпратени до %1$s.</string>
-    <string name="fui_progress_dialog_sending">Изпраща се…</string>
     <string name="fui_error_email_does_not_exist">Този имейл адрес не съответства на съществуващ профил</string>
     <string name="fui_error_unknown">Възникна неизвестна грешка.</string>
     <string name="fui_error_invalid_password">Грешна парола.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>
     <string name="fui_resend_code_in">Повторно изпращане на кода след %1$s</string>
-    <string name="fui_verify_your_phone_title">Потвърждаване на телефонния ви номер</string>
     <string name="fui_verifying">Потвърждава се…</string>
     <string name="fui_incorrect_code_dialog_body">Неправилен код. Опитайте отново.</string>
     <string name="fui_error_too_many_attempts">Този телефонен номер е използван твърде много пъти</string>
-    <string name="fui_error_quota_exceeded">При потвърждаването на телефонния ви номер възникна проблем</string>
     <string name="fui_error_session_expired">Този код вече не е валиден</string>
-    <string name="fui_sign_in_with_phone_number">Вход с телефонен номер</string>
-    <string name="fui_auto_verified">Телефонният номер е потвърден автоматично</string>
     <string name="fui_resend_code">Повторно изпращане на кода</string>
     <string name="fui_verify_phone_number">Потвърждаване на телефонния номер</string>
     <string name="fui_change_phone_number">Използване на друг телефонен номер</string>
     <string name="fui_sms_terms_of_service">Докосвайки „%1$s“, може да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Докосвайки „%1$s", приемате нашите %2$s и %3$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Грешка при удостоверяване</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Опитай отново</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Необходима е допълнителна проверка. Моля, завършете многофакторното удостоверяване.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Самоличността е потвърдена. Опитайте отново действието си.</string>
     <string name="fui_manage_mfa_action">Управление на двуфакторно удостоверяване</string>
     <string name="fui_incorrect_password_error">Неправилна парола</string>
-    <string name="fui_mfa_choose_method_instruction">Изберете метод за потвърждение</string>
-    <string name="fui_mfa_enrollment_instruction">Добавете допълнително ниво на сигурност</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Приложение за удостоверяване</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Този телефонен номер е свързан с друг акаунт</string>
-    <string name="fui_mfa_second_factor_required_error">Необходимо е потвърждение</string>
-    <string name="fui_mfa_setup_instruction">Сканирайте QR кода с приложението си за удостоверяване</string>
-    <string name="fui_mfa_totp_already_exists_error">Приложението за удостоверяване вече е настроено</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Сигурни ли сте, че искате да премахнете този метод?</string>
-    <string name="fui_mfa_unenrollment_error">Методът не може да бъде премахнат</string>
-    <string name="fui_mfa_unenrollment_success_message">Методът е премахнат</string>
-    <string name="fui_mfa_verification_instruction">Въведете кода за потвърждение</string>
-    <string name="fui_profile_update_error">Профилът не може да бъде актуализиран</string>
-    <string name="fui_profile_update_success_message">Профилът е актуализиран</string>
-    <string name="fui_reauth_instruction">Потвърдете самоличността си, за да продължите</string>
-    <string name="fui_reauth_required_error">Необходимо е повторно удостоверяване</string>
-    <string name="fui_reauth_success_message">Повторното удостоверяване е успешно</string>
-    <string name="fui_reauthenticate_action">Повторно удостоверяване</string>
     <string name="fui_remove_action">Премахване</string>
     <string name="fui_resend_verification_email_action">Изпращане на имейл за потвърждение отново</string>
     <string name="fui_secret_key_label">Таен ключ</string>

@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Se connecter</string>
     <string name="fui_continue">Continuer</string>
     <string name="fui_tos_and_pp">En continuant, vous acceptez les %1$s et les %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s   %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Erreur de réseau, vérifiez votre connexion Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Ce champ est obligatoire.</string>
     <string name="fui_invalid_email_address">Cette adresse e-mail n\'est pas valide</string>
     <string name="fui_missing_email_address">Saisissez votre adresse e-mail pour continuer</string>
-    <string name="fui_missing_first_and_last_name">Veuillez saisir un prénom et un nom.</string>
-    <string name="fui_progress_dialog_checking_accounts">Vérification des comptes existants…</string>
     <string name="fui_title_register_email">S\'inscrire</string>
     <string name="fui_name_hint">Nom et prénom</string>
     <string name="fui_button_text_save">Enregistrer</string>
-    <string name="fui_progress_dialog_signing_up">Inscription…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
     <string name="fui_email_account_creation_error">Échec de la création du compte avec une adresse e-mail</string>
     <string name="fui_terms_of_service">Conditions d\'utilisation</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Vous avez déjà un compte</string>
     <string name="fui_welcome_back_email_header">Bienvenue !</string>
     <string name="fui_welcome_back_email_link_header">Vous avez déjà un compte\n</string>
-    <string name="fui_welcome_back_idp_prompt">Vous avez déjà utilisé l\'adresse e-mail %1$s. Connectez-vous avec %2$s pour continuer.</string>
-    <string name="fui_welcome_back_password_prompt_body">Vous avez déjà utilisé l\'adresse e-mail %1$s pour vous connecter. Saisissez le mot de passe du compte.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Vous avez déjà utilisé l\'adresse %1$s. Vous pouvez associer votre compte %2$s à l\'adresse %1$s en vous connectant via le lien envoyé par e-mail ci-dessous.\n\nPour associer votre compte %2$s à cette adresse e-mail, vous devez ouvrir le lien sur le même appareil ou dans le même navigateur.</string>
-    <string name="fui_progress_dialog_signing_in">Connexion…</string>
     <string name="fui_trouble_signing_in">Vous ne parvenez pas à vous connecter ?</string>
     <string name="fui_title_recover_password_activity">Récupérer votre mot de passe</string>
     <string name="fui_title_confirm_recover_password">Consultez votre boîte de réception</string>
     <string name="fui_password_recovery_body">Les instructions relatives à la réinitialisation de votre mot de passe seront envoyées à cette adresse e-mail.</string>
     <string name="fui_button_text_send">Envoyer</string>
     <string name="fui_confirm_recovery_body">Suivez les instructions envoyées à l\'adresse %1$s pour récupérer votre mot de passe.</string>
-    <string name="fui_progress_dialog_sending">Envoi…</string>
     <string name="fui_error_email_does_not_exist">Cette adresse e-mail ne correspond à aucun compte existant</string>
     <string name="fui_error_unknown">Une erreur inconnue s\'est produite.</string>
     <string name="fui_error_invalid_password">Mot de passe incorrect.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Saisissez un numéro de téléphone valide</string>
     <string name="fui_enter_confirmation_code">Saisissez le code à six chiffres envoyé au</string>
     <string name="fui_resend_code_in">Renvoyer le code dans %1$s</string>
-    <string name="fui_verify_your_phone_title">Valider votre numéro de téléphone</string>
     <string name="fui_verifying">Validation…</string>
     <string name="fui_incorrect_code_dialog_body">Code erroné. Veuillez réessayer.</string>
     <string name="fui_error_too_many_attempts">Ce numéro de téléphone a été utilisé un trop grand nombre de fois</string>
-    <string name="fui_error_quota_exceeded">Un problème est survenu lors de la validation de votre numéro de téléphone</string>
     <string name="fui_error_session_expired">Ce code n\'est plus valide</string>
-    <string name="fui_sign_in_with_phone_number">Connectez-vous avec votre numéro de téléphone</string>
-    <string name="fui_auto_verified">Numéro de téléphone validé automatiquement</string>
     <string name="fui_resend_code">Renvoyer le code</string>
     <string name="fui_verify_phone_number">Valider le numéro de téléphone</string>
     <string name="fui_change_phone_number">Salelá nimero mosusu ya telefone</string>
     <string name="fui_sms_terms_of_service">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En appuyant sur “%1$s”, vous acceptez les %2$s et les %3$s. Vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Libunga ya bondimi</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Meka lisusu</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Identité esalemi. Meka lisusu.</string>
     <string name="fui_manage_mfa_action">Kotambwisa authentification ya facteur mibale</string>
     <string name="fui_incorrect_password_error">Mot de passe ezali malamu te</string>
-    <string name="fui_mfa_choose_method_instruction">Pona méthode ya vérification</string>
-    <string name="fui_mfa_enrollment_instruction">Bakisa couche ya sécurité mosusu</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Application ya authentification</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Numéro oyo ya téléphone ezali na compte mosusu</string>
-    <string name="fui_mfa_second_factor_required_error">Vérification esengeli</string>
-    <string name="fui_mfa_setup_instruction">Scanner code QR na application ya authentification na yo</string>
-    <string name="fui_mfa_totp_already_exists_error">Application ya authentification etii nanu</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Ozali na ntembe olinga kolongola méthode oyo?</string>
-    <string name="fui_mfa_unenrollment_error">Ekoki kolongola méthode te</string>
-    <string name="fui_mfa_unenrollment_success_message">Méthode elongwami</string>
-    <string name="fui_mfa_verification_instruction">Kotisa code ya vérification</string>
-    <string name="fui_profile_update_error">Ekoki ko-update profil te</string>
-    <string name="fui_profile_update_success_message">Profil e-update</string>
-    <string name="fui_reauth_instruction">Ndima identité na yo mpo na kokoba</string>
-    <string name="fui_reauth_required_error">Re-authentification esengeli</string>
-    <string name="fui_reauth_success_message">Re-authentification elongi</string>
-    <string name="fui_reauthenticate_action">Re-authentifier</string>
     <string name="fui_remove_action">Longola</string>
     <string name="fui_resend_verification_email_action">Tinda lisusu e-mail ya vérification</string>
     <string name="fui_secret_key_label">Clé secrète</string>

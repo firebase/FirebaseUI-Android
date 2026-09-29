@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">登入</string>
     <string name="fui_continue">繼續</string>
     <string name="fui_tos_and_pp">選擇繼續即表示您同意接受我們的《%1$s》和《%2$s》。</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">網路發生錯誤，請檢查您的網際網路連線。</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">此欄位不可留空。</string>
     <string name="fui_invalid_email_address">電子郵件地址不正確</string>
     <string name="fui_missing_email_address">如要繼續，請輸入您的電子郵件地址</string>
-    <string name="fui_missing_first_and_last_name">請輸入姓名。</string>
-    <string name="fui_progress_dialog_checking_accounts">正在檢查是否已有帳戶…</string>
     <string name="fui_title_register_email">註冊</string>
     <string name="fui_name_hint">姓氏和名字</string>
     <string name="fui_button_text_save">儲存</string>
-    <string name="fui_progress_dialog_signing_up">註冊中…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> <item quantity="other">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> </plurals>
     <string name="fui_email_account_creation_error">電子郵件帳戶註冊失敗</string>
     <string name="fui_terms_of_service">服務條款</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">您已經有帳戶</string>
     <string name="fui_welcome_back_email_header">歡迎回來！</string>
     <string name="fui_welcome_back_email_link_header">您已經有帳戶了\n</string>
-    <string name="fui_welcome_back_idp_prompt">目前您用於登入的帳戶是 %1$s。 如要繼續，請使用 %2$s 帳戶登入。</string>
-    <string name="fui_welcome_back_password_prompt_body">您已使用 %1$s 登入。請輸入這個帳戶的密碼。</string>
-    <string name="fui_welcome_back_email_link_prompt_body">您已經使用過 %1$s。只要使用下方的電子郵件連結登入，即可將您的 %2$s 帳戶連結至 %1$s。\n\n如要順利將您的 %2$s 帳戶連結至這個電子郵件，請透過登入時使用的裝置或瀏覽器來開啟連結。</string>
-    <string name="fui_progress_dialog_signing_in">登入中…</string>
     <string name="fui_trouble_signing_in">無法登入嗎？</string>
     <string name="fui_title_recover_password_activity">重新取得密碼</string>
     <string name="fui_title_confirm_recover_password">請查看您的電子郵件信箱</string>
     <string name="fui_password_recovery_body">這個電子郵件會收到重設密碼的 操作說明。</string>
     <string name="fui_button_text_send">傳送</string>
     <string name="fui_confirm_recovery_body">請依照傳送至 %1$s 的操作說明，重新取得密碼。</string>
-    <string name="fui_progress_dialog_sending">傳送中…</string>
     <string name="fui_error_email_does_not_exist">找不到與這個電子郵件地址相符的帳戶</string>
     <string name="fui_error_unknown">發生不明錯誤。</string>
     <string name="fui_error_invalid_password">密碼不正確。</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">請輸入有效的電話號碼</string>
     <string name="fui_enter_confirmation_code">請輸入傳送至以下電話號碼的 6 位數驗證碼</string>
     <string name="fui_resend_code_in">%1$s 秒後將重新發送驗證碼</string>
-    <string name="fui_verify_your_phone_title">驗證您的電話號碼</string>
     <string name="fui_verifying">驗證中…</string>
     <string name="fui_incorrect_code_dialog_body">驗證碼錯誤，請再試一次。</string>
     <string name="fui_error_too_many_attempts">使用這個電話號碼的次數過多</string>
-    <string name="fui_error_quota_exceeded">驗證電話號碼時發生問題</string>
     <string name="fui_error_session_expired">這個代碼已經失效</string>
-    <string name="fui_sign_in_with_phone_number">使用電話號碼登入</string>
-    <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
     <string name="fui_change_phone_number">使用其他電話號碼</string>
     <string name="fui_sms_terms_of_service">輕觸 [%1$s] 後，系統將會傳送一封簡訊。您可能需支付簡訊和數據傳輸費用。</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">輕觸 [%1$s] 即表示您同意接受我們的《%2$s》和《%3$s》。系統將會傳送簡訊給您，不過您可能需要支付簡訊和數據傳輸費用。</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">驗證錯誤</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">重試</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">身分已驗證。請重試您的操作。</string>
     <string name="fui_manage_mfa_action">管理雙重驗證</string>
     <string name="fui_incorrect_password_error">密碼不正確</string>
-    <string name="fui_mfa_choose_method_instruction">選擇驗證方式</string>
-    <string name="fui_mfa_enrollment_instruction">新增額外的安全保障</string>
-    <string name="fui_mfa_method_sms">簡訊</string>
-    <string name="fui_mfa_method_totp">驗證器應用程式</string>
-    <string name="fui_mfa_phone_number_already_exists_error">此電話號碼已與其他帳號關聯</string>
-    <string name="fui_mfa_second_factor_required_error">需要驗證</string>
-    <string name="fui_mfa_setup_instruction">使用驗證器應用程式掃描 QR 碼</string>
-    <string name="fui_mfa_totp_already_exists_error">驗證器應用程式已設定</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">確定要移除此驗證方式嗎？</string>
-    <string name="fui_mfa_unenrollment_error">無法移除驗證方式</string>
-    <string name="fui_mfa_unenrollment_success_message">驗證方式已移除</string>
-    <string name="fui_mfa_verification_instruction">輸入驗證碼</string>
-    <string name="fui_profile_update_error">無法更新個人資料</string>
-    <string name="fui_profile_update_success_message">個人資料已更新</string>
-    <string name="fui_reauth_instruction">確認您的身分以繼續</string>
-    <string name="fui_reauth_required_error">需要重新驗證</string>
-    <string name="fui_reauth_success_message">重新驗證成功</string>
-    <string name="fui_reauthenticate_action">重新驗證</string>
     <string name="fui_remove_action">移除</string>
     <string name="fui_resend_verification_email_action">重新傳送驗證郵件</string>
     <string name="fui_secret_key_label">密鑰</string>

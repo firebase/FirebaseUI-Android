@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Přihlásit se</string>
     <string name="fui_continue">Pokračovat</string>
     <string name="fui_tos_and_pp">Budete-li pokračovat, vyjadřujete svůj souhlas s dokumenty %1$s a %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Chyba sítě. Zkontrolujte připojení k internetu.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Toto pole nesmí zůstat prázdné.</string>
     <string name="fui_invalid_email_address">E-mailová adresa není správná</string>
     <string name="fui_missing_email_address">Nejprve zadejte svou e-mailovou adresu</string>
-    <string name="fui_missing_first_and_last_name">Zadejte jméno a příjmení</string>
-    <string name="fui_progress_dialog_checking_accounts">Vyhledávání stávajících účtů…</string>
     <string name="fui_title_register_email">Registrace</string>
     <string name="fui_name_hint">Jméno a příjmení</string>
     <string name="fui_button_text_save">Uložit</string>
-    <string name="fui_progress_dialog_signing_up">Registrace…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Heslo není dostatečně silné. Použijte alespoň %1$d znak a kombinaci písmen a číslic</item> <item quantity="few">Heslo není dostatečně silné. Použijte alespoň %1$d znaky a kombinaci písmen a číslic</item> <item quantity="many">Heslo není dostatečně silné. Použijte alespoň %1$d znaku a kombinaci písmen a číslic</item> <item quantity="other">Heslo není dostatečně silné. Použijte alespoň %1$d znaků a kombinaci písmen a číslic</item> </plurals>
     <string name="fui_email_account_creation_error">Registrace e-mailového účtu se nezdařila</string>
     <string name="fui_terms_of_service">Smluvní podmínky</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Již máte účet</string>
     <string name="fui_welcome_back_email_header">Vítejte zpět!</string>
     <string name="fui_welcome_back_email_link_header">Již máte účet\n</string>
-    <string name="fui_welcome_back_idp_prompt">Již jste použili adresu %1$s. Chcete-li pokračovat, přihlaste se prostřednictvím služby %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">K přihlášení jste již použili adresu %1$s. Zadejte příslušné heslo k účtu.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">E-mailovou adresu %1$s jste již použili. Svůj účet %2$s můžete s e-mailovou adresou %1$s propojit přihlášením prostřednictvím odkazu níže.\n\nAby došlo k úspěšnému propojení účtu %2$s s touto e-mailovou adresou, musíte odkaz otevřít na stejném zařízení nebo ve stejném prohlížeči.</string>
-    <string name="fui_progress_dialog_signing_in">Přihlašování…</string>
     <string name="fui_trouble_signing_in">Máte potíže s přihlášením?</string>
     <string name="fui_title_recover_password_activity">Obnovit heslo</string>
     <string name="fui_title_confirm_recover_password">Zkontrolujte svůj e-mail</string>
     <string name="fui_password_recovery_body">Na tento e-mail vám zašleme pokyny, jak heslo obnovit.</string>
     <string name="fui_button_text_send">Odeslat</string>
     <string name="fui_confirm_recovery_body">Postupujte podle pokynů odeslaných na adresu %1$s a obnovte heslo.</string>
-    <string name="fui_progress_dialog_sending">Odesílání…</string>
     <string name="fui_error_email_does_not_exist">E-mailová adresa neodpovídá žádnému stávajícímu účtu</string>
     <string name="fui_error_unknown">Došlo k neznámé chybě.</string>
     <string name="fui_error_invalid_password">Nesprávné heslo.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>
     <string name="fui_resend_code_in">Znovu zaslat kód za %1$s</string>
-    <string name="fui_verify_your_phone_title">Ověřit telefonní číslo</string>
     <string name="fui_verifying">Ověřování…</string>
     <string name="fui_incorrect_code_dialog_body">Špatný kód. Zkuste to znovu.</string>
     <string name="fui_error_too_many_attempts">Toto telefonní číslo již bylo použito příliš mnohokrát</string>
-    <string name="fui_error_quota_exceeded">Při ověřování vašeho telefonního čísla došlo k potížím</string>
     <string name="fui_error_session_expired">Platnost kódu vypršela</string>
-    <string name="fui_sign_in_with_phone_number">Přihlášení pomocí telefonního čísla</string>
-    <string name="fui_auto_verified">Telefonní číslo bylo automaticky ověřeno</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
     <string name="fui_change_phone_number">Použít jiné telefonní číslo</string>
     <string name="fui_sms_terms_of_service">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačítko %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s. Může být odeslána SMS a mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba ověření</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Zkusit znovu</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžadováno další ověření. Dokončete prosím vícefaktorové ověření.</string>
@@ -143,24 +129,6 @@
     <string name="fui_identity_verified_message">Identita ověřena. Zkuste akci znovu.</string>
     <string name="fui_manage_mfa_action">Správa dvoufázového ověření</string>
     <string name="fui_incorrect_password_error">Nesprávné heslo</string>
-    <string name="fui_mfa_choose_method_instruction">Vyberte metodu ověření</string>
-    <string name="fui_mfa_enrollment_instruction">Přidejte další vrstvu zabezpečení</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Ověřovací aplikace</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Toto telefonní číslo je spojeno s jiným účtem</string>
-    <string name="fui_mfa_second_factor_required_error">Vyžaduje se ověření</string>
-    <string name="fui_mfa_setup_instruction">Naskenujte QR kód pomocí ověřovací aplikace</string>
-    <string name="fui_mfa_totp_already_exists_error">Ověřovací aplikace je již nastavena</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Opravdu chcete odstranit tuto metodu?</string>
-    <string name="fui_mfa_unenrollment_error">Metodu nelze odstranit</string>
-    <string name="fui_mfa_unenrollment_success_message">Metoda odstraněna</string>
-    <string name="fui_mfa_verification_instruction">Zadejte ověřovací kód</string>
-    <string name="fui_profile_update_error">Profil nelze aktualizovat</string>
-    <string name="fui_profile_update_success_message">Profil aktualizován</string>
-    <string name="fui_reauth_instruction">Potvrďte svou identitu a pokračujte</string>
-    <string name="fui_reauth_required_error">Vyžaduje se opětovné ověření</string>
-    <string name="fui_reauth_success_message">Opětovné ověření proběhlo úspěšně</string>
-    <string name="fui_reauthenticate_action">Znovu ověřit</string>
     <string name="fui_remove_action">Odstranit</string>
     <string name="fui_resend_verification_email_action">Znovu odeslat ověřovací e-mail</string>
     <string name="fui_secret_key_label">Tajný klíč</string>

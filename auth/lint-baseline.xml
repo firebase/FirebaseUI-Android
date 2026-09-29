@@ -454,17 +454,6 @@
 
     <issue
         id="MissingTranslation"
-        message="&quot;fui_sms_terms_of_service_and_privacy_policy_extended&quot; is not translated in &quot;ko&quot; (Korean)"
-        errorLine1="    &lt;string name=&quot;fui_sms_terms_of_service_and_privacy_policy_extended&quot; translation_description=&quot;Fine print warning displayed below Verify Phone Number button&quot;>By tapping &quot;%1$s&quot;, you are indicating that you accept our &lt;xliff:g example=&quot;https://google.com/terms&quot; id=&quot;tos&quot; translation_description=&quot;&quot;>%2$s&lt;/xliff:g> and &lt;xliff:g example=&quot;https://google.com/privacy&quot; id=&quot;pp&quot; translation_description=&quot;&quot;>%3$s&lt;/xliff:g>. An SMS may be sent. Message &amp;amp; data rates may apply.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="248"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="MissingTranslation"
         message="&quot;fui_error_user_disabled&quot; is not translated in &quot;de&quot; (German), &quot;hi&quot; (Hindi), &quot;ln&quot; (Lingala), &quot;pt&quot; (Portuguese), &quot;fil&quot; (Filipino; Pilipino), &quot;lt&quot; (Lithuanian), &quot;gsw&quot; (Swiss German; Alemannic; Alsatian), &quot;hr&quot; (Croatian), &quot;lv&quot; (Latvian), &quot;hu&quot; (Hungarian), &quot;uk&quot; (Ukrainian), &quot;ur&quot; (Urdu), &quot;mo&quot;, &quot;in&quot; (Indonesian), &quot;mr&quot; (Marathi), &quot;ms&quot; (Malay), &quot;el&quot; (Greek), &quot;en&quot; (English), &quot;it&quot; (Italian), &quot;es&quot; (Spanish), &quot;iw&quot; (Hebrew), &quot;zh&quot; (Chinese), &quot;ar&quot; (Arabic), &quot;vi&quot; (Vietnamese), &quot;nb&quot; (Norwegian Bokmål), &quot;ja&quot; (Japanese), &quot;fa&quot; (Persian), &quot;ro&quot; (Romanian), &quot;nl&quot; (Dutch), &quot;no&quot; (Norwegian), &quot;fi&quot; (Finnish), &quot;ru&quot; (Russian), &quot;bg&quot; (Bulgarian), &quot;bn&quot; (Bangla), &quot;fr&quot; (French), &quot;sk&quot; (Slovak), &quot;sl&quot; (Slovenian), &quot;ca&quot; (Catalan), &quot;sr&quot; (Serbian), &quot;kn&quot; (Kannada), &quot;sv&quot; (Swedish), &quot;ko&quot; (Korean), &quot;ta&quot; (Tamil), &quot;gu&quot; (Gujarati), &quot;cs&quot; (Czech), &quot;th&quot; (Thai), &quot;tl&quot; (Tagalog), &quot;pl&quot; (Polish), &quot;da&quot; (Danish), &quot;tr&quot; (Turkish)"
         errorLine1="    &lt;string name=&quot;fui_error_user_disabled&quot; translation_description=&quot;Error when a user account has been disabled by an administrator. Override to show a custom message.&quot;>User account has been disabled&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">

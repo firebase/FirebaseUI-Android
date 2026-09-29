@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Conectați-vă</string>
     <string name="fui_continue">Continuați</string>
     <string name="fui_tos_and_pp">Dacă alegeți să continuați, sunteți de acord cu %1$s și cu %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Eroare de rețea, verificați conexiunea la internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Câmpul este obligatoriu.</string>
     <string name="fui_invalid_email_address">Adresa de e-mail nu este corectă</string>
     <string name="fui_missing_email_address">Introduceți adresa de e-mail pentru a continua</string>
-    <string name="fui_missing_first_and_last_name">Introduceți numele și prenumele.</string>
-    <string name="fui_progress_dialog_checking_accounts">Se caută conturi existente…</string>
     <string name="fui_title_register_email">Înscrieți-vă</string>
     <string name="fui_name_hint">Prenume și nume de familie</string>
     <string name="fui_button_text_save">Salvați</string>
-    <string name="fui_progress_dialog_signing_up">Se creează un cont…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Parola nu este suficient de puternică. Folosiți cel puțin %1$d caracter și o combinație de litere și cifre.</item> <item quantity="few">Parola nu este suficient de puternică. Folosiți cel puțin %1$d caractere și o combinație de litere și cifre.</item> <item quantity="other">Parola nu este suficient de puternică. Folosiți cel puțin %1$d de caractere și o combinație de litere și cifre.</item> </plurals>
     <string name="fui_email_account_creation_error">Contul de e-mail nu a fost înregistrat</string>
     <string name="fui_terms_of_service">Termeni și condițiile</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Aveți deja un cont</string>
     <string name="fui_welcome_back_email_header">Bine ați revenit!</string>
     <string name="fui_welcome_back_email_link_header">Aveți deja un cont\n</string>
-    <string name="fui_welcome_back_idp_prompt">Ați folosit deja %1$s. Pentru a continua, conectați-vă cu %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Ați folosit deja %1$s pentru a vă conecta. Introduceți parola acestui cont.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Ați folosit deja %1$s. Vă puteți conecta contul %2$s la %1$s folosind linkul din e-mail, aflat mai jos.\n\nPentru ca acest flux să conecteze contul %2$s la această adresă de e-mail, trebuie să accesați linkul pe același dispozitiv sau browser.</string>
-    <string name="fui_progress_dialog_signing_in">Se conectează…</string>
     <string name="fui_trouble_signing_in">Nu reușiți să vă conectați?</string>
     <string name="fui_title_recover_password_activity">Recuperați parola</string>
     <string name="fui_title_confirm_recover_password">Verificați căsuța de e-mail</string>
     <string name="fui_password_recovery_body">Primiți instrucțiuni de resetare a parolei la această adresă de e-mail.</string>
     <string name="fui_button_text_send">Trimiteți</string>
     <string name="fui_confirm_recovery_body">Urmați instrucțiunile trimise la %1$s pentru a vă recupera parola.</string>
-    <string name="fui_progress_dialog_sending">Se trimite…</string>
     <string name="fui_error_email_does_not_exist">Adresa de e-mail nu corespunde unui cont existent</string>
     <string name="fui_error_unknown">A apărut o eroare necunoscută.</string>
     <string name="fui_error_invalid_password">Parolă incorectă</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Introduceți un număr valid de telefon</string>
     <string name="fui_enter_confirmation_code">Introduceți codul din 6 cifre pe care l-am trimis la</string>
     <string name="fui_resend_code_in">Retrimiteți codul în 0%1$s</string>
-    <string name="fui_verify_your_phone_title">Confirmați numărul de telefon</string>
     <string name="fui_verifying">Se verifică…</string>
     <string name="fui_incorrect_code_dialog_body">Cod greșit. Încercați din nou.</string>
     <string name="fui_error_too_many_attempts">Acest număr de telefon a fost folosit de prea multe ori</string>
-    <string name="fui_error_quota_exceeded">A apărut o problemă la confirmarea numărului de telefon</string>
     <string name="fui_error_session_expired">Codul nu mai este valid</string>
-    <string name="fui_sign_in_with_phone_number">Conectați-vă cu numărul de telefon</string>
-    <string name="fui_auto_verified">Numărul de telefon este verificat automat</string>
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
     <string name="fui_change_phone_number">Folosiți alt număr de telefon</string>
     <string name="fui_sms_terms_of_service">Dacă atingeți „%1$s”, poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Eroare de autentificare</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Încercați din nou</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Identitate verificată. Reîncercați acțiunea.</string>
     <string name="fui_manage_mfa_action">Gestionați autentificarea în doi pași</string>
     <string name="fui_incorrect_password_error">Parolă incorectă</string>
-    <string name="fui_mfa_choose_method_instruction">Alegeți o metodă de verificare</string>
-    <string name="fui_mfa_enrollment_instruction">Adăugați un strat suplimentar de securitate</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Aplicație de autentificare</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Acest număr de telefon este asociat cu alt cont</string>
-    <string name="fui_mfa_second_factor_required_error">Verificare necesară</string>
-    <string name="fui_mfa_setup_instruction">Scanați codul QR cu aplicația de autentificare</string>
-    <string name="fui_mfa_totp_already_exists_error">Aplicația de autentificare este deja configurată</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Sigur doriți să eliminați această metodă?</string>
-    <string name="fui_mfa_unenrollment_error">Nu se poate elimina metoda</string>
-    <string name="fui_mfa_unenrollment_success_message">Metodă eliminată</string>
-    <string name="fui_mfa_verification_instruction">Introduceți codul de verificare</string>
-    <string name="fui_profile_update_error">Nu se poate actualiza profilul</string>
-    <string name="fui_profile_update_success_message">Profil actualizat</string>
-    <string name="fui_reauth_instruction">Confirmați-vă identitatea pentru a continua</string>
-    <string name="fui_reauth_required_error">Este necesară reautentificarea</string>
-    <string name="fui_reauth_success_message">Reautentificare reușită</string>
-    <string name="fui_reauthenticate_action">Reautentificare</string>
     <string name="fui_remove_action">Eliminare</string>
     <string name="fui_resend_verification_email_action">Retrimite e-mailul de verificare</string>
     <string name="fui_secret_key_label">Cheie secretă</string>

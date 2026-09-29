@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Login</string>
     <string name="fui_continue">Lanjutkan</string>
     <string name="fui_tos_and_pp">Dengan melanjutkan, Anda menyatakan bahwa Anda menyetujui %1$s dan %2$s kami.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error jaringan, periksa koneksi internet Anda.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Anda wajib mengisinya.</string>
     <string name="fui_invalid_email_address">Alamat email yang dimasukkan salah</string>
     <string name="fui_missing_email_address">Masukkan alamat email Anda untuk melanjutkan</string>
-    <string name="fui_missing_first_and_last_name">Masukkan nama depan dan belakang.</string>
-    <string name="fui_progress_dialog_checking_accounts">Memeriksa akun yang ada…</string>
     <string name="fui_title_register_email">Daftar</string>
     <string name="fui_name_hint">Nama depan &amp; belakang</string>
     <string name="fui_button_text_save">Simpan</string>
-    <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akun email tidak berhasil</string>
     <string name="fui_terms_of_service">Persyaratan Layanan</string>
@@ -54,17 +50,12 @@
     <string name="fui_welcome_back_idp_header">Anda sudah memiliki akun</string>
     <string name="fui_welcome_back_email_header">Selamat datang kembali!</string>
     <string name="fui_welcome_back_email_link_header">Anda sudah memiliki akun\n</string>
-    <string name="fui_welcome_back_idp_prompt">Anda telah menggunakan %1$s. Login dengan %2$s untuk melanjutkan.</string>
-    <string name="fui_welcome_back_password_prompt_body">Anda telah menggunakan %1$s untuk login. Masukkan sandi untuk akun tersebut.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Anda sudah menggunakan %1$s. Anda dapat menghubungkan akun %2$s Anda ke %1$s dengan login menggunakan link email di bawah.\n\nAgar alur ini dapat menghubungkan akun %2$s Anda dengan email ini, Anda harus membuka link tersebut di perangkat atau browser yang sama.</string>
-    <string name="fui_progress_dialog_signing_in">Login…</string>
     <string name="fui_trouble_signing_in">Terjadi masalah saat login?</string>
     <string name="fui_title_recover_password_activity">Pulihkan sandi</string>
     <string name="fui_title_confirm_recover_password">Periksa email Anda</string>
     <string name="fui_password_recovery_body">Dapatkan petunjuk yang dikirimkan ke email ini yang menjelaskan cara menyetel ulang sandi Anda.</string>
     <string name="fui_button_text_send">Kirim</string>
     <string name="fui_confirm_recovery_body">Ikuti petunjuk yang dikirimkan ke %1$s untuk memulihkan sandi Anda.</string>
-    <string name="fui_progress_dialog_sending">Mengirim…</string>
     <string name="fui_error_email_does_not_exist">Alamat email tidak cocok dengan akun yang ada</string>
     <string name="fui_error_unknown">Terjadi error yang tidak diketahui.</string>
     <string name="fui_error_invalid_password">Sandi salah.</string>
@@ -90,19 +81,14 @@
     <string name="fui_invalid_phone_number">Masukkan nomor telepon yang valid</string>
     <string name="fui_enter_confirmation_code">Masukkan kode 6 digit yang kami kirimkan ke</string>
     <string name="fui_resend_code_in">Kirimkan ulang kode dalam 0.%1$s</string>
-    <string name="fui_verify_your_phone_title">Verifikasi nomor telepon Anda</string>
     <string name="fui_verifying">Memverifikasi…</string>
     <string name="fui_incorrect_code_dialog_body">Kode salah. Coba lagi.</string>
     <string name="fui_error_too_many_attempts">Nomor telepon ini sudah terlalu sering digunakan</string>
-    <string name="fui_error_quota_exceeded">Ada masalah saat memverifikasi nomor telepon Anda</string>
     <string name="fui_error_session_expired">Kode ini sudah tidak valid</string>
-    <string name="fui_sign_in_with_phone_number">Login dengan nomor telepon</string>
-    <string name="fui_auto_verified">Nomor telepon terverifikasi secara otomatis</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
     <string name="fui_change_phone_number">Gunakan nomor telepon lain</string>
     <string name="fui_sms_terms_of_service">Dengan mengetuk “%1$s\", SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan mengetuk “%1$s”, Anda menyatakan bahwa Anda menyetujui %2$s dan %3$s kami. SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
 
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error Autentikasi</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Coba lagi</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Identitas terverifikasi. Coba lagi tindakan Anda.</string>
     <string name="fui_manage_mfa_action">Kelola autentikasi dua faktor</string>
     <string name="fui_incorrect_password_error">Kata sandi salah</string>
-    <string name="fui_mfa_choose_method_instruction">Pilih metode verifikasi</string>
-    <string name="fui_mfa_enrollment_instruction">Tambahkan lapisan keamanan ekstra</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Aplikasi autentikator</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Nomor telepon ini terkait dengan akun lain</string>
-    <string name="fui_mfa_second_factor_required_error">Verifikasi diperlukan</string>
-    <string name="fui_mfa_setup_instruction">Pindai kode QR dengan aplikasi autentikator Anda</string>
-    <string name="fui_mfa_totp_already_exists_error">Aplikasi autentikator sudah diatur</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Yakin ingin menghapus metode ini?</string>
-    <string name="fui_mfa_unenrollment_error">Tidak dapat menghapus metode</string>
-    <string name="fui_mfa_unenrollment_success_message">Metode dihapus</string>
-    <string name="fui_mfa_verification_instruction">Masukkan kode verifikasi</string>
-    <string name="fui_profile_update_error">Tidak dapat memperbarui profil</string>
-    <string name="fui_profile_update_success_message">Profil diperbarui</string>
-    <string name="fui_reauth_instruction">Konfirmasi identitas Anda untuk melanjutkan</string>
-    <string name="fui_reauth_required_error">Autentikasi ulang diperlukan</string>
-    <string name="fui_reauth_success_message">Autentikasi ulang berhasil</string>
-    <string name="fui_reauthenticate_action">Autentikasi ulang</string>
     <string name="fui_remove_action">Hapus</string>
     <string name="fui_resend_verification_email_action">Kirim ulang email verifikasi</string>
     <string name="fui_secret_key_label">Kunci rahasia</string>

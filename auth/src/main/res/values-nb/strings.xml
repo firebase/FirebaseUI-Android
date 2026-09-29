@@ -3,7 +3,6 @@
     <string name="fui_sign_in_default">Logg på</string>
     <string name="fui_continue">Fortsett</string>
     <string name="fui_tos_and_pp">Ved å fortsette godtar du %1$s og %2$s våre.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Nettverksfeil. Sjekk internettilkoblingen din.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +40,9 @@
     <string name="fui_required_field">Du må fylle ut dette feltet.</string>
     <string name="fui_invalid_email_address">E-postadressen er ikke riktig</string>
     <string name="fui_missing_email_address">Oppgi e-postadressen din for å fortsette</string>
-    <string name="fui_missing_first_and_last_name">Skriv inn et for- og etternavn.</string>
-    <string name="fui_progress_dialog_checking_accounts">Ser etter eksisterende kontoer…</string>
     <string name="fui_title_register_email">Registrering</string>
     <string name="fui_name_hint">Fornavn og etternavn</string>
     <string name="fui_button_text_save">Lagre</string>
-    <string name="fui_progress_dialog_signing_up">Registrerer…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> <item quantity="other">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> </plurals>
     <string name="fui_email_account_creation_error">Kunne ikke registrere e-postkontoen</string>
     <string name="fui_terms_of_service">vilkårene</string>
@@ -54,10 +50,6 @@
     <string name="fui_welcome_back_idp_header">Du har allerede en konto</string>
     <string name="fui_welcome_back_email_header">Velkommen tilbake!</string>
     <string name="fui_welcome_back_email_link_header">Du har allerede en konto\n</string>
-    <string name="fui_welcome_back_idp_prompt">Du har allerede brukt %1$s. Logg på med %2$s for å fortsette.</string>
-    <string name="fui_welcome_back_password_prompt_body">Du har allerede brukt %1$s for å logge på. Angi passordet ditt for denne kontoen.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Du har allerede brukt %1$s. Du kan koble %2$s-kontoen din til %1$s ved å logge på med e-postlinken nedenfor.\n\nDu må åpne linken med den samme enheten eller nettleseren for at %2$s-kontoen din skal bli koblet til denne e-postadressen.</string>
-    <string name="fui_progress_dialog_signing_in">Logger på…</string>
     <string name="fui_trouble_signing_in">Har du problemer med å logge på?</string>
     <string name="fui_title_recover_password_activity">Gjenopprett passordet</string>
     <string name="fui_title_confirm_recover_password">Sjekk e-posten din</string>
@@ -65,7 +57,6 @@
     <!-- Identical to English: this is the imperative of "sende". -->
     <string name="fui_button_text_send" tools:ignore="UntranslatedResource">Send</string>
     <string name="fui_confirm_recovery_body">Følg veiledningen som er sendt til %1$s, for å gjenopprette passordet ditt.</string>
-    <string name="fui_progress_dialog_sending">Sender…</string>
     <string name="fui_error_email_does_not_exist">Denne e-postadressen samsvarer ikke med en eksisterende konto</string>
     <string name="fui_error_unknown">Det oppsto en ukjent feil.</string>
     <string name="fui_error_invalid_password">Feil passord.</string>
@@ -91,19 +82,14 @@
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>
     <string name="fui_resend_code_in">Send koden på nytt om %1$s</string>
-    <string name="fui_verify_your_phone_title">Bekreft telefonnummeret ditt</string>
     <string name="fui_verifying">Bekrefter…</string>
     <string name="fui_incorrect_code_dialog_body">Feil kode. Prøv på nytt.</string>
     <string name="fui_error_too_many_attempts">Dette telefonnummeret er brukt for mange ganger</string>
-    <string name="fui_error_quota_exceeded">Kunne ikke bekrefte telefonnummeret ditt</string>
     <string name="fui_error_session_expired">Denne koden er ikke lenger gyldig</string>
-    <string name="fui_sign_in_with_phone_number">Logg på med telefonnummer</string>
-    <string name="fui_auto_verified">Telefonnummeret ble bekreftet automatisk</string>
     <string name="fui_resend_code">Send koden på nytt</string>
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
     <string name="fui_change_phone_number">Bruk et annet telefonnummer</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Godkjenningsfeil</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Prøv igjen</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligere verifisering kreves. Vennligst fullfør multifaktorgodkjenning.</string>
@@ -144,24 +130,6 @@
     <string name="fui_identity_verified_message">Identitet bekreftet. Prøv handlingen din på nytt.</string>
     <string name="fui_manage_mfa_action">Administrer tofaktorautentisering</string>
     <string name="fui_incorrect_password_error">Feil passord</string>
-    <string name="fui_mfa_choose_method_instruction">Velg en bekreftelsesmetode</string>
-    <string name="fui_mfa_enrollment_instruction">Legg til et ekstra sikkerhetslag</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Autentiseringsapp</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Dette telefonnummeret er knyttet til en annen konto</string>
-    <string name="fui_mfa_second_factor_required_error">Bekreftelse påkrevd</string>
-    <string name="fui_mfa_setup_instruction">Skann QR-koden med autentiseringsappen din</string>
-    <string name="fui_mfa_totp_already_exists_error">Autentiseringsappen er allerede konfigurert</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Er du sikker på at du vil fjerne denne metoden?</string>
-    <string name="fui_mfa_unenrollment_error">Kan ikke fjerne metode</string>
-    <string name="fui_mfa_unenrollment_success_message">Metode fjernet</string>
-    <string name="fui_mfa_verification_instruction">Angi bekreftelseskode</string>
-    <string name="fui_profile_update_error">Kan ikke oppdatere profil</string>
-    <string name="fui_profile_update_success_message">Profil oppdatert</string>
-    <string name="fui_reauth_instruction">Bekreft identiteten din for å fortsette</string>
-    <string name="fui_reauth_required_error">Ny autentisering påkrevd</string>
-    <string name="fui_reauth_success_message">Ny autentisering vellykket</string>
-    <string name="fui_reauthenticate_action">Autentiser på nytt</string>
     <string name="fui_remove_action">Fjern</string>
     <string name="fui_resend_verification_email_action">Send bekreftelsese-post på nytt</string>
     <string name="fui_secret_key_label">Hemmelig nøkkel</string>
