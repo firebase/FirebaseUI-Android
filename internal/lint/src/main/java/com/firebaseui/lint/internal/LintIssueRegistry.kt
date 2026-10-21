@@ -12,6 +12,7 @@ class LintIssueRegistry : IssueRegistry() {
 
     override val issues = listOf(
         NonGlobalIdDetector.NON_GLOBAL_ID,
+        UnreferencedResourceDetector.UNREFERENCED_RESOURCE,
         UntranslatedResourceDetector.UNTRANSLATED_RESOURCE
     )
 
