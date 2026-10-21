@@ -405,6 +405,9 @@ override fun onDestroy() {
 
 `AuthState` represents the current state of authentication:
 
+The declarations below are the public shape, not a snippet to paste: the library constructs
+every state, and bodies are elided.
+
 ```kotlin
 abstract class AuthState private constructor() {
 
@@ -449,9 +452,10 @@ abstract class AuthState private constructor() {
         abstract val requestId: String
         abstract val userUid: String
 
-        class Required internal constructor(...) : Reauthentication() {
-            val user: FirebaseUser
-            val reason: String?
+        // Constructor is internal; `request` is an internal type. Read-only surface:
+        class Required : Reauthentication() {
+            val user: FirebaseUser get() = ...
+            val reason: String? get() = ...
         }
         // Every other phase — Authenticating, AttemptFailed, RequiresMfa,
         // PhoneNumberVerificationRequired, SmsAutoVerified, PasswordResetLinkSent,
@@ -459,9 +463,9 @@ abstract class AuthState private constructor() {
     }
 
     companion object {
-        @JvmStatic val Idle: Idle
-        @JvmStatic val Cancelled: Cancelled
-        @JvmStatic val Aborted: Aborted
+        @JvmStatic val Idle: Idle = Idle()
+        @JvmStatic val Cancelled: Cancelled = Cancelled()
+        @JvmStatic val Aborted: Aborted = Aborted()
     }
 }
 ```
@@ -2359,10 +2363,11 @@ FirebaseUI provides a comprehensive exception hierarchy. `AuthException` is `abs
 `sealed`, so a `when` over it is never exhaustive — **always end with an `else`**, and treat that
 branch as the one that runs for anything this list does not name.
 
-Every `AuthException` carries a user-facing `message`, translated wherever the library maps the
-Firebase error code (see [Error message resolution](#error-message-resolution)). Match a specific
-type when you need a *different action* — offer linking, navigate back, log. If you only need to
-show text, the `else` branch below covers the whole hierarchy on its own.
+Most `AuthException` types carry a user-facing `message`, translated wherever the library maps the
+Firebase error code (see [Error message resolution](#error-message-resolution)). The six email-link
+types are the exception and must not be shown that way, as the branch for them below explains.
+Match a specific type when you need a *different action* — offer linking, navigate back, log. If
+you only need to show text, the `else` branch covers everything outside those six.
 
 ```kotlin
 FirebaseAuthScreen(
@@ -2427,12 +2432,17 @@ FirebaseAuthScreen(
                 navigateBack()
             }
             // Email link sign-in's own failure modes. Do NOT show `message` for these six:
-            // they bake untranslated English into their constructors. Resolve them through the
-            // string provider instead. `ErrorRecoveryDialog`'s `getRecoveryMessage` is the
-            // worked mapping, and two entries do not follow the others' naming: the copy for
-            // EmailMismatchException is `emailMismatchMessage`, with no emailLink prefix, and
-            // EmailLinkCrossDeviceLinkingException's is a function taking the provider name,
-            // `emailLinkCrossDeviceLinkingMessage(providerName)`.
+            // they bake untranslated English into their constructors. Take the copy from your
+            // AuthUIStringProvider instead:
+            //
+            //   InvalidEmailLinkException                -> emailLinkInvalidLinkMessage
+            //   EmailLinkWrongDeviceException            -> emailLinkWrongDeviceMessage
+            //   EmailLinkDifferentAnonymousUserException -> emailLinkDifferentAnonymousUserMessage
+            //   EmailLinkPromptForEmailException         -> emailLinkPromptForEmailMessage
+            //   EmailMismatchException                   -> emailMismatchMessage
+            //   EmailLinkCrossDeviceLinkingException     -> emailLinkCrossDeviceLinkingMessage(
+            //                                                   exception.providerName
+            //                                                       ?: emailProvider)
             //
             // Two also need an action, not just copy: EmailLinkPromptForEmailException wants
             // the email collected and the link re-submitted, and
