@@ -27,6 +27,9 @@ import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.recordingScope
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -1115,4 +1118,112 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         assertThat(reportedFailures).isEmpty()
     }
+
+    // =============================================================================================
+    // Error message routing — the configured AuthUIStringProvider, not the device
+    // =============================================================================================
+
+    @Test
+    fun `signInWithGoogle - credential manager failure message comes from the configured string provider`() =
+        runTest {
+            // "An unknown error occurred during sign-in", in Japanese.
+            val localizedMessage = "サインイン中に不明なエラーが発生しました"
+            `when`(
+                mockCredentialManagerProvider.getGoogleCredential(
+                    context = eq(applicationContext),
+                    credentialManager = any<CredentialManager>(),
+                    serverClientId = eq("test-client-id"),
+                    filterByAuthorizedAccounts = eq(true),
+                    autoSelectEnabled = eq(false)
+                )
+            ).thenThrow(RuntimeException("No credentials available"))
+
+            val googleProvider = AuthProvider.Google(
+                serverClientId = "test-client-id",
+                scopes = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(googleProvider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorUnknownAuth: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            var thrown: Throwable? = null
+            try {
+                instance.flowScope(config).signInWithGoogle(
+                    context = applicationContext,
+                    provider = googleProvider,
+                    authorizationProvider = mockAuthorizationProvider,
+                    credentialManagerProvider = mockCredentialManagerProvider
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            assertThat(thrown).isInstanceOf(AuthException.UnknownException::class.java)
+            assertThat(thrown).hasMessageThat().isEqualTo(localizedMessage)
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Error::class.java)
+            assertThat((state as AuthState.Error).exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
+
+    @Test
+    fun `signInWithGoogle - scope authorization failure message comes from the configured string provider`() =
+        runTest {
+            // "An unknown error occurred during sign-in", in Japanese.
+            val localizedMessage = "サインイン中に不明なエラーが発生しました"
+            `when`(mockAuthorizationProvider.authorize(eq(applicationContext), any()))
+                .thenThrow(RuntimeException("Authorization failed"))
+            // Sign-in continues past the authorization failure, so the Error state is transient:
+            // a recording scope keeps it instead of letting the later states overwrite it.
+            `when`(
+                mockCredentialManagerProvider.getGoogleCredential(
+                    context = eq(applicationContext),
+                    credentialManager = any<CredentialManager>(),
+                    serverClientId = eq("test-client-id"),
+                    filterByAuthorizedAccounts = eq(true),
+                    autoSelectEnabled = eq(false)
+                )
+            ).thenAnswer { throw AuthException.AuthCancelledException("stop here") }
+
+            val googleProvider = AuthProvider.Google(
+                serverClientId = "test-client-id",
+                scopes = listOf("https://www.googleapis.com/auth/drive")
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(googleProvider) }
+                stringProvider = object :
+                    AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                    override val errorUnknownAuth: String = localizedMessage
+                }
+            }
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val recorded = mutableListOf<AuthState>()
+            try {
+                instance.recordingScope(config, recorded).signInWithGoogle(
+                    context = applicationContext,
+                    provider = googleProvider,
+                    authorizationProvider = mockAuthorizationProvider,
+                    credentialManagerProvider = mockCredentialManagerProvider
+                )
+            } catch (_: Throwable) {
+                // The cancellation that stops the flow after the authorization failure.
+            }
+
+            verify(mockAuthorizationProvider).authorize(eq(applicationContext), any())
+            val authorizationError = recorded
+                .filterIsInstance<AuthState.Error>()
+                .firstOrNull { it.exception is AuthException.UnknownException }
+            assertThat(authorizationError).isNotNull()
+            assertThat(authorizationError!!.exception).hasMessageThat()
+                .isEqualTo(localizedMessage)
+        }
 }

@@ -27,9 +27,11 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebaseui.android.demo.auth.AuthChooserActivity
 import com.firebaseui.android.demo.auth.HighLevelApiDemoActivity
+import com.firebaseui.android.demo.auth.fullcustomization.FullCustomizationDemoActivity
 import com.firebaseui.android.demo.database.DatabaseDemoActivity
 import com.firebaseui.android.demo.firestore.FirestoreDemoActivity
 import com.firebaseui.android.demo.storage.StorageDemoActivity
+import com.firebaseui.android.demo.utils.emailLinkOrigin
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -85,8 +87,14 @@ class MainActivity : ComponentActivity() {
 
         Log.d("MainActivity", "Pending email link: $pendingEmailLink")
 
-        fun launchHighLevelDemo() {
-            val demoIntent = Intent(this, HighLevelApiDemoActivity::class.java).apply {
+        fun launchDemoForEmailLink() {
+            val target = when (emailLinkOrigin(pendingEmailLink)) {
+                FullCustomizationDemoActivity.EMAIL_LINK_ORIGIN ->
+                    FullCustomizationDemoActivity::class.java
+                // Untagged links predate this routing, so they belong to the demo that had them.
+                else -> HighLevelApiDemoActivity::class.java
+            }
+            val demoIntent = Intent(this, target).apply {
                 pendingEmailLink?.let { link ->
                     putExtra(EmailLinkConstants.EXTRA_EMAIL_LINK, link)
                     pendingEmailLink = null
@@ -96,7 +104,7 @@ class MainActivity : ComponentActivity() {
         }
 
         if (savedInstanceState == null && !pendingEmailLink.isNullOrEmpty()) {
-            launchHighLevelDemo()
+            launchDemoForEmailLink()
             finish()
             return
         }

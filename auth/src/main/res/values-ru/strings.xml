@@ -1,9 +1,31 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Загрузка…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Инициализация</string>
+    <string name="fui_verification_code_digit_description">Цифра %1$d из %2$d кода подтверждения</string>
+    <string name="fui_enter_totp_code">Введите код TOTP</string>
+    <string name="fui_text_field_read_only">Только для чтения</string>
+    <string name="fui_error_user_disabled">Аккаунт пользователя отключён</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Выполняется вход в качестве гостя…</string>
+    <string name="fui_loading_signing_in_with_google">Выполняется вход через Google…</string>
+    <string name="fui_loading_signing_in_with_facebook">Выполняется вход через Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider">Выполняется вход через %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Проверка номера телефона…</string>
+    <string name="fui_loading_submitting_verification_code">Отправка кода подтверждения…</string>
+    <string name="fui_loading_signing_in_with_phone">Выполняется вход по номеру телефона…</string>
+    <string name="fui_loading_creating_user">Создание аккаунта…</string>
+    <string name="fui_loading_signing_in">Выполняется вход…</string>
+    <string name="fui_loading_linking_credential">Выполняется вход…</string>
+    <string name="fui_loading_sending_email_link">Отправка ссылки для входа…</string>
+    <string name="fui_loading_signing_in_with_email_link">Выполняется вход по ссылке из письма…</string>
+    <string name="fui_loading_sending_password_reset">Отправка письма для сброса пароля…</string>
+    <string name="fui_loading_signing_out">Выполняется выход…</string>
+    <string name="fui_loading_reauth_retrying">Завершение действия…</string>
+    <string name="fui_loading_deleting_account">Удаление аккаунта…</string>
     <string name="fui_sign_in_default">Войти</string>
     <string name="fui_continue">Продолжить</string>
     <string name="fui_tos_and_pp">Продолжая, вы принимаете %1$s и %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Ошибка сети. Проверьте подключение к Интернету.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +63,9 @@
     <string name="fui_required_field">Это поле должно быть заполнено.</string>
     <string name="fui_invalid_email_address">Неверный адрес электронной почты.</string>
     <string name="fui_missing_email_address">Введите адрес электронной почты.</string>
-    <string name="fui_missing_first_and_last_name">Введите имя и фамилию.</string>
-    <string name="fui_progress_dialog_checking_accounts">Проверка существующих аккаунтов…</string>
     <string name="fui_title_register_email">Регистрация</string>
     <string name="fui_name_hint">Имя и фамилия</string>
     <string name="fui_button_text_save">Сохранить</string>
-    <string name="fui_progress_dialog_signing_up">Идет регистрация…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> </plurals>
     <string name="fui_email_account_creation_error">Не удалось зарегистрировать аккаунт</string>
     <string name="fui_terms_of_service">Условия использования</string>
@@ -54,17 +73,12 @@
     <string name="fui_welcome_back_idp_header">У вас уже есть аккаунт</string>
     <string name="fui_welcome_back_email_header">Рады видеть вас снова!</string>
     <string name="fui_welcome_back_email_link_header">У вас уже есть аккаунт\n</string>
-    <string name="fui_welcome_back_idp_prompt">Вы уже использовали адрес %1$s. Войдите через аккаунт %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Вы уже использовали адрес %1$s. Введите пароль для этого аккаунта.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Вы уже использовали адрес электронной почты %1$s для входа. Чтобы связать аккаунт сервиса \"%2$s\" с адресом %1$s, нажмите \"Войти\" и перейдите по ссылке, которую мы вам отправим.\n\nОбратите внимание, что открыть ссылку нужно в браузере или на устройстве, которые вы использовали. В противном случае связать аккаунт сервиса \"%2$s\" с указанным адресом электронной почты не получится.</string>
-    <string name="fui_progress_dialog_signing_in">Выполняется вход…</string>
     <string name="fui_trouble_signing_in">Проблемы со входом в систему?</string>
     <string name="fui_title_recover_password_activity">Восстановление пароля</string>
     <string name="fui_title_confirm_recover_password">Проверьте электронную почту</string>
     <string name="fui_password_recovery_body">На этот адрес будет отправлено письмо с инструкциями по сбросу пароля.</string>
     <string name="fui_button_text_send">Отправить</string>
     <string name="fui_confirm_recovery_body">На адрес %1$s отправлено письмо с инструкциями по сбросу пароля.</string>
-    <string name="fui_progress_dialog_sending">Отправка…</string>
     <string name="fui_error_email_does_not_exist">Нет аккаунта с таким адресом электронной почты.</string>
     <string name="fui_error_unknown">Произошла неизвестная ошибка.</string>
     <string name="fui_error_invalid_password">Неправильный пароль.</string>
@@ -90,23 +104,29 @@
     <string name="fui_invalid_phone_number">Введите действительный номер телефона.</string>
     <string name="fui_enter_confirmation_code">Введите 6-значный код, отправленный на номер</string>
     <string name="fui_resend_code_in">Отправить код ещё раз можно будет через %1$s.</string>
-    <string name="fui_verify_your_phone_title">Подтвердить номер телефона</string>
     <string name="fui_verifying">Проверка…</string>
     <string name="fui_incorrect_code_dialog_body">Неверный код. Повторите попытку.</string>
     <string name="fui_error_too_many_attempts">Этот номер телефона использовался слишком много раз.</string>
-    <string name="fui_error_quota_exceeded">Не удалось подтвердить номер телефона.</string>
     <string name="fui_error_session_expired">Этот код уже неактивен.</string>
-    <string name="fui_sign_in_with_phone_number">Войти по номеру телефона</string>
-    <string name="fui_auto_verified">Номер телефона был подтвержден автоматически</string>
     <string name="fui_resend_code">Отправить код ещё раз</string>
     <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Использовать другой номер телефона</string>
     <string name="fui_sms_terms_of_service">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Нажимая кнопку "%1$s", вы принимаете %2$s и %3$s, а также соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Ошибка аутентификации</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Повторить</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Требуется дополнительная проверка. Пожалуйста, завершите многофакторную аутентификацию.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Необходимо связать аккаунт. Попробуйте другой способ входа.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Подтвердите свою личность</string>
+    <string name="fui_reauth_dialog_message">В целях безопасности повторно введите пароль, чтобы продолжить.</string>
+    <string name="fui_reauth_account_label">Аккаунт: %1$s</string>
+    <string name="fui_reauth_generic_error">Не удалось выполнить аутентификацию. Повторите попытку.</string>
+    <string name="fui_reauth_password_required_notice">Для подтверждения вашей личности здесь требуется пароль этого аккаунта. Если вы входите по ссылке из письма, а не с помощью пароля, этот аккаунт нельзя подтвердить паролем.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Ни один из доступных способов входа не связан с вашим аккаунтом.</string>
+    <string name="fui_error_reauth_incomplete">Не удалось подтвердить вашу личность для этого аккаунта. Повторите попытку.</string>
+    <string name="fui_error_reauth_interrupted">Подтверждение вашей личности было прервано. Повторите действие.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Вы не можете создать новый аккаунт во время подтверждения личности.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Аутентификация была отменена. Повторите попытку, когда будете готовы.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +134,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Настроить SMS-подтверждение</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Настроить приложение-аутентификатор</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Подтвердите код</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Управление двухфакторной аутентификацией</string>
+    <string name="fui_mfa_manage_factors_description">Добавление или удаление способов аутентификации для вашего аккаунта</string>
+    <string name="fui_mfa_active_methods_title">Активные способы</string>
+    <string name="fui_mfa_add_new_method_title">Добавить новый способ</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Все доступные способы аутентификации зарегистрированы</string>
+    <string name="fui_mfa_label_sms_authentication">Аутентификация по SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Приложение для аутентификации</string>
+    <string name="fui_mfa_label_unknown_method">Неизвестный способ</string>
+    <string name="fui_mfa_enrolled_on">Зарегистрировано %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Отсканируйте QR-код или введите секретный ключ в приложении для аутентификации</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Выберите второй способ аутентификации для защиты аккаунта</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Введите номер телефона для получения кодов подтверждения</string>
@@ -143,36 +174,34 @@
     <string name="fui_identity_verified_message">Личность подтверждена. Повторите действие.</string>
     <string name="fui_manage_mfa_action">Управление двухфакторной аутентификацией</string>
     <string name="fui_incorrect_password_error">Неверный пароль</string>
-    <string name="fui_mfa_choose_method_instruction">Выберите способ подтверждения</string>
-    <string name="fui_mfa_enrollment_instruction">Добавьте дополнительный уровень безопасности</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Приложение для аутентификации</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Этот номер телефона уже привязан к другому аккаунту</string>
-    <string name="fui_mfa_second_factor_required_error">Требуется подтверждение</string>
-    <string name="fui_mfa_setup_instruction">Отсканируйте QR-код приложением для аутентификации</string>
-    <string name="fui_mfa_totp_already_exists_error">Приложение для аутентификации уже настроено</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Вы уверены, что хотите удалить этот способ?</string>
-    <string name="fui_mfa_unenrollment_error">Не удалось удалить способ</string>
-    <string name="fui_mfa_unenrollment_success_message">Способ удален</string>
-    <string name="fui_mfa_verification_instruction">Введите код подтверждения</string>
-    <string name="fui_profile_update_error">Не удалось обновить профиль</string>
-    <string name="fui_profile_update_success_message">Профиль обновлен</string>
-    <string name="fui_reauth_instruction">Подтвердите свою личность, чтобы продолжить</string>
-    <string name="fui_reauth_required_error">Требуется повторная аутентификация</string>
-    <string name="fui_reauth_success_message">Повторная аутентификация выполнена</string>
-    <string name="fui_reauthenticate_action">Повторная аутентификация</string>
     <string name="fui_remove_action">Удалить</string>
     <string name="fui_resend_verification_email_action">Отправить письмо подтверждения повторно</string>
     <string name="fui_secret_key_label">Секретный ключ</string>
     <string name="fui_sign_out_action">Выйти</string>
-    <string name="fui_signed_in_as">Вы вошли как</string>
+    <string name="fui_signed_in_as">Вы вошли как %1$s</string>
     <string name="fui_skip_action">Пропустить</string>
     <string name="fui_use_different_method_action">Использовать другой способ</string>
     <string name="fui_verification_code_label">Код подтверждения</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Заполните информацию профиля, чтобы продолжить.</string>
+    <string name="fui_profile_missing_fields_message">Отсутствующие поля: %1$s</string>
     <string name="fui_verified_email_action">Email подтвержден</string>
     <string name="fui_verify_action">Подтвердить</string>
     <string name="fui_verify_email_instruction">Мы отправили письмо подтверждения на %1$s</string>
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Многофакторная аутентификация в настоящее время отключена</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Неправильный адрес электронной почты или пароль</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Этот сеанс проверки больше не действителен. Запросите новый код.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Не удалось подтвердить номер телефона. Повторите попытку.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Эти учётные данные принадлежат другому аккаунту.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Этот номер телефона не настроен для подтверждения в этом аккаунте.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Сеанс входа истёк. Войдите ещё раз, чтобы продолжить.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Эта ссылка больше не действительна. Запросите новую.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Подтвердите адрес электронной почты, прежде чем продолжить.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Этот способ подтверждения уже настроен в этом аккаунте.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Достигнут лимит способов подтверждения для этого аккаунта.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Пароль не соответствует требованиям. Попробуйте другой.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Пароль слишком длинный. Максимальная длина – %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Не удалось найти ключ доступа для этого аккаунта. Войдите другим способом.</string>
 </resources>

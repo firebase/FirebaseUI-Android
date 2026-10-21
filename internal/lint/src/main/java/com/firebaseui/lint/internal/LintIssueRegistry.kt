@@ -11,7 +11,9 @@ class LintIssueRegistry : IssueRegistry() {
         get() = com.android.tools.lint.detector.api.CURRENT_API
 
     override val issues = listOf(
-        NonGlobalIdDetector.NON_GLOBAL_ID
+        NonGlobalIdDetector.NON_GLOBAL_ID,
+        UnreferencedResourceDetector.UNREFERENCED_RESOURCE,
+        UntranslatedResourceDetector.UNTRANSLATED_RESOURCE
     )
 
     override val vendor = Vendor(

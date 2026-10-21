@@ -1,9 +1,31 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Učitavanje…</string>
+    <!-- Misc UI strings -->
+    <string name="fui_initializing">Inicijalizacija</string>
+    <string name="fui_verification_code_digit_description">Znamenka %1$d od %2$d koda za provjeru</string>
+    <string name="fui_enter_totp_code">Unesite TOTP kôd</string>
+    <string name="fui_text_field_read_only">Samo za čitanje</string>
+    <string name="fui_error_user_disabled">Korisnički račun je onemogućen</string>
+    <!-- Loading state messages shown during auth operations -->
+    <string name="fui_loading_signing_in_anonymously">Prijava kao gost…</string>
+    <string name="fui_loading_signing_in_with_google">Prijava putem Googlea…</string>
+    <string name="fui_loading_signing_in_with_facebook">Prijava putem Facebooka…</string>
+    <string name="fui_loading_signing_in_with_provider">Prijava putem %1$s…</string>
+    <string name="fui_loading_verifying_phone_number">Potvrđivanje telefonskog broja…</string>
+    <string name="fui_loading_submitting_verification_code">Slanje koda za potvrdu…</string>
+    <string name="fui_loading_signing_in_with_phone">Prijava putem telefona…</string>
+    <string name="fui_loading_creating_user">Izrada računa…</string>
+    <string name="fui_loading_signing_in">Prijava…</string>
+    <string name="fui_loading_linking_credential">Prijava…</string>
+    <string name="fui_loading_sending_email_link">Slanje poveznice za prijavu…</string>
+    <string name="fui_loading_signing_in_with_email_link">Prijava pomoću poveznice e-pošte…</string>
+    <string name="fui_loading_sending_password_reset">Slanje e-poruke za ponovno postavljanje zaporke…</string>
+    <string name="fui_loading_signing_out">Odjava…</string>
+    <string name="fui_loading_reauth_retrying">Dovršavanje radnje…</string>
+    <string name="fui_loading_deleting_account">Brisanje računa…</string>
     <string name="fui_sign_in_default">Prijava</string>
     <string name="fui_continue">Nastavi</string>
     <string name="fui_tos_and_pp">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrže %1$s i %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Pogreška na mreži; provjerite internetsku vezu.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
@@ -41,12 +63,9 @@
     <string name="fui_required_field">Ne možete to ostaviti prazno.</string>
     <string name="fui_invalid_email_address">Ta e-adresa nije točna</string>
     <string name="fui_missing_email_address">Unesite svoju e-adresu za nastavak</string>
-    <string name="fui_missing_first_and_last_name">Unesite ime i prezime.</string>
-    <string name="fui_progress_dialog_checking_accounts">Traženje postojećih računa…</string>
     <string name="fui_title_register_email">Registracija</string>
     <string name="fui_name_hint">Ime i prezime</string>
     <string name="fui_button_text_save">Spremi</string>
-    <string name="fui_progress_dialog_signing_up">Registriranje….</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
     <string name="fui_terms_of_service">Uvjeti pružanja usluge</string>
@@ -54,17 +73,12 @@
     <string name="fui_welcome_back_idp_header">Već imate račun</string>
     <string name="fui_welcome_back_email_header">Dobro došli natrag!</string>
     <string name="fui_welcome_back_email_link_header">Već imate račun\n</string>
-    <string name="fui_welcome_back_idp_prompt">Već ste upotrijebili e-adresu %1$s. Za nastavak se prijavite putem usluge %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body">Za prijavu ste već upotrijebili e-adresu %1$s. Unesite zaporku za taj račun.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Već ste upotrebljavali adresu %1$s. Svoj %2$s račun možete povezati s adresom %1$s tako da se prijavite putem ispod navedene veze u e-poruci.\n\nDa biste ovim postupkom povezali svoj %2$s račun s tom e-adresom, trebate otvoriti vezu na istom uređaju ili pregledniku.</string>
-    <string name="fui_progress_dialog_signing_in">Prijava…</string>
     <string name="fui_trouble_signing_in">Problem s prijavom?</string>
     <string name="fui_title_recover_password_activity">Ponovno postavljanje zaporke</string>
     <string name="fui_title_confirm_recover_password">Provjerite e-poštu</string>
     <string name="fui_password_recovery_body">Provjerite upute za ponovno postavljanje zaporke koje smo poslali na vašu e-adresu.</string>
     <string name="fui_button_text_send">Pošalji</string>
     <string name="fui_confirm_recovery_body">Slijedite upute za ponovno postavljanje zaporke koje smo poslali na e-adresu %1$s.</string>
-    <string name="fui_progress_dialog_sending">Slanje…</string>
     <string name="fui_error_email_does_not_exist">Ta e-adresa ne pripada postojećem računu</string>
     <string name="fui_error_unknown">Došlo je do nepoznate pogreške.</string>
     <string name="fui_error_invalid_password">Pogrešna zaporka.</string>
@@ -90,23 +104,29 @@
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>
     <string name="fui_resend_code_in">Ponovno slanje koda za %1$s</string>
-    <string name="fui_verify_your_phone_title">Potvrda telefonskog broja</string>
     <string name="fui_verifying">Potvrđivanje…</string>
     <string name="fui_incorrect_code_dialog_body">Pogrešan kôd. Pokušajte ponovo.</string>
     <string name="fui_error_too_many_attempts">Taj telefonski broj upotrijebljen je previše puta</string>
-    <string name="fui_error_quota_exceeded">Došlo je do problema s potvrdom vašeg telefonskog broja</string>
     <string name="fui_error_session_expired">Kôd više nije važeći</string>
-    <string name="fui_sign_in_with_phone_number">Prijava putem telefonskog broja</string>
-    <string name="fui_auto_verified">Telefonski je broj automatski potvrđen</string>
     <string name="fui_resend_code">Ponovo pošalji kôd</string>
     <string name="fui_verify_phone_number">Potvrda telefonskog broja</string>
-    <string name="fui_change_phone_number">Use a different phone number</string>
+    <string name="fui_change_phone_number">Upotrijebi drugi telefonski broj</string>
     <string name="fui_sms_terms_of_service">Dodirivanje gumba “%1$s” može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ako dodirnete "%1$s", potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Greška provjere identiteta</string>
     <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Pokušaj ponovno</string>
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Potrebna je dodatna provjera. Molimo dovršite višefaktorsku provjeru identiteta.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Račun mora biti povezan. Pokušajte s drugim načinom prijave.</string>
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title">Potvrdite svoj identitet</string>
+    <string name="fui_reauth_dialog_message">Radi vaše sigurnosti ponovno unesite zaporku za nastavak.</string>
+    <string name="fui_reauth_account_label">Račun: %1$s</string>
+    <string name="fui_reauth_generic_error">Autentifikacija nije uspjela. Pokušajte ponovno.</string>
+    <string name="fui_reauth_password_required_notice">Za potvrdu vašeg identiteta ovdje potrebna je zaporka ovog računa. Ako se prijavljujete pomoću poveznice e-pošte umjesto zaporkom, ovaj se račun ne može potvrditi zaporkom.</string>
+    <!-- Re-authentication errors -->
+    <string name="fui_error_reauth_no_linked_providers">Nijedan od dostupnih načina prijave nije povezan s vašim računom.</string>
+    <string name="fui_error_reauth_incomplete">Vaš identitet nije potvrđen za ovaj račun. Pokušajte ponovno.</string>
+    <string name="fui_error_reauth_interrupted">Potvrda vašeg identiteta prekinuta je. Pokušajte ponovno svoju radnju.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed">Ne možete izraditi novi račun dok potvrđujete svoj identitet.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Provjera identiteta je otkazana. Pokušajte ponovno kad budete spremni.</string>
 
     <!-- MFA Enrollment -->
@@ -114,6 +134,17 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Postavite SMS provjeru</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Postavite aplikaciju za provjeru autentičnosti</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Potvrdite svoju šifru</string>
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title">Upravljanje dvofaktorskom autentifikacijom</string>
+    <string name="fui_mfa_manage_factors_description">Dodajte ili uklonite metode autentifikacije za svoj račun</string>
+    <string name="fui_mfa_active_methods_title">Aktivne metode</string>
+    <string name="fui_mfa_add_new_method_title">Dodaj novu metodu</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Sve dostupne metode autentifikacije registrirane su</string>
+    <string name="fui_mfa_label_sms_authentication">Autentifikacija SMS-om</string>
+    <string name="fui_mfa_label_totp_authentication">Aplikacija za autentifikaciju</string>
+    <string name="fui_mfa_label_unknown_method">Nepoznata metoda</string>
+    <string name="fui_mfa_enrolled_on">Registrirano %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description">Skenirajte QR kod ili unesite tajni ključ u aplikaciju za autentifikaciju</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Odaberite drugu metodu provjere autentičnosti kako biste zaštitili svoj račun</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Unesite svoj telefonski broj kako biste primali šifre za potvrdu</string>
@@ -143,36 +174,34 @@
     <string name="fui_identity_verified_message">Identitet potvrđen. Pokušajte ponovno svoju radnju.</string>
     <string name="fui_manage_mfa_action">Upravljaj dvofaktorskom autentifikacijom</string>
     <string name="fui_incorrect_password_error">Netočna lozinka</string>
-    <string name="fui_mfa_choose_method_instruction">Odaberite metodu provjere</string>
-    <string name="fui_mfa_enrollment_instruction">Dodajte dodatni sigurnosni sloj</string>
-    <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Aplikacija za autentifikaciju</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Ovaj telefonski broj povezan je s drugim računom</string>
-    <string name="fui_mfa_second_factor_required_error">Potrebna je provjera</string>
-    <string name="fui_mfa_setup_instruction">Skenirajte QR kod aplikacijom za autentifikaciju</string>
-    <string name="fui_mfa_totp_already_exists_error">Aplikacija za autentifikaciju već je postavljena</string>
-    <string name="fui_mfa_unenrollment_confirmation_message">Jeste li sigurni da želite ukloniti ovu metodu?</string>
-    <string name="fui_mfa_unenrollment_error">Nije moguće ukloniti metodu</string>
-    <string name="fui_mfa_unenrollment_success_message">Metoda uklonjena</string>
-    <string name="fui_mfa_verification_instruction">Unesite kod za provjeru</string>
-    <string name="fui_profile_update_error">Nije moguće ažurirati profil</string>
-    <string name="fui_profile_update_success_message">Profil ažuriran</string>
-    <string name="fui_reauth_instruction">Potvrdite svoj identitet za nastavak</string>
-    <string name="fui_reauth_required_error">Potrebna je ponovna autentifikacija</string>
-    <string name="fui_reauth_success_message">Ponovna autentifikacija uspješna</string>
-    <string name="fui_reauthenticate_action">Ponovno autentificiraj</string>
     <string name="fui_remove_action">Ukloni</string>
     <string name="fui_resend_verification_email_action">Ponovno pošalji e-poštu za provjeru</string>
     <string name="fui_secret_key_label">Tajni ključ</string>
     <string name="fui_sign_out_action">Odjava</string>
-    <string name="fui_signed_in_as">Prijavljen kao</string>
+    <string name="fui_signed_in_as">Prijavljen kao %1$s</string>
     <string name="fui_skip_action">Preskoči</string>
     <string name="fui_use_different_method_action">Koristi drugu metodu</string>
     <string name="fui_verification_code_label">Kod za provjeru</string>
+    <!-- Profile completion -->
+    <string name="fui_profile_completion_message">Dovršite podatke svojeg profila za nastavak.</string>
+    <string name="fui_profile_missing_fields_message">Polja koja nedostaju: %1$s</string>
     <string name="fui_verified_email_action">E-pošta potvrđena</string>
     <string name="fui_verify_action">Provjeri</string>
     <string name="fui_verify_email_instruction">Poslali smo e-poštu za provjeru na %1$s</string>
 
     <!-- Tooltips -->
     <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">Višefaktorska autentifikacija trenutno je onemogućena</string>
+    <string name="fui_error_incorrect_email_or_password" translation_description="Error shown when sign-in fails and email enumeration protection prevents saying whether it was the email or the password that was wrong">Ta e-adresa ili zaporka nije točna</string>
+    <string name="fui_error_invalid_verification_id" translation_description="Error shown when the SMS verification session is no longer valid and a new code has to be requested">Ta sesija potvrde više nije važeća. Zatražite novi kôd.</string>
+    <string name="fui_error_retry_phone_auth" translation_description="Error shown when phone verification did not complete and has to be retried">Potvrda telefonskog broja nije dovršena. Pokušajte ponovno.</string>
+    <string name="fui_error_user_mismatch" translation_description="Error shown when confirming your identity with credentials that belong to a different account">Te vjerodajnice pripadaju drugom računu.</string>
+    <string name="fui_error_phone_number_not_enrolled" translation_description="Error shown when the phone number is not set up as a verification method on the account">Taj telefonski broj nije postavljen za potvrdu na ovom računu.</string>
+    <string name="fui_error_multi_factor_session_expired" translation_description="Error shown when the sign-in session expired part-way through two-step verification">Vaša je sesija prijave istekla. Prijavite se ponovno da biste nastavili.</string>
+    <string name="fui_error_action_code_invalid" translation_description="Error shown when an emailed sign-in or password reset link has expired or is malformed">Ta veza više nije važeća. Zatražite novu.</string>
+    <string name="fui_error_unverified_email" translation_description="Error shown when the account email has to be verified before the operation can continue">Potvrdite svoju e-adresu prije nego što nastavite.</string>
+    <string name="fui_error_second_factor_already_enrolled" translation_description="Error shown when adding a verification method that is already set up on the account">Taj je način potvrde već postavljen na ovom računu.</string>
+    <string name="fui_error_maximum_second_factor_count_exceeded" translation_description="Error shown when the account already has the maximum number of verification methods">Dosegnuli ste ograničenje broja načina potvrde na ovom računu.</string>
+    <string name="fui_error_password_policy_generic" translation_description="Error shown when the password fails the project password policy and the server did not say which requirements failed">Vaša zaporka ne ispunjava uvjete. Pokušajte s drugom.</string>
+    <string name="fui_error_password_too_long" translation_description="Error message when password is longer than the maximum length allowed">Zaporka je predugačka. Najveća duljina je %1$d.</string>
+    <string name="fui_error_passkey_not_found" translation_description="Error shown when no passkey is enrolled for the current account and the user has to sign in a different way">Nismo pronašli pristupni ključ za ovaj račun. Prijavite se na drugi način.</string>
 </resources>

@@ -1,5 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.dsl.Lint
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -31,18 +35,44 @@ allprojects {
     }
 }
 
-// Android Lint is configured per module, so there is no repo-wide entry point by default.
-// This task is that entry point, and the module list is the gate's definition:
-//   - :app and :e2eTest declare no lint { } block yet, so they are deliberately absent (CPRN-433).
+// The shared Android Lint policy, alongside the checkstyle one above. Modules add only their
+// own disables; the strictness flags live here so a module cannot quietly opt out of the gate
+// the way :library did with abortOnError = false.
+fun Lint.applyCommonPolicy() {
+    disable += setOf(
+        "IconExpectedSize",
+        "InvalidPackage", // Firestore uses GRPC which makes lint mad
+        "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+        "SelectableText", "SyntheticAccessor" // We almost never care about this
+    )
+
+    checkAllWarnings = true
+    warningsAsErrors = true
+    abortOnError = true
+}
+
+subprojects {
+    plugins.withId("com.android.application") {
+        extensions.configure<ApplicationExtension> { lint { applyCommonPolicy() } }
+    }
+    plugins.withId("com.android.library") {
+        extensions.configure<LibraryExtension> { lint { applyCommonPolicy() } }
+    }
+}
+
+// Android Lint has no repo-wide entry point by default. This task is that entry point, and
+// the module list is the gate's definition:
 //   - :proguard-tests disables its debug variant on CI, so it is gated on release instead.
 tasks.register("lintAll") {
     group = "verification"
-    description = "Runs Android Lint for every module that configures a lint { } block."
+    description = "Runs Android Lint for every module gated on it."
 
     dependsOn(
+        ":app:lintDebug",
         ":auth:lintDebug",
         ":common:lintDebug",
         ":database:lintDebug",
+        ":e2eTest:lintDebug",
         ":firestore:lintDebug",
         ":library:lintDebug",
         ":storage:lintDebug",

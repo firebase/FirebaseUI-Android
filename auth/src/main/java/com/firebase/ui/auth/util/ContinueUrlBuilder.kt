@@ -13,7 +13,9 @@
  */
 package com.firebase.ui.auth.util
 
+import android.net.Uri
 import androidx.annotation.RestrictTo
+import androidx.core.net.toUri
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.PROVIDER_ID_IDENTIFIER
@@ -22,15 +24,20 @@ import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.SESSION_IDENTIFI
 /**
  * Builder for constructing continue URLs with embedded session and authentication parameters.
  * Used in email link sign-in flows to pass state between devices.
+ *
+ * The incoming URL comes from the consumer's [com.google.firebase.auth.ActionCodeSettings], so it
+ * may already carry a query string and/or a fragment. Parameters are appended through [Uri], the
+ * same parser [EmailLinkParser] reads them back with, which places them in the query whatever the
+ * URL's shape and percent-encodes their values.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ContinueUrlBuilder(url: String) {
 
-    private val continueUrl: StringBuilder
+    private var continueUrl: Uri
 
     init {
         require(url.isNotBlank()) { "URL cannot be empty" }
-        continueUrl = StringBuilder(url).append("?")
+        continueUrl = url.toUri()
     }
 
     fun appendSessionId(sessionId: String): ContinueUrlBuilder {
@@ -57,16 +64,9 @@ class ContinueUrlBuilder(url: String) {
     private fun addQueryParam(key: String, value: String) {
         if (value.isBlank()) return
 
-        val isFirstParam = continueUrl.last() == '?'
-        val mark = if (isFirstParam) "" else "&"
-        continueUrl.append("$mark$key=$value")
+        continueUrl = continueUrl.buildUpon().appendQueryParameter(key, value).build()
     }
 
-    fun build(): String {
-        if (continueUrl.last() == '?') {
-            // No params added so we remove the '?'
-            continueUrl.setLength(continueUrl.length - 1)
-        }
-        return continueUrl.toString()
-    }
+    // Untouched when nothing was appended: Uri hands back the string it was parsed from.
+    fun build(): String = continueUrl.toString()
 }

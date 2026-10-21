@@ -22,6 +22,7 @@ import androidx.credentials.GetPasswordOption
 import androidx.credentials.PasswordCredential as AndroidPasswordCredential
 import androidx.credentials.exceptions.CreateCredentialCancellationException
 import androidx.credentials.exceptions.CreateCredentialException
+import androidx.annotation.RestrictTo
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
@@ -31,14 +32,16 @@ import com.firebase.ui.auth.util.CredentialPersistenceManager
  * Provider interface for obtaining CredentialManager instances.
  * This allows test code to inject mock CredentialManager instances.
  */
-interface CredentialManagerProvider {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal interface CredentialManagerProvider {
     fun getCredentialManager(context: Context): CredentialManager
 }
 
 /**
  * Default implementation that creates a real CredentialManager instance.
  */
-class DefaultCredentialManagerProvider : CredentialManagerProvider {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
     override fun getCredentialManager(context: Context): CredentialManager {
         return CredentialManager.create(context)
     }
@@ -53,23 +56,17 @@ class DefaultCredentialManagerProvider : CredentialManagerProvider {
  * @property context The Android context used for credential operations
  * @property provider Optional provider for testing purposes
  */
-class PasswordCredentialHandler(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal class PasswordCredentialHandler(
     private val context: Context,
     provider: CredentialManagerProvider? = null
 ) {
     companion object {
         /**
          * Test-only provider for injecting mock CredentialManager instances.
-         * Set this in your test setup to override the default CredentialManager.
-         *
-         * Example:
-         * ```
-         * PasswordCredentialHandler.testCredentialManagerProvider = object : CredentialManagerProvider {
-         *     override fun getCredentialManager(context: Context) = mockCredentialManager
-         * }
-         * ```
          */
         @Volatile
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         var testCredentialManagerProvider: CredentialManagerProvider? = null
 
         /**
@@ -178,7 +175,8 @@ class PasswordCredentialHandler(
 /**
  * Base exception for password credential operations.
  */
-open class PasswordCredentialException(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal open class PasswordCredentialException(
     message: String,
     cause: Throwable? = null
 ) : Exception(message, cause)
@@ -186,7 +184,8 @@ open class PasswordCredentialException(
 /**
  * Exception thrown when a password credential operation is cancelled by the user.
  */
-class PasswordCredentialCancelledException(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal class PasswordCredentialCancelledException(
     message: String,
     cause: Throwable? = null
 ) : PasswordCredentialException(message, cause)
@@ -194,7 +193,8 @@ class PasswordCredentialCancelledException(
 /**
  * Exception thrown when no password credentials are found.
  */
-class PasswordCredentialNotFoundException(
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+internal class PasswordCredentialNotFoundException(
     message: String,
     cause: Throwable? = null
 ) : PasswordCredentialException(message, cause)
