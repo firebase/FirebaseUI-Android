@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
-import com.firebaseui.android.demo.auth.fullcustomization.theme.ProviderButtonShape
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun SheetProviderButton(
@@ -48,17 +48,22 @@ fun SheetProviderButton(
         is AuthProvider.Anonymous -> ProviderStyleDefaults.Anonymous
         else -> ProviderStyleDefaults.Email
     }
+    val theme = LocalFullCustomizationStyle.current
     val backgroundColor = if (provider is AuthProvider.Phone) {
-        MaterialTheme.colorScheme.primary
+        theme.phoneProvider.container
     } else {
         style.backgroundColor
     }
-    val contentColor = if (provider is AuthProvider.Google) Color.Black else style.contentColor
+    val contentColor = when (provider) {
+        is AuthProvider.Google -> Color.Black
+        is AuthProvider.Phone -> theme.phoneProvider.content
+        else -> style.contentColor
+    }
     val hasWhiteBackground = backgroundColor == Color.White
 
     Button(
         onClick = onClick,
-        shape = ProviderButtonShape,
+        shape = theme.providerButtonShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor,

@@ -1,6 +1,5 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.pages
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
+import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
@@ -46,14 +46,10 @@ fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
                 state.selectedCountry?.let { country ->
                     Surface(
                         color = Color.White,
-                        shape = AuthFieldShape,
+                        shape = LocalFullCustomizationStyle.current.fieldShape,
                         modifier = Modifier
                             .requiredHeight(56.dp)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                                shape = AuthFieldShape,
-                            )
+                            .themeFieldBorder()
                             .semantics { contentDescription = "country code selector" },
                     ) {
                         CountrySelector(

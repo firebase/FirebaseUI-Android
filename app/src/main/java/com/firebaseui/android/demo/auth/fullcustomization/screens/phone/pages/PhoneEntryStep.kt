@@ -1,7 +1,5 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.phone.pages
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -28,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebaseui.android.demo.R
+import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
@@ -63,16 +62,10 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
             Spacer(modifier = Modifier.weight(1f))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(id = R.drawable.full_customization_phone_mascot),
-                    contentDescription = "doggo - cute phone sign-in mascot",
-                    modifier = Modifier.size(72.dp),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Login by phone number",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.primary,
+                ThemeHeader(
+                    title = "Login by phone number",
+                    mascot = R.drawable.full_customization_phone_mascot,
+                    mascotDescription = "doggo - cute phone sign-in mascot",
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -81,7 +74,7 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = "phone - sign in card" },
-                        color = MaterialTheme.colorScheme.surface,
+                        color = LocalFullCustomizationStyle.current.cardFill,
                         shape = AuthFieldShape,
                     ) {
                         Column(
@@ -94,14 +87,10 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
                             ) {
                                 Surface(
                                     color = Color.White,
-                                    shape = AuthFieldShape,
+                                    shape = LocalFullCustomizationStyle.current.fieldShape,
                                     modifier = Modifier
                                         .requiredHeight(56.dp)
-                                        .border(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.outlineVariant,
-                                            shape = AuthFieldShape,
-                                        )
+                                        .themeFieldBorder()
                                         .semantics { contentDescription = "country code selector" },
                                 ) {
                                     CountrySelector(

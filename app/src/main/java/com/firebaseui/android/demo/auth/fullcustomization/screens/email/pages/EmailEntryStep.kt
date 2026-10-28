@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
@@ -42,7 +43,71 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.EmailFieldIcon
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
-import com.firebaseui.android.demo.auth.fullcustomization.theme.IntroShape
+import com.firebaseui.android.demo.auth.fullcustomization.common.SparkHeadline
+import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationThemeId
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
+
+private val IntroShape = RoundedCornerShape(80.dp)
+
+/**
+ * Doggo's mascot over the welcome bubble. The iOS frames have no bubble, so Grid sets the greeting
+ * as its title and Coffee Spark shows its headline pill.
+ */
+@Composable
+private fun LandingHeadline() {
+    val style = LocalFullCustomizationStyle.current
+    when (style.id) {
+        FullCustomizationThemeId.Doggo -> {
+            Image(
+                painter = painterResource(id = R.drawable.full_customization_mascot),
+                contentDescription = "doggo - cute welcome mascot",
+                modifier = Modifier
+                    .size(96.dp)
+                    .offset(y = 12.dp)
+                    .zIndex(1f),
+            )
+
+            Surface(
+                color = MaterialTheme.colorScheme.secondary,
+                shape = IntroShape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "intro - welcome headline bubble" },
+            ) {
+                Text(
+                    text = "Hey there,\nWelcome",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        textAlign = TextAlign.Center,
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                Color(0xFFFFF8F8),
+                                Color(0xFFFFDDB4),
+                                Color(0xFFFFD8EB),
+                            ),
+                        ),
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 16.dp),
+                )
+            }
+        }
+        FullCustomizationThemeId.Grid -> {
+            Text(
+                text = "Hey there,\nWelcome",
+                style = MaterialTheme.typography.headlineMedium,
+                color = style.titleColor,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.semantics { contentDescription = "title - welcome" },
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+        FullCustomizationThemeId.Spark -> {
+            SparkHeadline()
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
 
 @Composable
 fun EmailEntryStep(
@@ -77,39 +142,7 @@ fun EmailEntryStep(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.full_customization_mascot),
-                    contentDescription = "doggo - cute welcome mascot",
-                    modifier = Modifier
-                        .size(96.dp)
-                        .offset(y = 12.dp)
-                        .zIndex(1f),
-                )
-
-                Surface(
-                    color = MaterialTheme.colorScheme.secondary,
-                    shape = IntroShape,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .semantics { contentDescription = "intro - welcome headline bubble" },
-                ) {
-                    Text(
-                        text = "Hey there,\nWelcome",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            textAlign = TextAlign.Center,
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    Color(0xFFFFF8F8),
-                                    Color(0xFFFFDDB4),
-                                    Color(0xFFFFD8EB),
-                                ),
-                            ),
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 16.dp),
-                    )
-                }
+                LandingHeadline()
 
                 HardOffsetShadow(
                     shape = AuthFieldShape,
@@ -119,7 +152,7 @@ fun EmailEntryStep(
                         modifier = Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = "email - sign in card" },
-                        color = MaterialTheme.colorScheme.surface,
+                        color = LocalFullCustomizationStyle.current.cardFill,
                         shape = AuthFieldShape,
                     ) {
                         Column(

@@ -14,9 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.firebaseui.android.demo.auth.fullcustomization.theme.ButtonShape
-
-private val CtaShadowColor = Color(0xFF5D0B47)
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun CtaButton(
@@ -25,20 +23,26 @@ fun CtaButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = LocalFullCustomizationStyle.current.primaryButton.container,
+        contentColor = LocalFullCustomizationStyle.current.primaryButton.content,
+    ),
 ) {
+    val style = LocalFullCustomizationStyle.current
+    val shadow = style.buttonShadow
     HardOffsetShadow(
-        shape = ButtonShape,
-        offsetX = 2.dp,
-        offsetY = 4.dp,
-        color = if (enabled) CtaShadowColor else Color.Transparent,
+        shape = style.buttonShape,
+        offsetX = shadow?.offset?.x ?: 0.dp,
+        offsetY = shadow?.offset?.y ?: 0.dp,
+        color = if (enabled && shadow != null) shadow.color else Color.Transparent,
         modifier = modifier.fillMaxWidth(),
     ) {
         Button(
             onClick = onClick,
             enabled = enabled,
-            shape = ButtonShape,
+            shape = style.buttonShape,
             colors = colors,
+            border = style.buttonBorder,
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 10.dp),
             modifier = Modifier
                 .fillMaxWidth()

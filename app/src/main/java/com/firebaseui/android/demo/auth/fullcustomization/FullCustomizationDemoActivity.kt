@@ -5,17 +5,23 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -34,7 +40,10 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaChallen
 import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollmentUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeBackground
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeSwitcher
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
+import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationThemeId
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.google.firebase.auth.actionCodeSettings
 
@@ -42,6 +51,9 @@ class FullCustomizationDemoActivity : ComponentActivity() {
     companion object {
         /** Marks this demo's email links so MainActivity can route the return trip back here. */
         const val EMAIL_LINK_ORIGIN = "fullcustomization"
+
+        private const val THEME_PREFERENCES = "full_customization"
+        private const val THEME_KEY = "theme"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,46 +109,69 @@ class FullCustomizationDemoActivity : ComponentActivity() {
             }
         }
 
+        val preferences = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
+
         setContent {
-            FullCustomizationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    FirebaseAuthScreen(
-                        configuration = configuration,
-                        authUI = authUI,
-                        emailLink = emailLink,
-                        onSignInSuccess = { result ->
-                            Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
+            var themeId by remember {
+                mutableStateOf(
+                    FullCustomizationThemeId.entries.firstOrNull {
+                        it.name == preferences.getString(THEME_KEY, null)
+                    } ?: FullCustomizationThemeId.Doggo
+                )
+            }
+            FullCustomizationTheme(themeId = themeId) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        FirebaseAuthScreen(
+                            configuration = configuration,
+                            authUI = authUI,
+                            emailLink = emailLink,
+                            onSignInSuccess = { result ->
+                                Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
+                            },
+                            onSignInFailure = { exception: AuthException ->
+                                Log.e("FullCustomizationDemo", "Auth failed", exception)
+                            },
+                            onSignInCancelled = {
+                                Log.d("FullCustomizationDemo", "Auth cancelled")
+                            },
+                            mfaConfiguration = MfaConfiguration(
+                                allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                                requireEnrollment = false,
+                            ),
+                            customMethodPickerLayout = { providers, onProviderSelected ->
+                                MainUI(
+                                    authUI = authUI,
+                                    configuration = configuration,
+                                    providers = providers,
+                                    onProviderSelected = onProviderSelected,
+                                )
+                            },
+                            // Covers the email flows the library navigates to itself.
+                            emailContent = { state -> EmailAuthUI(state) },
+                            phoneContent = { state -> PhoneSignInUI(state) },
+                            mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
+                            mfaChallengeContent = { state -> MfaChallengeUI(state) },
+                            reauthContent = { state -> ReauthUI(state) },
+                            authenticatedContent = { state, uiContext ->
+                                AuthenticatedUI(state = state, uiContext = uiContext)
+                            },
+                        )
+                    }
+                    // Over every screen, so the theme can be switched mid-flow.
+                    ThemeSwitcher(
+                        selected = themeId,
+                        onSelect = { selected ->
+                            themeId = selected
+                            preferences.edit { putString(THEME_KEY, selected.name) }
                         },
-                        onSignInFailure = { exception: AuthException ->
-                            Log.e("FullCustomizationDemo", "Auth failed", exception)
-                        },
-                        onSignInCancelled = {
-                            Log.d("FullCustomizationDemo", "Auth cancelled")
-                        },
-                        mfaConfiguration = MfaConfiguration(
-                            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
-                            requireEnrollment = false,
-                        ),
-                        customMethodPickerLayout = { providers, onProviderSelected ->
-                            MainUI(
-                                authUI = authUI,
-                                configuration = configuration,
-                                providers = providers,
-                                onProviderSelected = onProviderSelected,
-                            )
-                        },
-                        // Covers the email flows the library navigates to itself.
-                        emailContent = { state -> EmailAuthUI(state) },
-                        phoneContent = { state -> PhoneSignInUI(state) },
-                        mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
-                        mfaChallengeContent = { state -> MfaChallengeUI(state) },
-                        reauthContent = { state -> ReauthUI(state) },
-                        authenticatedContent = { state, uiContext ->
-                            AuthenticatedUI(state = state, uiContext = uiContext)
-                        },
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .statusBarsPadding()
+                            .padding(top = 8.dp),
                     )
                 }
             }
@@ -153,12 +188,7 @@ private fun MainUI(
 ) {
     val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.custom_background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        ThemeBackground()
         Column(modifier = Modifier.fillMaxSize()) {
             // AuthMethodPickerUI builds its own EmailAuthScreen per step, so none is needed here.
             AuthMethodPickerUI(
