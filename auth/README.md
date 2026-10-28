@@ -1870,15 +1870,9 @@ val configuration = authUIConfiguration {
 
 ### Beyond Theming
 
-`AuthUITheme` restyles the built-in screens but keeps their layout. To replace a screen's layout
-entirely, use the `FirebaseAuthScreen` slot parameters described in
-[Custom UI with Slots](#custom-ui-with-slots). They swap in your own composables while FirebaseUI
-keeps the authentication logic.
+`AuthUITheme` restyles the built-in screens but keeps their layout. To replace a screen's layout entirely, use the `FirebaseAuthScreen` slot parameters described in [Custom UI with Slots](#custom-ui-with-slots). They swap in your own composables while FirebaseUI keeps the authentication logic.
 
-The demo app's
-[`fullcustomization`](../app/src/main/java/com/firebaseui/android/demo/auth/fullcustomization/FullCustomizationDemoActivity.kt)
-sample uses both: an `AuthUITheme.Default.copy(...)` theme, plus custom UI for every slot, from the
-method picker through MFA and reauthentication to the signed-in screen.
+The demo app's [`fullcustomization`](../app/src/main/java/com/firebaseui/android/demo/auth/fullcustomization/) sample uses both: an `AuthUITheme.Default.copy(...)` theme, plus custom UI for every screen slot, from the method picker through MFA and reauthentication to the signed-in screen.
 
 ## Advanced Features
 
