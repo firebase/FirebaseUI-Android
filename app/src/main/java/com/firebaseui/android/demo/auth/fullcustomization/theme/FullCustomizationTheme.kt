@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
-import kotlin.math.max
-import kotlin.math.min
 
 private val LightPrimary = Color(0xFF864B6F)
 private val LightOnPrimary = Color(0xFFFFFFFF)
@@ -52,26 +50,35 @@ val FullCustomizationLightColorScheme = lightColorScheme(
     inverseOnSurface = LightInverseOnSurface,
 )
 
+/**
+ * Doggo's palette sits on Material 3 tones (primary 40, containers 90, surface 98), so its dark
+ * scheme takes M3's dark tone for each role: same HCT hue and chroma, tone moved (primary 40 to 80,
+ * containers 90 to 30, surface 98 to 6, text 10 to 90).
+ */
 val FullCustomizationDarkColorScheme = darkColorScheme(
-    primary = LightPrimary.withLightness(0.78f),
-    onPrimary = LightOnPrimary.withLightness(0.18f),
-    primaryContainer = LightPrimaryContainer.withLightness(0.28f),
-    onPrimaryContainer = LightOnPrimaryContainer.withLightness(0.88f),
+    primary = Color(0xFFFAB1DA),
+    onPrimary = Color(0xFF511D3F),
+    primaryContainer = Color(0xFF6B3457),
+    onPrimaryContainer = Color(0xFFFFD8EB),
     inversePrimary = LightPrimary,
-    secondary = LightSecondary.withLightness(0.78f),
-    onSecondary = LightOnSecondary.withLightness(0.18f),
-    secondaryContainer = LightSecondaryContainer.withLightness(0.28f),
-    tertiaryContainer = LightTertiaryContainer.withLightness(0.28f),
-    surface = LightSurface.withLightness(0.10f),
-    surfaceBright = LightSurfaceBright.withLightness(0.20f),
-    onSurface = LightOnSurface.withLightness(0.88f),
-    onSurfaceVariant = LightOnSurfaceVariant.withLightness(0.75f),
-    surfaceContainer = LightSurfaceContainer.withLightness(0.13f),
-    surfaceContainerLow = LightSurfaceContainerLow.withLightness(0.11f),
-    outline = LightOutline.withLightness(0.55f),
-    outlineVariant = LightOutlineVariant.withLightness(0.30f),
-    inverseSurface = LightSurface.withLightness(0.90f),
-    inverseOnSurface = LightOnSurface.withLightness(0.15f),
+    secondary = Color(0xFFAFC6FF),
+    onSecondary = Color(0xFF002D6C),
+    surface = Color(0xFF171214),
+    surfaceBright = Color(0xFF3D383A),
+    surfaceContainerLowest = Color(0xFF110D0F),
+    surfaceContainerLow = Color(0xFF1F1A1C),
+    surfaceContainer = Color(0xFF231E20),
+    surfaceContainerHigh = Color(0xFF2E282B),
+    surfaceContainerHighest = Color(0xFF393336),
+    background = Color(0xFF171214),
+    onSurface = Color(0xFFEDDFE4),
+    onSurfaceVariant = Color(0xFFD8C0CB),
+    outline = Color(0xFF9C8D94),
+    outlineVariant = Color(0xFF4F4349),
+    inverseSurface = Color(0xFFEDDFE4),
+    inverseOnSurface = Color(0xFF322F35),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
 )
 
 @Composable
@@ -90,48 +97,4 @@ fun FullCustomizationTheme(
             content = content,
         )
     }
-}
-
-private fun Color.withLightness(newLightness: Float): Color {
-    val (h, s, _) = toHsl()
-    return hslToColor(h, s, newLightness.coerceIn(0f, 1f), alpha)
-}
-
-private fun Color.toHsl(): Triple<Float, Float, Float> {
-    val r = red
-    val g = green
-    val b = blue
-    val maxC = max(r, max(g, b))
-    val minC = min(r, min(g, b))
-    val l = (maxC + minC) / 2f
-    if (maxC == minC) return Triple(0f, 0f, l)
-    val d = maxC - minC
-    val s = if (l > 0.5f) d / (2f - maxC - minC) else d / (maxC + minC)
-    val h = when (maxC) {
-        r -> ((g - b) / d + (if (g < b) 6f else 0f))
-        g -> ((b - r) / d + 2f)
-        else -> ((r - g) / d + 4f)
-    } / 6f
-    return Triple(h, s, l)
-}
-
-private fun hslToColor(h: Float, s: Float, l: Float, alpha: Float): Color {
-    if (s == 0f) return Color(l, l, l, alpha)
-    fun hueToRgb(p: Float, q: Float, tIn: Float): Float {
-        var t = tIn
-        if (t < 0f) t += 1f
-        if (t > 1f) t -= 1f
-        return when {
-            t < 1f / 6f -> p + (q - p) * 6f * t
-            t < 1f / 2f -> q
-            t < 2f / 3f -> p + (q - p) * (2f / 3f - t) * 6f
-            else -> p
-        }
-    }
-    val q = if (l < 0.5f) l * (1f + s) else l + s - l * s
-    val p = 2f * l - q
-    val r = hueToRgb(p, q, h + 1f / 3f)
-    val g = hueToRgb(p, q, h)
-    val b = hueToRgb(p, q, h - 1f / 3f)
-    return Color(r, g, b, alpha)
 }

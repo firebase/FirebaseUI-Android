@@ -86,7 +86,7 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Surface(
-                                    color = Color.White,
+                                    color = LocalFullCustomizationStyle.current.fieldContainer,
                                     shape = LocalFullCustomizationStyle.current.fieldShape,
                                     modifier = Modifier
                                         .requiredHeight(56.dp)

@@ -34,9 +34,9 @@ val AuthFieldShape = RoundedCornerShape(24.dp)
 
 @Composable
 fun authTextFieldColors(): TextFieldColors = OutlinedTextFieldDefaults.colors(
-    unfocusedContainerColor = Color.White,
-    focusedContainerColor = Color.White,
-    disabledContainerColor = Color.White,
+    unfocusedContainerColor = LocalFullCustomizationStyle.current.fieldContainer,
+    focusedContainerColor = LocalFullCustomizationStyle.current.fieldContainer,
+    disabledContainerColor = LocalFullCustomizationStyle.current.fieldContainer,
     unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
     focusedBorderColor = MaterialTheme.colorScheme.secondary,
 )

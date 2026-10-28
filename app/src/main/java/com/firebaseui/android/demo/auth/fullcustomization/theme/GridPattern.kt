@@ -26,10 +26,11 @@ private fun ImageVector.Builder.shape(d: String, color: Color) = addPath(
 )
 
 /**
- * Grid's background: the iOS demo's grid-pattern.svg (Figma 20:5467 "Frame 5"). An [ImageVector]
- * rather than a vector drawable, which can't draw the gradient below API 24.
+ * Grid's background: the iOS demo's grid-pattern.svg (Figma 20:5467 "Frame 5"), its gradient
+ * fading to [page] so the same art works on the dark page. An [ImageVector] rather than a vector
+ * drawable, which can't draw the gradient below API 24.
  */
-val GridPattern: ImageVector by lazy {
+fun gridPattern(page: Color): ImageVector =
     ImageVector.Builder(
         name = "GridPattern",
         defaultWidth = 997.dp,
@@ -113,7 +114,7 @@ val GridPattern: ImageVector by lazy {
             addPath(
                 pathData = addPathNodes("M177.235,0.0h838.705v838.705h-838.705z"),
                 fill = Brush.linearGradient(
-                    0.134118f to Color(0xFFF3FBFB), 0.5f to Color(0xFFF3FBFB).copy(alpha = 0.0f), 0.847192f to Color(0xFFF3FBFB),
+                    0.134118f to page, 0.5f to page.copy(alpha = 0f), 0.847192f to page,
                     start = Offset(597.3f, 0f),
                     end = Offset(597.153f, 838.705f),
                 ),
@@ -127,4 +128,4 @@ val GridPattern: ImageVector by lazy {
         shape("M382.562 207.813C382.866 200.062 392.91 197.229 397.22 203.678L399.689 207.373C401.616 210.257 405.182 211.573 408.52 210.631L412.797 209.424C420.262 207.319 426.061 215.996 421.259 222.087L418.508 225.577C416.361 228.302 416.212 232.099 418.139 234.983L420.608 238.678C424.918 245.127 418.457 253.323 411.18 250.639L407.01 249.101C403.756 247.9 400.098 248.932 397.951 251.656L395.2 255.146C390.398 261.238 380.607 257.626 380.911 249.875L381.085 245.435C381.221 241.969 379.11 238.809 375.856 237.609L371.686 236.071C364.409 233.386 364.818 222.958 372.283 220.852L376.561 219.646C379.899 218.704 382.252 215.72 382.388 212.254L382.562 207.813Z", Color(0xFFC6FF00))
         shape("M671.453 195.059C677.539 190.251 686.222 196.041 684.124 203.508L682.922 207.786C681.984 211.126 683.302 214.69 686.189 216.614L689.886 219.079C696.339 223.382 693.516 233.43 685.766 233.742L681.326 233.92C677.86 234.06 674.878 236.415 673.939 239.755L672.737 244.033C670.639 251.501 660.211 251.92 657.52 244.646L655.977 240.478C654.774 237.225 651.612 235.117 648.146 235.256L643.705 235.435C635.955 235.747 632.334 225.959 638.42 221.151L641.908 218.397C644.63 216.247 645.658 212.588 644.454 209.335L642.912 205.167C640.22 197.893 648.409 191.424 654.863 195.727L658.56 198.192C661.446 200.116 665.243 199.964 667.965 197.813L671.453 195.059Z", Color(0xFF00DCE2))
     }.build()
-}
+

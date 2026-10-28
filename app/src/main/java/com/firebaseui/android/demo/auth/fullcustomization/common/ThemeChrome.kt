@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -43,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationThemeId
-import com.firebaseui.android.demo.auth.fullcustomization.theme.GridPattern
+import com.firebaseui.android.demo.auth.fullcustomization.theme.gridPattern
 import com.firebaseui.android.demo.auth.fullcustomization.theme.JetBrainsMono
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
@@ -54,6 +55,7 @@ import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomi
 @Composable
 fun ThemeBackground() {
     val style = LocalFullCustomizationStyle.current
+    val page = MaterialTheme.colorScheme.background
     when (style.id) {
         FullCustomizationThemeId.Doggo -> Image(
             painter = painterResource(id = R.drawable.custom_background),
@@ -62,7 +64,7 @@ fun ThemeBackground() {
             modifier = Modifier.fillMaxSize(),
         )
         FullCustomizationThemeId.Grid -> PlacedArt(
-            art = rememberVectorPainter(GridPattern),
+            art = rememberVectorPainter(remember(page) { gridPattern(page) }),
             x = (-269).dp, y = (-75).dp, width = 997.dp, height = 997.dp,
         )
         // The export includes the layer's texture and noise effects, so it is larger than the
@@ -72,6 +74,8 @@ fun ThemeBackground() {
             x = (-295.8).dp, y = (-317.7).dp, width = 751.dp, height = 735.3.dp,
         )
     }
+    // The art is drawn for a light page; dark mode washes it back toward the dark one.
+    Box(modifier = Modifier.fillMaxSize().background(style.artScrim))
 }
 
 @Composable
@@ -132,9 +136,10 @@ fun ThemeHeader(
 /** Figma "headline" (20:5927), Coffee Spark only. */
 @Composable
 fun SparkHeadline(modifier: Modifier = Modifier) {
+    val pill = LocalFullCustomizationStyle.current.pill
     Surface(
-        color = Color.White,
-        contentColor = Color(0xFF1C1B1B),
+        color = pill.container,
+        contentColor = pill.content,
         shape = RoundedCornerShape(24.dp),
         modifier = modifier
             .height(48.dp)
@@ -172,9 +177,10 @@ fun ThemeSwitcher(
     onSelect: (FullCustomizationThemeId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val pill = LocalFullCustomizationStyle.current.pill
     Surface(
-        color = Color.White,
-        contentColor = Color(0xFF1C1B1B),
+        color = pill.container,
+        contentColor = pill.content,
         shape = RoundedCornerShape(percent = 50),
         shadowElevation = 2.dp,
         modifier = modifier,
@@ -199,10 +205,10 @@ fun ThemeSwitcher(
                 Text(
                     text = theme.label,
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (isSelected) Color.White else Color(0xFF1C1B1B),
+                    color = if (isSelected) pill.container else pill.content,
                     modifier = Modifier
                         .background(
-                            color = if (isSelected) Color(0xFF1C1B1B) else Color.Transparent,
+                            color = if (isSelected) pill.content else Color.Transparent,
                             shape = RoundedCornerShape(percent = 50),
                         )
                         .selectable(

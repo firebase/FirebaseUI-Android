@@ -45,7 +45,7 @@ fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
                 // CountrySelector needs a non-null country, so skip the step while it resolves.
                 state.selectedCountry?.let { country ->
                     Surface(
-                        color = Color.White,
+                        color = LocalFullCustomizationStyle.current.fieldContainer,
                         shape = LocalFullCustomizationStyle.current.fieldShape,
                         modifier = Modifier
                             .requiredHeight(56.dp)

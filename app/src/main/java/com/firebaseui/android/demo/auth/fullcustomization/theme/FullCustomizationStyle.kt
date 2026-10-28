@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -18,6 +19,11 @@ import androidx.compose.ui.unit.dp
  * The demo's three looks. Doggo is the Android Figma section; Grid and Coffee Spark come from the
  * iOS Landing frames (20:5467 and 20:5769) by way of the iOS demo's values, laid out on Doggo's
  * Android sizing.
+ *
+ * Figma has no dark frames. Each dark variant keeps a colour's HCT hue and chroma and moves only
+ * its tone: pages to tone 6 (never pure black), text to 90, Doggo's M3 roles to M3's dark tones.
+ * Grid's and Coffee Spark's neon accents keep their own tone, since each already clears 4.5:1 on
+ * the dark page.
  */
 enum class FullCustomizationThemeId(val label: String) {
     Doggo("Doggo"),
@@ -46,6 +52,8 @@ data class FullCustomizationStyle(
     val cardShadow: HardShadow?,
     val fieldShape: Shape,
     val fieldBorderWidth: Dp,
+    /** Fields and the chips drawn like them, such as the country code. */
+    val fieldContainer: Color,
     val buttonShape: Shape,
     val buttonBorder: BorderStroke?,
     val buttonShadow: HardShadow?,
@@ -53,6 +61,10 @@ data class FullCustomizationStyle(
     val secondaryButton: ButtonPalette,
     val providerButtonShape: Shape,
     val phoneProvider: ButtonPalette,
+    /** The floating pills: the theme switcher and Coffee Spark's headline. */
+    val pill: ButtonPalette,
+    /** A wash of the page colour over the background art, so light art sits back in dark mode. */
+    val artScrim: Color,
 )
 
 val LocalFullCustomizationStyle = staticCompositionLocalOf<FullCustomizationStyle> {
@@ -60,15 +72,47 @@ val LocalFullCustomizationStyle = staticCompositionLocalOf<FullCustomizationStyl
 }
 
 fun FullCustomizationThemeId.style(darkTheme: Boolean): FullCustomizationStyle = when (this) {
-    FullCustomizationThemeId.Doggo -> doggo(
-        if (darkTheme) FullCustomizationDarkColorScheme else FullCustomizationLightColorScheme
-    )
-    // Grid and Coffee Spark are light-only: their background art is drawn for a light page.
-    FullCustomizationThemeId.Grid -> Grid
-    FullCustomizationThemeId.Spark -> Spark
+    FullCustomizationThemeId.Doggo -> if (darkTheme) DoggoDark else DoggoLight
+    FullCustomizationThemeId.Grid -> if (darkTheme) GridDark else GridLight
+    FullCustomizationThemeId.Spark -> if (darkTheme) SparkDark else SparkLight
 }
 
-private fun doggo(scheme: ColorScheme) = FullCustomizationStyle(
+/** A theme's page and its tone-mapped neighbours, light or dark. */
+private class Neutrals(
+    val page: Color,
+    val ink: Color,
+    /** Fields, secondary buttons and other surfaces one step above the page. */
+    val raised: Color,
+    /** surfaceContainerLowest to surfaceContainerHighest, for sheets and dialogs. */
+    val containers: List<Color>,
+    val error: Color,
+)
+
+private fun ColorScheme.withNeutrals(n: Neutrals) = copy(
+    surface = n.page,
+    surfaceBright = n.page,
+    surfaceContainerLowest = n.containers[0],
+    surfaceContainerLow = n.containers[1],
+    surfaceContainer = n.containers[2],
+    surfaceContainerHigh = n.containers[3],
+    surfaceContainerHighest = n.containers[4],
+    background = n.page,
+    onSurface = n.ink,
+    onSurfaceVariant = n.ink,
+    outline = n.ink,
+    primaryContainer = n.raised,
+    onPrimaryContainer = n.ink,
+    error = n.error,
+)
+
+private fun doggo(
+    scheme: ColorScheme,
+    cardFill: Color,
+    fieldContainer: Color,
+    buttonShadow: Color,
+    pill: ButtonPalette,
+    artScrim: Color,
+) = FullCustomizationStyle(
     id = FullCustomizationThemeId.Doggo,
     colorScheme = scheme,
     typography = fullCustomizationTypography(
@@ -79,111 +123,199 @@ private fun doggo(scheme: ColorScheme) = FullCustomizationStyle(
     ),
     titleColor = scheme.primary,
     showsMascot = true,
-    cardFill = scheme.surface,
+    cardFill = cardFill,
     cardShadow = HardShadow(scheme.primaryContainer, DpOffset(3.dp, 6.dp)),
     fieldShape = RoundedCornerShape(24.dp),
     fieldBorderWidth = 1.dp,
+    fieldContainer = fieldContainer,
     buttonShape = RoundedCornerShape(36.dp),
     buttonBorder = null,
-    buttonShadow = HardShadow(Color(0xFF5D0B47), DpOffset(2.dp, 4.dp)),
+    buttonShadow = HardShadow(buttonShadow, DpOffset(2.dp, 4.dp)),
     primaryButton = ButtonPalette(scheme.primary, scheme.onPrimary),
     secondaryButton = ButtonPalette(scheme.primaryContainer, scheme.onPrimaryContainer),
     providerButtonShape = RoundedCornerShape(percent = 50),
     phoneProvider = ButtonPalette(scheme.primary, scheme.onPrimary),
+    pill = pill,
+    artScrim = artScrim,
+)
+
+private val DoggoLight = doggo(
+    scheme = FullCustomizationLightColorScheme,
+    cardFill = FullCustomizationLightColorScheme.surface,
+    fieldContainer = Color.White,
+    buttonShadow = Color(0xFF5D0B47),
+    pill = ButtonPalette(Color.White, Color(0xFF211A1D)),
+    artScrim = Color.Transparent,
+)
+
+private val DoggoDark = doggo(
+    scheme = FullCustomizationDarkColorScheme,
+    // Raised surfaces get lighter in dark mode: the card one step above the page, fields one above it.
+    cardFill = Color(0xFF231E20),
+    fieldContainer = Color(0xFF2E282B),
+    // Tone 30 of the light shadow's hue, so it still sits below the tone 80 button.
+    buttonShadow = Color(0xFF79265F),
+    pill = ButtonPalette(Color(0xFF2E282B), Color(0xFFEDDFE4)),
+    artScrim = Color(0xFF171214).copy(alpha = 0.92f),
 )
 
 private val GridNavy = Color(0xFF2C1067)
 private val GridPink = Color(0xFFFF52B3)
 private val GridCyan = Color(0xFF00DCE2)
-private val GridPage = Color(0xFFF3FBFB)
 
-private val Grid = FullCustomizationStyle(
-    id = FullCustomizationThemeId.Grid,
-    colorScheme = lightColorScheme(
-        primary = GridPink,
-        onPrimary = GridNavy,
-        primaryContainer = GridPage,
-        onPrimaryContainer = GridNavy,
-        secondary = GridCyan,
-        onSecondary = GridNavy,
-        surface = GridPage,
-        surfaceBright = GridPage,
-        surfaceContainerLowest = GridPage,
-        surfaceContainerLow = GridPage,
-        surfaceContainer = GridPage,
-        surfaceContainerHigh = GridPage,
-        surfaceContainerHighest = GridPage,
-        onSurface = GridNavy,
-        onSurfaceVariant = GridNavy,
-        outline = GridNavy,
-        outlineVariant = GridCyan,
-        background = GridPage,
+private fun grid(
+    n: Neutrals,
+    scheme: ColorScheme,
+    fieldContainer: Color,
+    pill: Color,
+    artScrim: Color,
+) =
+    FullCustomizationStyle(
+        id = FullCustomizationThemeId.Grid,
+        colorScheme = scheme.withNeutrals(n).copy(
+            primary = GridPink,
+            onPrimary = GridNavy,
+            secondary = GridCyan,
+            onSecondary = GridNavy,
+            outlineVariant = GridCyan,
+        ),
+        typography = fullCustomizationTypography(
+            title = Rowdies,
+            titleWeight = FontWeight.Normal,
+            body = ChivoMono,
+            button = Rowdies,
+        ),
+        titleColor = n.ink,
+        showsMascot = false,
+        cardFill = Color.Transparent,
+        cardShadow = null,
+        fieldShape = RoundedCornerShape(16.dp),
+        fieldBorderWidth = 2.dp,
+        fieldContainer = fieldContainer,
+        buttonShape = RoundedCornerShape(24.dp),
+        buttonBorder = BorderStroke(2.dp, GridCyan),
+        buttonShadow = HardShadow(GridCyan, DpOffset(3.dp, 6.dp)),
+        // Navy on the pink fill reads in both modes, so the primary button doesn't change.
+        primaryButton = ButtonPalette(GridPink, GridNavy),
+        secondaryButton = ButtonPalette(n.raised, n.ink),
+        providerButtonShape = RoundedCornerShape(12.dp),
+        phoneProvider = ButtonPalette(GridCyan, GridNavy),
+        pill = ButtonPalette(pill, n.ink),
+        artScrim = artScrim,
+    )
+
+private val GridLight = grid(
+    n = Neutrals(
+        page = Color(0xFFF3FBFB),
+        ink = GridNavy,
+        raised = Color(0xFFF3FBFB),
+        containers = List(5) { Color(0xFFF3FBFB) },
         error = Color(0xFFBA1A1A),
     ),
-    typography = fullCustomizationTypography(
-        title = Rowdies,
-        titleWeight = FontWeight.Normal,
-        body = ChivoMono,
-        button = Rowdies,
+    scheme = lightColorScheme(),
+    fieldContainer = Color.White,
+    pill = Color.White,
+    artScrim = Color.Transparent,
+)
+
+private val GridDark = grid(
+    n = Neutrals(
+        page = Color(0xFF141218),
+        ink = Color(0xFFE7DFF2),
+        raised = Color(0xFF211E26),
+        containers = listOf(
+            Color(0xFF0F0D15),
+            Color(0xFF1D1A22),
+            Color(0xFF211E26),
+            Color(0xFF2B2931),
+            Color(0xFF36333C),
+        ),
+        error = Color(0xFFFFB4AB),
     ),
-    titleColor = GridNavy,
-    showsMascot = false,
-    cardFill = Color.Transparent,
-    cardShadow = null,
-    fieldShape = RoundedCornerShape(16.dp),
-    fieldBorderWidth = 2.dp,
-    buttonShape = RoundedCornerShape(24.dp),
-    buttonBorder = BorderStroke(2.dp, GridCyan),
-    buttonShadow = HardShadow(GridCyan, DpOffset(3.dp, 6.dp)),
-    primaryButton = ButtonPalette(GridPink, GridNavy),
-    secondaryButton = ButtonPalette(GridPage, GridNavy),
-    providerButtonShape = RoundedCornerShape(12.dp),
-    phoneProvider = ButtonPalette(GridCyan, GridNavy),
+    scheme = darkColorScheme(),
+    fieldContainer = Color(0xFF211E26),
+    pill = Color(0xFF2B2931),
+    // The cyan lines are loud on the dark page; a wash keeps them behind the text.
+    artScrim = Color(0xFF141218).copy(alpha = 0.4f),
 )
 
 private val SparkGreen = Color(0xFF34A853)
-private val SparkPage = Color(0xFFF1F1F1)
 
-private val Spark = FullCustomizationStyle(
-    id = FullCustomizationThemeId.Spark,
-    colorScheme = lightColorScheme(
-        primary = SparkGreen,
-        onPrimary = Color.Black,
-        primaryContainer = Color(0xFFF3FBFB),
-        onPrimaryContainer = Color.Black,
-        secondary = Color.Black,
-        onSecondary = Color.White,
-        surface = SparkPage,
-        surfaceBright = SparkPage,
-        surfaceContainerLowest = SparkPage,
-        surfaceContainerLow = SparkPage,
-        surfaceContainer = SparkPage,
-        surfaceContainerHigh = SparkPage,
-        surfaceContainerHighest = SparkPage,
-        onSurface = Color.Black,
-        onSurfaceVariant = Color.Black,
-        outline = Color.Black,
-        outlineVariant = Color.Black,
-        background = SparkPage,
+private fun spark(
+    n: Neutrals,
+    scheme: ColorScheme,
+    title: Color,
+    fieldContainer: Color,
+    pill: Color,
+    artScrim: Color,
+) =
+    FullCustomizationStyle(
+        id = FullCustomizationThemeId.Spark,
+        colorScheme = scheme.withNeutrals(n).copy(
+            primary = SparkGreen,
+            onPrimary = Color.Black,
+            secondary = n.ink,
+            onSecondary = n.page,
+            outlineVariant = n.ink,
+        ),
+        typography = fullCustomizationTypography(
+            title = JetBrainsMono,
+            titleWeight = FontWeight.Medium,
+            body = JetBrainsMono,
+            button = JetBrainsMono,
+        ),
+        titleColor = title,
+        showsMascot = false,
+        cardFill = Color.Transparent,
+        cardShadow = null,
+        fieldShape = RoundedCornerShape(16.dp),
+        fieldBorderWidth = 2.dp,
+        fieldContainer = fieldContainer,
+        buttonShape = RoundedCornerShape(40.dp),
+        // The black outlines become the light ink in dark mode.
+        buttonBorder = BorderStroke(2.dp, n.ink),
+        buttonShadow = null,
+        primaryButton = ButtonPalette(Color(0xFFFDADEE), Color.Black),
+        secondaryButton = ButtonPalette(n.raised, n.ink),
+        providerButtonShape = RoundedCornerShape(40.dp),
+        phoneProvider = ButtonPalette(Color(0xFFC6FF00), SparkGreen),
+        pill = ButtonPalette(pill, title),
+        artScrim = artScrim,
+    )
+
+private val SparkLight = spark(
+    n = Neutrals(
+        page = Color(0xFFF1F1F1),
+        ink = Color.Black,
+        raised = Color(0xFFF3FBFB),
+        containers = List(5) { Color(0xFFF1F1F1) },
         error = Color(0xFFBA1A1A),
     ),
-    typography = fullCustomizationTypography(
-        title = JetBrainsMono,
-        titleWeight = FontWeight.Medium,
-        body = JetBrainsMono,
-        button = JetBrainsMono,
+    scheme = lightColorScheme(),
+    title = Color(0xFF1C1B1B),
+    fieldContainer = Color.White,
+    pill = Color.White,
+    artScrim = Color.Transparent,
+)
+
+private val SparkDark = spark(
+    n = Neutrals(
+        page = Color(0xFF151313),
+        ink = Color(0xFFE8E1E1),
+        raised = Color(0xFF221F20),
+        containers = listOf(
+            Color(0xFF100E0E),
+            Color(0xFF1E1B1C),
+            Color(0xFF221F20),
+            Color(0xFF2C292A),
+            Color(0xFF373435),
+        ),
+        error = Color(0xFFFFB4AB),
     ),
-    titleColor = Color(0xFF1C1B1B),
-    showsMascot = false,
-    cardFill = Color.Transparent,
-    cardShadow = null,
-    fieldShape = RoundedCornerShape(16.dp),
-    fieldBorderWidth = 2.dp,
-    buttonShape = RoundedCornerShape(40.dp),
-    buttonBorder = BorderStroke(2.dp, Color.Black),
-    buttonShadow = null,
-    primaryButton = ButtonPalette(Color(0xFFFDADEE), Color.Black),
-    secondaryButton = ButtonPalette(Color(0xFFF3FBFB), Color.Black),
-    providerButtonShape = RoundedCornerShape(40.dp),
-    phoneProvider = ButtonPalette(Color(0xFFC6FF00), SparkGreen),
+    scheme = darkColorScheme(),
+    title = Color(0xFFE8E1E1),
+    fieldContainer = Color(0xFF221F20),
+    pill = Color(0xFF2C292A),
+    // The blob is bright enough to fight the text over it on a dark page.
+    artScrim = Color(0xFF151313).copy(alpha = 0.55f),
 )

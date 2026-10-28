@@ -67,8 +67,9 @@ private fun LandingHeadline() {
                     .zIndex(1f),
             )
 
+            // An illustration: it keeps Figma's blue in both modes, like the mascot above it.
             Surface(
-                color = MaterialTheme.colorScheme.secondary,
+                color = Color(0xFF4C8BFF),
                 shape = IntroShape,
                 modifier = Modifier
                     .fillMaxWidth()
