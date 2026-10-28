@@ -62,6 +62,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [Creating a Completely Custom Theme](#creating-a-completely-custom-theme)
    - [Provider Button Styling](#provider-button-styling)
    - [Screen Transitions](#screen-transitions)
+   - [Beyond Theming](#beyond-theming)
 
 ### Advanced
 9. [Advanced Features](#advanced-features)
@@ -1303,7 +1304,7 @@ fun ManualMfaChallenge(resolver: MultiFactorResolver) {
 FirebaseUI Auth provides flexible theming options to match your app's design:
 
 - **`AuthUITheme.Default`** / **`AuthUITheme.DefaultDark`** / **`AuthUITheme.Adaptive`** - Pre-configured Material Design 3 themes
-- **`.copy()`** - Customize specific properties of the default themes (data class)
+- **`.copy()`** - Customize specific properties of the default themes
 - **`fromMaterialTheme()`** - Inherit from your app's existing Material Theme
 - **Custom theme** - Full control over colors, typography, shapes, and provider button styles
 
@@ -1866,6 +1867,12 @@ val configuration = authUIConfiguration {
 > `popTransitionSpec`. `predictivePopTransitionSpec` also receives the swipe edge
 > (`NavigationEvent.EDGE_LEFT`, `EDGE_RIGHT` or `EDGE_NONE`) and runs when the gesture *starts*,
 > so a side effect placed in it fires even for gestures the user goes on to cancel.
+
+### Beyond Theming
+
+`AuthUITheme` restyles the built-in screens but keeps their layout. To replace a screen's layout entirely, use the `FirebaseAuthScreen` slot parameters described in [Custom UI with Slots](#custom-ui-with-slots). They swap in your own composables while FirebaseUI keeps the authentication logic.
+
+The demo app's [`fullcustomization`](../app/src/main/java/com/firebaseui/android/demo/auth/fullcustomization/) sample uses both: an `AuthUITheme.Default.copy(...)` theme, plus custom UI for every screen slot, from the method picker through MFA and reauthentication to the signed-in screen.
 
 ## Advanced Features
 
