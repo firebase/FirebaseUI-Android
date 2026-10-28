@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
  * Figma has no dark frames. Each dark variant keeps a colour's HCT hue and chroma and moves only
  * its tone: pages to tone 6 (never pure black), text to 90, Doggo's M3 roles to M3's dark tones.
  * Grid's and Coffee Spark's neon accents keep their own tone, since each already clears 4.5:1 on
- * the dark page.
+ * the dark page. On their light pages the same rule runs the other way: accents used as text keep
+ * hue and chroma and darken until they clear 4.5:1, while button fills stay Figma's neon.
  */
 enum class FullCustomizationThemeId(val label: String) {
     Doggo("Doggo"),
@@ -166,6 +167,8 @@ private val GridCyan = Color(0xFF00DCE2)
 private fun grid(
     n: Neutrals,
     scheme: ColorScheme,
+    /** Links and accent text; the pink button fill stays [GridPink]. */
+    link: Color,
     fieldContainer: Color,
     pill: Color,
     artScrim: Color,
@@ -173,7 +176,7 @@ private fun grid(
     FullCustomizationStyle(
         id = FullCustomizationThemeId.Grid,
         colorScheme = scheme.withNeutrals(n).copy(
-            primary = GridPink,
+            primary = link,
             onPrimary = GridNavy,
             secondary = GridCyan,
             onSecondary = GridNavy,
@@ -213,6 +216,7 @@ private val GridLight = grid(
         error = Color(0xFFBA1A1A),
     ),
     scheme = lightColorScheme(),
+    link = Color(0xFFD0288D),
     fieldContainer = Color.White,
     pill = Color.White,
     artScrim = Color.Transparent,
@@ -233,6 +237,7 @@ private val GridDark = grid(
         error = Color(0xFFFFB4AB),
     ),
     scheme = darkColorScheme(),
+    link = GridPink,
     fieldContainer = Color(0xFF211E26),
     pill = Color(0xFF2B2931),
     // The cyan lines are loud on the dark page; a wash keeps them behind the text.
@@ -240,10 +245,14 @@ private val GridDark = grid(
 )
 
 private val SparkGreen = Color(0xFF34A853)
+// SparkGreen darkened to clear 4.5:1 on the light page and on the lime phone button.
+private val SparkGreenInk = Color(0xFF007C33)
 
 private fun spark(
     n: Neutrals,
     scheme: ColorScheme,
+    /** Links, accent text and the focused field border. */
+    link: Color,
     title: Color,
     fieldContainer: Color,
     pill: Color,
@@ -252,9 +261,10 @@ private fun spark(
     FullCustomizationStyle(
         id = FullCustomizationThemeId.Spark,
         colorScheme = scheme.withNeutrals(n).copy(
-            primary = SparkGreen,
+            primary = link,
             onPrimary = Color.Black,
-            secondary = n.ink,
+            // The field border is ink unfocused, so focus takes the green.
+            secondary = link,
             onSecondary = n.page,
             outlineVariant = n.ink,
         ),
@@ -278,7 +288,7 @@ private fun spark(
         primaryButton = ButtonPalette(Color(0xFFFDADEE), Color.Black),
         secondaryButton = ButtonPalette(n.raised, n.ink),
         providerButtonShape = RoundedCornerShape(40.dp),
-        phoneProvider = ButtonPalette(Color(0xFFC6FF00), SparkGreen),
+        phoneProvider = ButtonPalette(Color(0xFFC6FF00), SparkGreenInk),
         pill = ButtonPalette(pill, title),
         artScrim = artScrim,
     )
@@ -292,6 +302,7 @@ private val SparkLight = spark(
         error = Color(0xFFBA1A1A),
     ),
     scheme = lightColorScheme(),
+    link = SparkGreenInk,
     title = Color(0xFF1C1B1B),
     fieldContainer = Color.White,
     pill = Color.White,
@@ -313,6 +324,7 @@ private val SparkDark = spark(
         error = Color(0xFFFFB4AB),
     ),
     scheme = darkColorScheme(),
+    link = SparkGreen,
     title = Color(0xFFE8E1E1),
     fieldContainer = Color(0xFF221F20),
     pill = Color(0xFF2C292A),

@@ -16,6 +16,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
+/** The theme's main call-to-action colours. */
+@Composable
+fun primaryCtaColors(): ButtonColors = LocalFullCustomizationStyle.current.primaryButton.let {
+    ButtonDefaults.buttonColors(containerColor = it.container, contentColor = it.content)
+}
+
+/** The theme's colours for a call to action that reads as an alternative to the main one. */
+@Composable
+fun secondaryCtaColors(): ButtonColors = LocalFullCustomizationStyle.current.secondaryButton.let {
+    ButtonDefaults.buttonColors(containerColor = it.container, contentColor = it.content)
+}
+
 @Composable
 fun CtaButton(
     text: String,
@@ -23,10 +35,7 @@ fun CtaButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = LocalFullCustomizationStyle.current.primaryButton.container,
-        contentColor = LocalFullCustomizationStyle.current.primaryButton.content,
-    ),
+    colors: ButtonColors = primaryCtaColors(),
 ) {
     val style = LocalFullCustomizationStyle.current
     val shadow = style.buttonShadow

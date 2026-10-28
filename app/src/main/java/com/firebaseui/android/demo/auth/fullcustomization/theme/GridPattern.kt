@@ -118,7 +118,9 @@ fun gridPattern(page: Color): ImageVector =
                     start = Offset(597.3f, 0f),
                     end = Offset(597.153f, 838.705f),
                 ),
-                fillAlpha = OPACITY,
+                // Full alpha: under group opacity the SVG's mask hides the lines where it is
+                // opaque, and a page-coloured fill on the page reproduces that.
+                fillAlpha = 1f,
             )
         }
         shape("M563.338 135.969C562.988 130.004 569.059 125.771 574.535 128.162L636.67 155.29C642.406 157.795 643.179 165.616 638.045 169.196L579.885 209.749C574.751 213.329 567.679 209.899 567.312 203.651L563.338 135.969Z", Color(0xFFFF52B3))

@@ -42,6 +42,7 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
+import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
 import com.firebaseui.android.demo.auth.fullcustomization.common.EmailFieldIcon
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
@@ -160,10 +161,7 @@ fun LoginStep(
                     text = if (state.emailSignInLinkSent) "Login link sent!" else "Send login link",
                     onClick = state.onSignInEmailLinkClick,
                     enabled = !state.isLoading,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ),
+                    colors = secondaryCtaColors(),
                     modifier = Modifier.semantics { contentDescription = "button - send login link" },
                 )
 

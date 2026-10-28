@@ -117,7 +117,8 @@ fun FullCustomizationTextField(
                         interactionSource = interactionSource,
                         colors = colors,
                         shape = shape,
-                        focusedBorderThickness = OutlinedTextFieldDefaults.FocusedBorderThickness,
+                        // 1dp heavier than unfocused, so focus still shows where both colours match.
+                        focusedBorderThickness = LocalFullCustomizationStyle.current.fieldBorderWidth + 1.dp,
                         unfocusedBorderThickness = LocalFullCustomizationStyle.current.fieldBorderWidth,
                     )
                 },

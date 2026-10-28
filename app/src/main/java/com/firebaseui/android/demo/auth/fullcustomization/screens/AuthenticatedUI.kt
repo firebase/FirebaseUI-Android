@@ -36,6 +36,7 @@ import com.firebase.ui.auth.util.getDisplayEmail
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
+import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -173,10 +174,7 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
                 text = if (enrolledFactors.isEmpty()) "Set up two-factor" else "Manage two-factor",
                 onClick = uiContext.onManageMfa,
                 enabled = !isUpdating,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
+                colors = secondaryCtaColors(),
                 modifier = Modifier.semantics { contentDescription = "button - manage mfa" },
             )
 
@@ -225,10 +223,7 @@ private fun VerifyEmailPage(uiContext: AuthSuccessUiContext) {
             CtaButton(
                 text = stringProvider.resendVerificationEmailAction,
                 onClick = { user?.sendEmailVerification() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
+                colors = secondaryCtaColors(),
                 modifier = Modifier.semantics {
                     contentDescription = "button - resend verification email"
                 },

@@ -40,6 +40,7 @@ import androidx.compose.ui.zIndex
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
+import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
 import com.firebaseui.android.demo.auth.fullcustomization.common.EmailFieldIcon
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
@@ -202,10 +203,7 @@ fun EmailEntryStep(
                     onClick = onCreateAccount,
                     // Not gated on the address: the sign-up form collects and confirms it.
                     enabled = !isLoading,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ),
+                    colors = secondaryCtaColors(),
                     modifier = Modifier.semantics { contentDescription = "button - create account" },
                 )
             }

@@ -22,6 +22,8 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
+import com.firebaseui.android.demo.auth.fullcustomization.common.primaryCtaColors
+import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
 import com.google.firebase.auth.MultiFactorInfo
 import com.google.firebase.auth.PhoneMultiFactorGenerator
 import com.google.firebase.auth.TotpMultiFactorGenerator
@@ -94,12 +96,9 @@ fun SelectFactorStep(state: MfaEnrollmentContentState) {
                     enabled = !state.isLoading,
                     // First factor takes the primary CTA colour; the rest read as alternatives.
                     colors = if (index == 0) {
-                        ButtonDefaults.buttonColors()
+                        primaryCtaColors()
                     } else {
-                        ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        )
+                        secondaryCtaColors()
                     },
                     modifier = Modifier.semantics {
                         contentDescription = "button - enroll ${factorCtaLabel(factor)}"
