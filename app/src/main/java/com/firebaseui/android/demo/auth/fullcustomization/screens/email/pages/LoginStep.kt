@@ -25,9 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -38,20 +38,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
-import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
 import com.firebaseui.android.demo.auth.fullcustomization.common.EmailFieldIcon
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
+import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProLogin
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun LoginStep(
     state: EmailAuthContentState,
     onUseDifferentEmail: () -> Unit,
 ) {
+    if (isProfessional()) {
+        ProLogin(state, onUseDifferentEmail)
+        return
+    }
+
     var passwordVisible by remember { mutableStateOf(false) }
 
     // heightIn(min = maxHeight) centres content when it fits and plain-scrolls when it doesn't.

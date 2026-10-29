@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPage
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 /**
@@ -44,6 +46,19 @@ fun AuthPage(
     actions: @Composable ColumnScope.() -> Unit,
     card: @Composable ColumnScope.() -> Unit,
 ) {
+    // Professional lays the same content out as a plain left-aligned form, with no card.
+    if (isProfessional()) {
+        ProPage(
+            title = title,
+            modifier = Modifier.semantics { contentDescription = cardContentDescription },
+        ) {
+            card()
+            Spacer(modifier = Modifier.height(8.dp))
+            actions()
+        }
+        return
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Outside safeDrawingPadding so it runs edge to edge under the system bars.
         ThemeBackground()

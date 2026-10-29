@@ -55,7 +55,7 @@ fun CtaButton(
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 10.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),
+                .height(style.buttonHeight),
         ) {
             if (isLoading) {
                 // M3 default (primary) reads on the disabled fill; LocalContentColor would wash it out.

@@ -13,10 +13,11 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,8 +32,12 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.utils.EMAIL_LINK_ORIGIN_PARAM
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeBackground
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeSwitcher
+import com.firebaseui.android.demo.auth.fullcustomization.professional.LegalLinks
+import com.firebaseui.android.demo.auth.fullcustomization.professional.LocalLegalLinks
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthMethodPickerUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthenticatedUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.EmailAuthUI
@@ -40,11 +45,9 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaChallen
 import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollmentUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeBackground
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeSwitcher
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationThemeId
-import com.firebase.ui.auth.util.EmailLinkConstants
+import com.firebaseui.android.demo.utils.EMAIL_LINK_ORIGIN_PARAM
 import com.google.firebase.auth.actionCodeSettings
 
 class FullCustomizationDemoActivity : ComponentActivity() {
@@ -120,59 +123,63 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                 )
             }
             FullCustomizationTheme(themeId = themeId) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        FirebaseAuthScreen(
-                            configuration = configuration,
-                            authUI = authUI,
-                            emailLink = emailLink,
-                            onSignInSuccess = { result ->
-                                Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
+                CompositionLocalProvider(
+                    LocalLegalLinks provides LegalLinks(configuration.tosUrl, configuration.privacyPolicyUrl),
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            FirebaseAuthScreen(
+                                configuration = configuration,
+                                authUI = authUI,
+                                emailLink = emailLink,
+                                onSignInSuccess = { result ->
+                                    Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
+                                },
+                                onSignInFailure = { exception: AuthException ->
+                                    Log.e("FullCustomizationDemo", "Auth failed", exception)
+                                },
+                                onSignInCancelled = {
+                                    Log.d("FullCustomizationDemo", "Auth cancelled")
+                                },
+                                mfaConfiguration = MfaConfiguration(
+                                    allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                                    requireEnrollment = false,
+                                ),
+                                customMethodPickerLayout = { providers, onProviderSelected ->
+                                    MainUI(
+                                        authUI = authUI,
+                                        configuration = configuration,
+                                        providers = providers,
+                                        onProviderSelected = onProviderSelected,
+                                    )
+                                },
+                                // Covers the email flows the library navigates to itself.
+                                emailContent = { state -> EmailAuthUI(state) },
+                                phoneContent = { state -> PhoneSignInUI(state) },
+                                mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
+                                mfaChallengeContent = { state -> MfaChallengeUI(state) },
+                                reauthContent = { state -> ReauthUI(state) },
+                                authenticatedContent = { state, uiContext ->
+                                    AuthenticatedUI(state = state, uiContext = uiContext)
+                                },
+                            )
+                        }
+                        // Over every screen, so the theme can be switched mid-flow.
+                        ThemeSwitcher(
+                            selected = themeId,
+                            onSelect = { selected ->
+                                themeId = selected
+                                preferences.edit { putString(THEME_KEY, selected.name) }
                             },
-                            onSignInFailure = { exception: AuthException ->
-                                Log.e("FullCustomizationDemo", "Auth failed", exception)
-                            },
-                            onSignInCancelled = {
-                                Log.d("FullCustomizationDemo", "Auth cancelled")
-                            },
-                            mfaConfiguration = MfaConfiguration(
-                                allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
-                                requireEnrollment = false,
-                            ),
-                            customMethodPickerLayout = { providers, onProviderSelected ->
-                                MainUI(
-                                    authUI = authUI,
-                                    configuration = configuration,
-                                    providers = providers,
-                                    onProviderSelected = onProviderSelected,
-                                )
-                            },
-                            // Covers the email flows the library navigates to itself.
-                            emailContent = { state -> EmailAuthUI(state) },
-                            phoneContent = { state -> PhoneSignInUI(state) },
-                            mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
-                            mfaChallengeContent = { state -> MfaChallengeUI(state) },
-                            reauthContent = { state -> ReauthUI(state) },
-                            authenticatedContent = { state, uiContext ->
-                                AuthenticatedUI(state = state, uiContext = uiContext)
-                            },
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .statusBarsPadding()
+                                .padding(top = 8.dp),
                         )
                     }
-                    // Over every screen, so the theme can be switched mid-flow.
-                    ThemeSwitcher(
-                        selected = themeId,
-                        onSelect = { selected ->
-                            themeId = selected
-                            preferences.edit { putString(THEME_KEY, selected.name) }
-                        },
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .statusBarsPadding()
-                            .padding(top = 8.dp),
-                    )
                 }
             }
         }

@@ -32,16 +32,23 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
+import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPhoneEntry
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun PhoneEntryStep(state: PhoneAuthContentState) {
+    if (isProfessional()) {
+        ProPhoneEntry(state)
+        return
+    }
+
     val isPhoneValid = remember(state.phoneNumber) {
         android.util.Patterns.PHONE.matcher(state.phoneNumber).matches()
     }

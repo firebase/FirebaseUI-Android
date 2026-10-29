@@ -73,6 +73,8 @@ fun ThemeBackground() {
             art = painterResource(id = R.drawable.full_customization_spark_blob),
             x = (-295.8).dp, y = (-317.7).dp, width = 751.dp, height = 735.3.dp,
         )
+        FullCustomizationThemeId.Professional ->
+            Box(modifier = Modifier.fillMaxSize().background(page))
     }
     // The art is drawn for a light page; dark mode washes it back toward the dark one.
     Box(modifier = Modifier.fillMaxSize().background(style.artScrim))
@@ -124,7 +126,7 @@ fun ThemeHeader(
             SparkHeadline()
             Spacer(modifier = Modifier.height(24.dp))
         }
-        FullCustomizationThemeId.Grid -> Unit
+        FullCustomizationThemeId.Grid, FullCustomizationThemeId.Professional -> Unit
     }
     Text(
         text = title,

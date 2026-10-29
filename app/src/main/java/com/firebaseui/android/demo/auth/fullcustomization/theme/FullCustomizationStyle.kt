@@ -14,11 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
- * The demo's three looks. Doggo is the Android Figma section; Grid and Coffee Spark come from the
- * iOS Landing frames (20:5467 and 20:5769) by way of the iOS demo's values, laid out on Doggo's
- * Android sizing.
+ * The demo's looks. Doggo is the Android Figma section; Grid and Coffee Spark come from the iOS
+ * Landing frames (20:5467 and 20:5769) by way of the iOS demo's values, laid out on Doggo's
+ * Android sizing. Professional has no Figma frame: its palette is Material 3's fidelity scheme for
+ * a navy seed (#1E3A8A), with the seed itself kept for buttons and links.
  *
  * Figma has no dark frames. Each dark variant keeps a colour's HCT hue and chroma and moves only
  * its tone: pages to tone 6 (never pure black), text to 90, Doggo's M3 roles to M3's dark tones.
@@ -30,6 +32,7 @@ enum class FullCustomizationThemeId(val label: String) {
     Doggo("Doggo"),
     Grid("Grid"),
     Spark("Coffee Spark"),
+    Professional("Professional"),
 }
 
 /** A hard offset shadow: Figma's zero-blur drop shadow. */
@@ -66,6 +69,7 @@ data class FullCustomizationStyle(
     val pill: ButtonPalette,
     /** A wash of the page colour over the background art, so light art sits back in dark mode. */
     val artScrim: Color,
+    val buttonHeight: Dp = 80.dp,
 )
 
 val LocalFullCustomizationStyle = staticCompositionLocalOf<FullCustomizationStyle> {
@@ -76,6 +80,7 @@ fun FullCustomizationThemeId.style(darkTheme: Boolean): FullCustomizationStyle =
     FullCustomizationThemeId.Doggo -> if (darkTheme) DoggoDark else DoggoLight
     FullCustomizationThemeId.Grid -> if (darkTheme) GridDark else GridLight
     FullCustomizationThemeId.Spark -> if (darkTheme) SparkDark else SparkLight
+    FullCustomizationThemeId.Professional -> if (darkTheme) ProfessionalDark else ProfessionalLight
 }
 
 /** A theme's page and its tone-mapped neighbours, light or dark. */
@@ -330,4 +335,106 @@ private val SparkDark = spark(
     pill = Color(0xFF2C292A),
     // The blob is bright enough to fight the text over it on a dark page.
     artScrim = Color(0xFF151313).copy(alpha = 0.55f),
+)
+
+private val ProfessionalNavy = Color(0xFF1E3A8A)
+
+/**
+ * An enterprise-style sign-in: no art, mascot or hard shadows, one sans-serif, 8 to 12dp corners and
+ * 48dp controls. Its screens are laid out differently too (see the `professional` package).
+ */
+private fun professional(
+    scheme: ColorScheme,
+    title: Color,
+    cardFill: Color,
+    fieldContainer: Color,
+    secondaryButton: ButtonPalette,
+    pill: ButtonPalette,
+) = FullCustomizationStyle(
+    id = FullCustomizationThemeId.Professional,
+    colorScheme = scheme,
+    // Doggo's 20sp button label is sized for an 80dp button; this theme's are 48dp.
+    typography = fullCustomizationTypography(
+        title = Roboto,
+        titleWeight = FontWeight.SemiBold,
+        body = Roboto,
+        button = Roboto,
+    ).let { it.copy(titleMedium = it.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)) },
+    titleColor = title,
+    showsMascot = false,
+    cardFill = cardFill,
+    cardShadow = null,
+    fieldShape = RoundedCornerShape(8.dp),
+    fieldBorderWidth = 1.dp,
+    fieldContainer = fieldContainer,
+    buttonShape = RoundedCornerShape(8.dp),
+    buttonBorder = null,
+    buttonShadow = null,
+    primaryButton = ButtonPalette(scheme.primary, scheme.onPrimary),
+    secondaryButton = secondaryButton,
+    providerButtonShape = RoundedCornerShape(8.dp),
+    phoneProvider = ButtonPalette(scheme.primary, scheme.onPrimary),
+    pill = pill,
+    artScrim = Color.Transparent,
+    buttonHeight = 48.dp,
+)
+
+private val ProfessionalLight = professional(
+    scheme = lightColorScheme(
+        primary = ProfessionalNavy,
+        onPrimary = Color.White,
+        // The field focus border; primaryContainer is the other-methods sheet.
+        secondary = ProfessionalNavy,
+        onSecondary = Color.White,
+        primaryContainer = Color.White,
+        onPrimaryContainer = Color(0xFF1A1B21),
+        surface = Color(0xFFF4F3FA),
+        surfaceBright = Color(0xFFF4F3FA),
+        surfaceContainerLowest = Color.White,
+        surfaceContainerLow = Color(0xFFF4F3FA),
+        surfaceContainer = Color(0xFFEEEDF4),
+        surfaceContainerHigh = Color(0xFFE9E7EF),
+        surfaceContainerHighest = Color(0xFFE3E1E9),
+        background = Color(0xFFF4F3FA),
+        onSurface = Color(0xFF1A1B21),
+        onSurfaceVariant = Color(0xFF444651),
+        outline = Color(0xFF757682),
+        outlineVariant = Color(0xFFC5C5D3),
+        error = Color(0xFFBA1A1A),
+    ),
+    title = Color(0xFF1A1B21),
+    cardFill = Color.White,
+    fieldContainer = Color.White,
+    secondaryButton = ButtonPalette(Color(0xFFE3E7FF), ProfessionalNavy),
+    pill = ButtonPalette(Color.White, Color(0xFF1A1B21)),
+)
+
+private val ProfessionalDark = professional(
+    scheme = darkColorScheme(
+        primary = Color(0xFFB6C4FF),
+        onPrimary = Color(0xFF05297A),
+        secondary = Color(0xFFB6C4FF),
+        onSecondary = Color(0xFF05297A),
+        primaryContainer = Color(0xFF1F1F24),
+        onPrimaryContainer = Color(0xFFE3E1E9),
+        surface = Color(0xFF131316),
+        surfaceBright = Color(0xFF131316),
+        surfaceContainerLowest = Color(0xFF0D0E13),
+        surfaceContainerLow = Color(0xFF1A1B21),
+        surfaceContainer = Color(0xFF1E1F25),
+        surfaceContainerHigh = Color(0xFF292A2F),
+        surfaceContainerHighest = Color(0xFF34343A),
+        background = Color(0xFF131316),
+        onSurface = Color(0xFFE3E1E9),
+        onSurfaceVariant = Color(0xFFC5C5D3),
+        outline = Color(0xFF8F909D),
+        outlineVariant = Color(0xFF444651),
+        error = Color(0xFFFFB4AB),
+        onError = Color(0xFF690005),
+    ),
+    title = Color(0xFFE3E1E9),
+    cardFill = Color(0xFF1F1F24),
+    fieldContainer = Color(0xFF292A2E),
+    secondaryButton = ButtonPalette(Color(0xFF183585), Color(0xFFDCE1FF)),
+    pill = ButtonPalette(Color(0xFF292A2F), Color(0xFFE3E1E9)),
 )

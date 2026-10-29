@@ -26,14 +26,21 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPhoneVerification
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun PhoneVerificationStep(state: PhoneAuthContentState) {
+    if (isProfessional()) {
+        ProPhoneVerification(state)
+        return
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()

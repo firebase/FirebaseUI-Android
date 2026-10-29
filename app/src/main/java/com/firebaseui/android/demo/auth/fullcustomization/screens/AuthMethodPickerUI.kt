@@ -30,6 +30,8 @@ import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebaseui.android.demo.auth.fullcustomization.common.OtherSignInMethodsSheet
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
+import com.firebaseui.android.demo.auth.fullcustomization.professional.proInlineProviders
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
@@ -111,6 +113,8 @@ fun AuthMethodPickerUI(
 ) {
     var showOtherMethods by remember { mutableStateOf(false) }
     val backStack = rememberNavBackStack(EmailEntryKey)
+    // Professional shows the common providers on the landing itself; the others keep all of them in the sheet.
+    val inlineProviders = if (isProfessional()) proInlineProviders(otherProviders) else emptyList()
 
     Box(modifier = Modifier.fillMaxSize()) {
         NavDisplay(
@@ -133,6 +137,8 @@ fun AuthMethodPickerUI(
                             backStack.navigateToStep(AuthRoute.Email.SignUp(email))
                         },
                         onShowOtherMethods = { showOtherMethods = true },
+                        inlineProviders = inlineProviders,
+                        onProviderSelected = onProviderSelected,
                     )
                 }
 
@@ -154,7 +160,7 @@ fun AuthMethodPickerUI(
 
     if (showOtherMethods) {
         OtherSignInMethodsSheet(
-            otherProviders = otherProviders,
+            otherProviders = otherProviders - inlineProviders.toSet(),
             onProviderSelected = onProviderSelected,
             onDismissRequest = { showOtherMethods = false },
             tosUrl = configuration.tosUrl,

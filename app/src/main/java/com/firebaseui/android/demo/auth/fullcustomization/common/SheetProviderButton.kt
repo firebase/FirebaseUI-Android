@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,17 +38,7 @@ fun SheetProviderButton(
     modifier: Modifier = Modifier,
 ) {
     val label = providerSheetLabel(provider)
-    val style = when (provider) {
-        is AuthProvider.Google -> ProviderStyleDefaults.Google
-        is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
-        is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
-        is AuthProvider.Github -> ProviderStyleDefaults.Github
-        is AuthProvider.Microsoft -> ProviderStyleDefaults.Microsoft
-        is AuthProvider.Yahoo -> ProviderStyleDefaults.Yahoo
-        is AuthProvider.Apple -> ProviderStyleDefaults.Apple
-        is AuthProvider.Anonymous -> ProviderStyleDefaults.Anonymous
-        else -> ProviderStyleDefaults.Email
-    }
+    val style = providerStyleFor(provider)
     val theme = LocalFullCustomizationStyle.current
     val backgroundColor = if (provider is AuthProvider.Phone) {
         theme.phoneProvider.container
@@ -105,6 +96,23 @@ fun SheetProviderButton(
         }
     }
 }
+
+private fun providerStyleFor(provider: AuthProvider) = when (provider) {
+    is AuthProvider.Google -> ProviderStyleDefaults.Google
+    is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
+    is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
+    is AuthProvider.Github -> ProviderStyleDefaults.Github
+    is AuthProvider.Microsoft -> ProviderStyleDefaults.Microsoft
+    is AuthProvider.Yahoo -> ProviderStyleDefaults.Yahoo
+    is AuthProvider.Apple -> ProviderStyleDefaults.Apple
+    is AuthProvider.Anonymous -> ProviderStyleDefaults.Anonymous
+    else -> ProviderStyleDefaults.Email
+}
+
+/** The library's brand mark for [provider], or null when it has none (phone). */
+@Composable
+internal fun providerIconPainter(provider: AuthProvider): Painter? =
+    providerStyleFor(provider).icon?.asPainter()
 
 private fun providerSheetLabel(provider: AuthProvider): String = when (provider) {
     is AuthProvider.Google -> "Sign in with Google"
