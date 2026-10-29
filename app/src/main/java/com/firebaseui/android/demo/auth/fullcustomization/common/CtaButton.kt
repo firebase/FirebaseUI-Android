@@ -14,9 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.firebaseui.android.demo.auth.fullcustomization.theme.ButtonShape
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
-private val CtaShadowColor = Color(0xFF5D0B47)
+/** The theme's main call-to-action colours. */
+@Composable
+fun primaryCtaColors(): ButtonColors = LocalFullCustomizationStyle.current.primaryButton.let {
+    ButtonDefaults.buttonColors(containerColor = it.container, contentColor = it.content)
+}
+
+/** The theme's colours for a call to action that reads as an alternative to the main one. */
+@Composable
+fun secondaryCtaColors(): ButtonColors = LocalFullCustomizationStyle.current.secondaryButton.let {
+    ButtonDefaults.buttonColors(containerColor = it.container, contentColor = it.content)
+}
 
 @Composable
 fun CtaButton(
@@ -25,24 +35,27 @@ fun CtaButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    colors: ButtonColors = primaryCtaColors(),
 ) {
+    val style = LocalFullCustomizationStyle.current
+    val shadow = style.buttonShadow
     HardOffsetShadow(
-        shape = ButtonShape,
-        offsetX = 2.dp,
-        offsetY = 4.dp,
-        color = if (enabled) CtaShadowColor else Color.Transparent,
+        shape = style.buttonShape,
+        offsetX = shadow?.offset?.x ?: 0.dp,
+        offsetY = shadow?.offset?.y ?: 0.dp,
+        color = if (enabled && shadow != null) shadow.color else Color.Transparent,
         modifier = modifier.fillMaxWidth(),
     ) {
         Button(
             onClick = onClick,
             enabled = enabled,
-            shape = ButtonShape,
+            shape = style.buttonShape,
             colors = colors,
+            border = style.buttonBorder,
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 10.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),
+                .height(style.buttonHeight),
         ) {
             if (isLoading) {
                 // M3 default (primary) reads on the disabled fill; LocalContentColor would wash it out.

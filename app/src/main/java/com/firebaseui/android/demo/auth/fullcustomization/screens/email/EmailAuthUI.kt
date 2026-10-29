@@ -1,6 +1,5 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.email
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -9,11 +8,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
-import com.firebaseui.android.demo.R
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeBackground
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProEmailLink
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProResetPassword
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignIn
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignUp
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
@@ -38,6 +40,16 @@ fun EmailAuthUI(state: EmailAuthContentState) {
         return
     }
 
+    if (isProfessional()) {
+        when (state.mode) {
+            EmailAuthMode.SignUp -> ProSignUp(state, onBack = state.onGoToSignIn)
+            EmailAuthMode.ResetPassword -> ProResetPassword(state, onBack = state.onGoToSignIn)
+            EmailAuthMode.EmailLinkSignIn -> ProEmailLink(state, onBack = state.onGoToSignIn)
+            EmailAuthMode.SignIn -> ProSignIn(state, isEmailLinkOffered = false)
+        }
+        return
+    }
+
     var chosen by rememberSaveable { mutableStateOf(state.email.isNotBlank()) }
 
     val onUseDifferentEmail: () -> Unit = {
@@ -48,12 +60,7 @@ fun EmailAuthUI(state: EmailAuthContentState) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         // The email pages don't paint their own background, so this slot must.
-        Image(
-            painter = painterResource(id = R.drawable.custom_background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-        )
+        ThemeBackground()
 
         if (!chosen) {
             EmailEntryStep(
