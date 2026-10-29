@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -23,7 +24,6 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -160,14 +160,17 @@ fun FullCustomizationTextField(
                     indication = null,
                 ) { focusRequester.requestFocus() },
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // On the text baseline, so a label action set at another size still lines up.
+            Row {
                 Text(
                     text = label.orEmpty(),
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .alignByBaseline(),
                 )
-                labelAction?.invoke()
+                labelAction?.let { action -> Box(modifier = Modifier.alignByBaseline()) { action() } }
             }
             field()
         }

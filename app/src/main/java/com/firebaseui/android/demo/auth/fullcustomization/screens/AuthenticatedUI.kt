@@ -1,33 +1,22 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.Security
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -39,13 +28,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -60,9 +49,15 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProAvatar
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProGroup
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProHeader
 import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPage
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProRow
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProRowSeparator
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSectionLabel
 import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
+import com.firebaseui.android.demo.auth.fullcustomization.professional.proColors
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -327,8 +322,8 @@ private fun ProfileCompletionPage(
 }
 
 /**
- * The professional account screen: a settings list rather than a card and stacked buttons. The
- * password row opens the change-password form in place; two-factor goes to enrollment.
+ * The professional account screen, as the iOS demo draws it: a profile line, a Security section of
+ * settings rows, and sign-out on its own group. The password row opens the change form in place.
  */
 @Composable
 private fun ProAccountPage(
@@ -341,145 +336,107 @@ private fun ProAccountPage(
     /** The new-password field, shown when the password row is opened. */
     content: @Composable () -> Unit,
 ) {
+    val colors = proColors()
     val user = uiContext.authUI.getCurrentUser()
-    val name = user?.displayName?.takeIf { it.isNotBlank() }
-    // Letters only: a phone-only account has none, and gets the person glyph instead.
-    val initials = (name ?: identifier.substringBefore('@')).split(" ", ".", "_", "-")
-        .mapNotNull { part -> part.firstOrNull { it.isLetter() } }.take(2)
-        .joinToString("") { it.uppercase() }
+    val providerIds = user?.providerData?.map { it.providerId }.orEmpty().filter { it != "firebase" }
+    // Only accounts that sign in with a password can change one.
+    val hasPassword = "password" in providerIds
+    val signInMethod = when (providerIds.firstOrNull()) {
+        "password" -> "email"
+        "phone" -> "phone"
+        "google.com" -> "Google"
+        "apple.com" -> "Apple"
+        "github.com" -> "GitHub"
+        null -> "a temporary account"
+        else -> providerIds.first()
+    }
+    val email = user?.email?.takeIf { it.isNotBlank() }
     var showPasswordForm by rememberSaveable { mutableStateOf(false) }
-    val style = LocalFullCustomizationStyle.current
 
     ProPage(
-        title = "Account",
         modifier = Modifier.semantics { contentDescription = "authenticated - account card" },
+        header = { ProHeader(title = "Account") },
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(style.secondaryButton.container, CircleShape),
-            ) {
-                if (initials.isNotEmpty()) {
-                    Text(text = initials, color = style.secondaryButton.content, fontWeight = FontWeight.SemiBold)
-                } else {
-                    Icon(imageVector = Icons.Outlined.Person, contentDescription = null, tint = style.secondaryButton.content)
-                }
-            }
-            Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.semantics(mergeDescendants = true) { contentDescription = "profile" },
+        ) {
+            ProAvatar(identity = identifier)
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = name ?: identifier,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    text = identifier.ifBlank { "Signed in" },
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.text,
+                    maxLines = 1,
+                    overflow = TextOverflow.MiddleEllipsis,
                 )
-                if (name != null) {
-                    Text(
-                        text = "Signed in as $identifier",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
+                Text(text = "Signed in with $signInMethod", fontSize = 14.sp, color = colors.muted)
             }
         }
 
-        Text(
-            text = "SECURITY",
-            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = 0.4.sp),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 4.dp, top = 8.dp),
-        )
-        ProSettingsGroup {
-            ProSettingsRow(
-                label = "Password",
-                value = if (showPasswordForm) "Cancel" else "Change",
-                onClick = { showPasswordForm = !showPasswordForm },
-                enabled = !isUpdating,
-            )
-            if (showPasswordForm) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                ) {
-                    content()
-                    CtaButton(
-                        text = "Update password",
-                        onClick = onChangePassword,
-                        enabled = canChangePassword,
-                        isLoading = isUpdating,
-                        modifier = Modifier.semantics { contentDescription = "button - change password" },
-                    )
+        Spacer(modifier = Modifier.height(32.dp))
+        ProSectionLabel(text = "Security")
+        ProGroup {
+            if (hasPassword) {
+                ProRow(
+                    icon = Icons.Outlined.Key,
+                    title = "Password",
+                    value = if (showPasswordForm) "Cancel" else "Change",
+                    contentDescription = "button - password row",
+                    onClick = { showPasswordForm = !showPasswordForm },
+                    enabled = !isUpdating,
+                )
+                if (showPasswordForm) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    ) {
+                        content()
+                        CtaButton(
+                            text = "Update password",
+                            onClick = onChangePassword,
+                            enabled = canChangePassword,
+                            isLoading = isUpdating,
+                            modifier = Modifier.semantics { contentDescription = "button - change password" },
+                        )
+                    }
                 }
+                ProRowSeparator()
             }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(start = 16.dp))
-            ProSettingsRow(
-                label = "Two-factor authentication",
+            ProRow(
+                icon = Icons.Outlined.Security,
+                title = "Two-factor authentication",
                 value = if (hasTwoFactor) "On" else "Off",
+                contentDescription = "button - manage mfa",
                 onClick = uiContext.onManageMfa,
                 enabled = !isUpdating,
-                modifier = Modifier.semantics { contentDescription = "button - manage mfa" },
             )
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.padding(start = 16.dp))
-            ProSettingsRow(label = "Email verified", value = if (user?.isEmailVerified == true) "Yes" else "No")
+            if (email != null) {
+                ProRowSeparator()
+                val verified = user?.isEmailVerified == true
+                ProRow(
+                    icon = Icons.Outlined.Email,
+                    title = "Email",
+                    value = if (verified) "Verified" else "Verify",
+                    valueTint = if (verified) colors.muted else colors.accent,
+                    showsChevron = false,
+                    contentDescription = "button - verify email",
+                    onClick = if (verified) null else ({ user?.sendEmailVerification(); Unit }),
+                )
+            }
         }
 
-        ProSettingsGroup {
-            ProSettingsRow(
-                label = uiContext.stringProvider.signOutAction,
-                labelColor = MaterialTheme.colorScheme.error,
+        Spacer(modifier = Modifier.height(24.dp))
+        ProGroup {
+            ProRow(
+                title = uiContext.stringProvider.signOutAction,
+                tint = colors.accent,
+                showsChevron = false,
+                contentDescription = "button - sign out",
                 onClick = uiContext.onSignOut,
                 enabled = !isUpdating,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ProSettingsGroup(content: @Composable ColumnScope.() -> Unit) {
-    Surface(
-        color = LocalFullCustomizationStyle.current.cardFill,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(content = content)
-    }
-}
-
-/** One settings row: a label, an optional value, and a chevron when it does something. */
-@Composable
-private fun ProSettingsRow(
-    label: String,
-    modifier: Modifier = Modifier,
-    value: String? = null,
-    labelColor: Color = MaterialTheme.colorScheme.onSurface,
-    onClick: (() -> Unit)? = null,
-    enabled: Boolean = true,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .then(if (onClick != null) Modifier.clickable(enabled = enabled, onClick = onClick) else Modifier)
-            .heightIn(min = 56.dp)
-            .padding(horizontal = 16.dp),
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = labelColor,
-            modifier = Modifier.weight(1f),
-        )
-        value?.let {
-            Text(text = it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        if (onClick != null && labelColor == MaterialTheme.colorScheme.onSurface) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.size(20.dp),
             )
         }
     }

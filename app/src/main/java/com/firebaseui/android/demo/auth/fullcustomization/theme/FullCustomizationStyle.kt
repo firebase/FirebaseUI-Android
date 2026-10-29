@@ -10,6 +10,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -19,8 +20,7 @@ import androidx.compose.ui.unit.sp
 /**
  * The demo's looks. Doggo is the Android Figma section; Grid and Coffee Spark come from the iOS
  * Landing frames (20:5467 and 20:5769) by way of the iOS demo's values, laid out on Doggo's
- * Android sizing. Professional has no Figma frame: its palette is Material 3's fidelity scheme for
- * a navy seed (#1E3A8A), with the seed itself kept for buttons and links.
+ * Android sizing. Professional has no Figma frame: it follows the iOS demo's written spec.
  *
  * Figma has no dark frames. Each dark variant keeps a colour's HCT hue and chroma and moves only
  * its tone: pages to tone 6 (never pure black), text to 90, Doggo's M3 roles to M3's dark tones.
@@ -337,104 +337,129 @@ private val SparkDark = spark(
     artScrim = Color(0xFF151313).copy(alpha = 0.55f),
 )
 
-private val ProfessionalNavy = Color(0xFF1E3A8A)
+/**
+ * Professional's colours, the iOS demo's `ProPalette` (firebase/FirebaseUI-iOS#1420): neutral greys
+ * with one blue accent, in light and dark. Its screens read these directly; [professional] maps
+ * them onto the colour scheme for the library components they reuse.
+ */
+@Immutable
+data class ProColors(
+    val background: Color,
+    val surface: Color,
+    val field: Color,
+    val text: Color,
+    val muted: Color,
+    val placeholder: Color,
+    val border: Color,
+    val hairline: Color,
+    val accent: Color,
+    val accentFill: Color,
+    val accentSoft: Color,
+    val accentSoftText: Color,
+    val tile: Color,
+    val danger: Color,
+    val chevron: Color,
+)
+
+val ProLightColors = ProColors(
+    background = Color(0xFFF5F6F8),
+    surface = Color(0xFFFFFFFF),
+    field = Color(0xFFFFFFFF),
+    text = Color(0xFF111418),
+    muted = Color(0xFF5B6470),
+    placeholder = Color(0xFF6B7480),
+    border = Color(0xFFC9CFD6),
+    hairline = Color(0xFFE3E6EA),
+    accent = Color(0xFF1F5EFF),
+    accentFill = Color(0xFF1F5EFF),
+    accentSoft = Color(0xFFEEF2FF),
+    accentSoftText = Color(0xFF1F5EFF),
+    tile = Color(0xFFEEF0F3),
+    danger = Color(0xFFB42318),
+    chevron = Color(0xFF9AA3AE),
+)
+
+val ProDarkColors = ProColors(
+    background = Color(0xFF0F1115),
+    surface = Color(0xFF181B20),
+    field = Color(0xFF0F1115),
+    text = Color(0xFFF2F4F7),
+    muted = Color(0xFF9AA3AE),
+    placeholder = Color(0xFF7D8693),
+    border = Color(0xFF3A414A),
+    hairline = Color(0xFF2A2F36),
+    accent = Color(0xFF4C7DFF),
+    // Darker than accent in dark mode, so white labels on it keep 4.5:1.
+    accentFill = Color(0xFF2F62F0),
+    accentSoft = Color(0xFF1C2540),
+    accentSoftText = Color(0xFF9DB5FF),
+    tile = Color(0xFF22262D),
+    danger = Color(0xFFF97066),
+    chevron = Color(0xFF5B6470),
+)
 
 /**
- * An enterprise-style sign-in: no art, mascot or hard shadows, one sans-serif, 8 to 12dp corners and
- * 48dp controls. Its screens are laid out differently too (see the `professional` package).
+ * A quiet, platform-native look with no Figma frame, matching the iOS demo's Professional theme:
+ * the system font, neutral greys with one blue accent, 10dp corners, hairline borders instead of
+ * offset shadows, no background art. Its screens are laid out differently too (the `professional`
+ * package).
  */
-private fun professional(
-    scheme: ColorScheme,
-    title: Color,
-    cardFill: Color,
-    fieldContainer: Color,
-    secondaryButton: ButtonPalette,
-    pill: ButtonPalette,
-) = FullCustomizationStyle(
+private fun professional(c: ProColors, darkTheme: Boolean) = FullCustomizationStyle(
     id = FullCustomizationThemeId.Professional,
-    colorScheme = scheme,
-    // Doggo's 20sp button label is sized for an 80dp button; this theme's are 48dp.
+    colorScheme = (if (darkTheme) darkColorScheme() else lightColorScheme()).copy(
+        primary = c.accent,
+        onPrimary = Color.White,
+        // The focused field border.
+        secondary = c.accent,
+        onSecondary = Color.White,
+        // The other-methods sheet.
+        primaryContainer = c.surface,
+        onPrimaryContainer = c.text,
+        surface = c.background,
+        surfaceBright = c.background,
+        surfaceContainerLowest = c.surface,
+        surfaceContainerLow = c.surface,
+        surfaceContainer = c.surface,
+        surfaceContainerHigh = c.surface,
+        surfaceContainerHighest = c.surface,
+        background = c.background,
+        onSurface = c.text,
+        onSurfaceVariant = c.muted,
+        outline = c.border,
+        outlineVariant = c.border,
+        error = c.danger,
+    ),
     typography = fullCustomizationTypography(
-        title = Roboto,
+        title = FontFamily.Default,
         titleWeight = FontWeight.SemiBold,
-        body = Roboto,
-        button = Roboto,
-    ).let { it.copy(titleMedium = it.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)) },
-    titleColor = title,
+        body = FontFamily.Default,
+        button = FontFamily.Default,
+    ).let {
+        it.copy(
+            headlineSmall = it.headlineSmall.copy(fontSize = 26.sp, lineHeight = 32.sp, letterSpacing = (-0.3).sp),
+            bodyLarge = it.bodyLarge.copy(fontWeight = FontWeight.Normal),
+            titleMedium = it.titleMedium.copy(fontSize = 17.sp, fontWeight = FontWeight.SemiBold),
+        )
+    },
+    titleColor = c.text,
     showsMascot = false,
-    cardFill = cardFill,
+    cardFill = c.surface,
     cardShadow = null,
-    fieldShape = RoundedCornerShape(8.dp),
+    fieldShape = RoundedCornerShape(10.dp),
     fieldBorderWidth = 1.dp,
-    fieldContainer = fieldContainer,
-    buttonShape = RoundedCornerShape(8.dp),
+    fieldContainer = c.field,
+    buttonShape = RoundedCornerShape(10.dp),
     buttonBorder = null,
     buttonShadow = null,
-    primaryButton = ButtonPalette(scheme.primary, scheme.onPrimary),
-    secondaryButton = secondaryButton,
-    providerButtonShape = RoundedCornerShape(8.dp),
-    phoneProvider = ButtonPalette(scheme.primary, scheme.onPrimary),
-    pill = pill,
+    primaryButton = ButtonPalette(c.accentFill, Color.White),
+    secondaryButton = ButtonPalette(c.accentSoft, c.accentSoftText),
+    providerButtonShape = RoundedCornerShape(10.dp),
+    phoneProvider = ButtonPalette(c.accentFill, Color.White),
+    pill = ButtonPalette(c.surface, c.text),
     artScrim = Color.Transparent,
-    buttonHeight = 48.dp,
+    buttonHeight = 52.dp,
 )
 
-private val ProfessionalLight = professional(
-    scheme = lightColorScheme(
-        primary = ProfessionalNavy,
-        onPrimary = Color.White,
-        // The field focus border; primaryContainer is the other-methods sheet.
-        secondary = ProfessionalNavy,
-        onSecondary = Color.White,
-        primaryContainer = Color.White,
-        onPrimaryContainer = Color(0xFF1A1B21),
-        surface = Color(0xFFF4F3FA),
-        surfaceBright = Color(0xFFF4F3FA),
-        surfaceContainerLowest = Color.White,
-        surfaceContainerLow = Color(0xFFF4F3FA),
-        surfaceContainer = Color(0xFFEEEDF4),
-        surfaceContainerHigh = Color(0xFFE9E7EF),
-        surfaceContainerHighest = Color(0xFFE3E1E9),
-        background = Color(0xFFF4F3FA),
-        onSurface = Color(0xFF1A1B21),
-        onSurfaceVariant = Color(0xFF444651),
-        outline = Color(0xFF757682),
-        outlineVariant = Color(0xFFC5C5D3),
-        error = Color(0xFFBA1A1A),
-    ),
-    title = Color(0xFF1A1B21),
-    cardFill = Color.White,
-    fieldContainer = Color.White,
-    secondaryButton = ButtonPalette(Color(0xFFE3E7FF), ProfessionalNavy),
-    pill = ButtonPalette(Color.White, Color(0xFF1A1B21)),
-)
+private val ProfessionalLight = professional(ProLightColors, darkTheme = false)
 
-private val ProfessionalDark = professional(
-    scheme = darkColorScheme(
-        primary = Color(0xFFB6C4FF),
-        onPrimary = Color(0xFF05297A),
-        secondary = Color(0xFFB6C4FF),
-        onSecondary = Color(0xFF05297A),
-        primaryContainer = Color(0xFF1F1F24),
-        onPrimaryContainer = Color(0xFFE3E1E9),
-        surface = Color(0xFF131316),
-        surfaceBright = Color(0xFF131316),
-        surfaceContainerLowest = Color(0xFF0D0E13),
-        surfaceContainerLow = Color(0xFF1A1B21),
-        surfaceContainer = Color(0xFF1E1F25),
-        surfaceContainerHigh = Color(0xFF292A2F),
-        surfaceContainerHighest = Color(0xFF34343A),
-        background = Color(0xFF131316),
-        onSurface = Color(0xFFE3E1E9),
-        onSurfaceVariant = Color(0xFFC5C5D3),
-        outline = Color(0xFF8F909D),
-        outlineVariant = Color(0xFF444651),
-        error = Color(0xFFFFB4AB),
-        onError = Color(0xFF690005),
-    ),
-    title = Color(0xFFE3E1E9),
-    cardFill = Color(0xFF1F1F24),
-    fieldContainer = Color(0xFF292A2E),
-    secondaryButton = ButtonPalette(Color(0xFF183585), Color(0xFFDCE1FF)),
-    pill = ButtonPalette(Color(0xFF292A2F), Color(0xFFE3E1E9)),
-)
+private val ProfessionalDark = professional(ProDarkColors, darkTheme = true)

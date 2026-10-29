@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -37,7 +36,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
@@ -46,8 +44,6 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizati
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
 import com.firebaseui.android.demo.auth.fullcustomization.common.SparkHeadline
 import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProLanding
-import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationThemeId
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
@@ -132,24 +128,7 @@ fun EmailEntryStep(
     onSignIn: () -> Unit,
     onCreateAccount: () -> Unit,
     onShowOtherMethods: () -> Unit,
-    inlineProviders: List<AuthProvider> = emptyList(),
-    onProviderSelected: (AuthProvider) -> Unit = {},
 ) {
-    if (isProfessional()) {
-        ProLanding(
-            email = email,
-            onEmailChange = onEmailChange,
-            isLoading = isLoading,
-            onContinue = onSignIn,
-            onCreateAccount = onCreateAccount,
-            inlineProviders = inlineProviders,
-            onProviderSelected = onProviderSelected,
-            // Only where there is a sheet to open: the email slot has already committed to email.
-            onShowOtherMethods = onShowOtherMethods.takeIf { inlineProviders.isNotEmpty() },
-        )
-        return
-    }
-
     val isEmailValid = remember(email) {
         android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }

@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
+import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
@@ -45,7 +45,9 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizati
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
 import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
 import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProLogin
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProEmailLink
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProResetPassword
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignIn
 import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
@@ -55,7 +57,11 @@ fun LoginStep(
     onUseDifferentEmail: () -> Unit,
 ) {
     if (isProfessional()) {
-        ProLogin(state, onUseDifferentEmail)
+        when (state.mode) {
+            EmailAuthMode.ResetPassword -> ProResetPassword(state, onBack = onUseDifferentEmail)
+            EmailAuthMode.EmailLinkSignIn -> ProEmailLink(state, onBack = onUseDifferentEmail)
+            else -> ProSignIn(state, isEmailLinkOffered = false, onBack = onUseDifferentEmail)
+        }
         return
     }
 

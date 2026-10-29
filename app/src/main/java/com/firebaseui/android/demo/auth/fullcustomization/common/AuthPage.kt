@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProHeader
 import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPage
 import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
@@ -49,12 +50,12 @@ fun AuthPage(
     // Professional lays the same content out as a plain left-aligned form, with no card.
     if (isProfessional()) {
         ProPage(
-            title = title,
             modifier = Modifier.semantics { contentDescription = cardContentDescription },
+            header = { ProHeader(title = title) },
         ) {
-            card()
-            Spacer(modifier = Modifier.height(8.dp))
-            actions()
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp), content = card)
+            Spacer(modifier = Modifier.height(24.dp))
+            Column(content = actions)
         }
         return
     }

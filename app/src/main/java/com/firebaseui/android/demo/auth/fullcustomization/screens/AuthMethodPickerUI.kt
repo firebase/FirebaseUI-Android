@@ -30,6 +30,7 @@ import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebaseui.android.demo.auth.fullcustomization.common.OtherSignInMethodsSheet
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignIn
 import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
 import com.firebaseui.android.demo.auth.fullcustomization.professional.proInlineProviders
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
@@ -113,7 +114,7 @@ fun AuthMethodPickerUI(
 ) {
     var showOtherMethods by remember { mutableStateOf(false) }
     val backStack = rememberNavBackStack(EmailEntryKey)
-    // Professional shows the common providers on the landing itself; the others keep all of them in the sheet.
+    // Professional shows the common providers on its sign-in screen; the sheet keeps the rest.
     val inlineProviders = if (isProfessional()) proInlineProviders(otherProviders) else emptyList()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -124,6 +125,32 @@ fun AuthMethodPickerUI(
             predictivePopTransitionSpec = EmailStepPredictivePopTransform,
             entryProvider = entryProvider {
                 entry<EmailEntryKey> {
+                    // Professional opens on sign-in itself, email and password together, as the
+                    // iOS demo does; the other modes push from it like the shared steps below.
+                    if (isProfessional()) {
+                        EmailAuthScreen(
+                            context = context,
+                            configuration = configuration,
+                            authUI = authUI,
+                            mode = EmailAuthMode.SignIn,
+                            onNavigateToMode = { mode, email -> backStack.navigateToStep(stepFor(mode, email)) },
+                            onSuccess = onSuccess,
+                            onError = onError,
+                            onCancel = onCancel,
+                        ) { state ->
+                            ProSignIn(
+                                state = state,
+                                isEmailLinkOffered = configuration.providers
+                                    .filterIsInstance<AuthProvider.Email>()
+                                    .firstOrNull()?.isEmailLinkSignInEnabled == true,
+                                inlineProviders = inlineProviders,
+                                onProviderSelected = onProviderSelected,
+                                onShowOtherMethods = { showOtherMethods = true }
+                                    .takeIf { otherProviders.size > inlineProviders.size },
+                            )
+                        }
+                        return@entry
+                    }
                     // No auth operation here, so there is nothing for EmailAuthContentState to own.
                     var email by rememberSaveable { mutableStateOf("") }
                     EmailEntryStep(
@@ -137,8 +164,6 @@ fun AuthMethodPickerUI(
                             backStack.navigateToStep(AuthRoute.Email.SignUp(email))
                         },
                         onShowOtherMethods = { showOtherMethods = true },
-                        inlineProviders = inlineProviders,
-                        onProviderSelected = onProviderSelected,
                     )
                 }
 

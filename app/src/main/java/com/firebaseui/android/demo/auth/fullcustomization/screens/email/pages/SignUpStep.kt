@@ -60,7 +60,7 @@ fun SignUpStep(
     onUseDifferentEmail: () -> Unit,
 ) {
     if (isProfessional()) {
-        ProSignUp(state, onUseDifferentEmail)
+        ProSignUp(state, onBack = onUseDifferentEmail)
         return
     }
 
