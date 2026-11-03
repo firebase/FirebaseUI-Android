@@ -145,17 +145,19 @@ class MainActivity : ComponentActivity() {
                 // Resolved here: the theme is @Composable, the builder lambda is not.
                 val authTheme = AuthUITheme.fromMaterialTheme()
 
-                val configuration = authUIConfiguration {
-                    context = applicationContext
-                    theme = authTheme
-                    providers {
-                        provider(AuthProvider.Email())
-                        provider(
-                            AuthProvider.Google(
-                                scopes = listOf("email"),
-                                serverClientId = null,
+                val configuration = remember(authTheme) {
+                    authUIConfiguration {
+                        context = applicationContext
+                        theme = authTheme
+                        providers {
+                            provider(AuthProvider.Email())
+                            provider(
+                                AuthProvider.Google(
+                                    scopes = listOf("email"),
+                                    serverClientId = null,
+                                )
                             )
-                        )
+                        }
                     }
                 }
 
