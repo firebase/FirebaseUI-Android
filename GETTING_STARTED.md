@@ -223,13 +223,15 @@ fun rememberAuthConfiguration(): AuthUIConfiguration {
     // Resolved here: the theme is @Composable, the builder lambda is not.
     val authTheme = AuthUITheme.Adaptive
 
-    return authUIConfiguration {
-        context = appContext
-        providers {
-            provider(AuthProvider.Email())
-            provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = null))
+    return remember(appContext, authTheme) {
+        authUIConfiguration {
+            context = appContext
+            providers {
+                provider(AuthProvider.Email())
+                provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = null))
+            }
+            theme = authTheme
         }
-        theme = authTheme
     }
 }
 ```
@@ -281,7 +283,10 @@ class MainActivity : ComponentActivity() {
         }
 
         authController = FirebaseAuthUI.getInstance().createAuthFlow(configuration)
-        authLauncher.launch(authController.createIntent(this))
+        // Only on first creation: a recreated Activity would otherwise launch a second flow.
+        if (savedInstanceState == null) {
+            authLauncher.launch(authController.createIntent(this))
+        }
     }
 
     override fun onDestroy() {
