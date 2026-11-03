@@ -1,7 +1,7 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.pages
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.outlined.Sms
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,13 +26,25 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
+import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProErrorText
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProHeader
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPage
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPhoneField
+import com.firebaseui.android.demo.auth.fullcustomization.professional.ProTextButton
+import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
+import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
+    if (isProfessional()) {
+        ProConfigureSms(state)
+        return
+    }
+
     AuthPage(
         mascot = R.drawable.full_customization_phone_mascot,
         mascotDescription = "doggo - cute phone sign-in mascot",
@@ -45,15 +58,11 @@ fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
                 // CountrySelector needs a non-null country, so skip the step while it resolves.
                 state.selectedCountry?.let { country ->
                     Surface(
-                        color = Color.White,
-                        shape = AuthFieldShape,
+                        color = LocalFullCustomizationStyle.current.fieldContainer,
+                        shape = LocalFullCustomizationStyle.current.fieldShape,
                         modifier = Modifier
                             .requiredHeight(56.dp)
-                            .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                                shape = AuthFieldShape,
-                            )
+                            .themeFieldBorder()
                             .semantics { contentDescription = "country code selector" },
                     ) {
                         CountrySelector(
@@ -120,4 +129,43 @@ fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
             }
         },
     )
+}
+
+/** The professional SMS step: the phone sign-in screen's combined field, as the iOS demo uses. */
+@Composable
+private fun ProConfigureSms(state: MfaEnrollmentContentState) {
+    ProPage(header = {
+        ProHeader(
+            icon = Icons.Outlined.Sms,
+            title = "Add your phone number",
+            subtitle = "We'll text a code to this number whenever you sign in.",
+        )
+    }) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            ProPhoneField(
+                phoneNumber = state.phoneNumber,
+                onPhoneNumberChange = state.onPhoneNumberChange,
+                selectedCountry = state.selectedCountry,
+                onCountrySelected = state.onCountrySelected,
+                enabled = !state.isLoading,
+                contentDescription = "text-field - mfa phone number input",
+            )
+            ProErrorText(state.error)
+            CtaButton(
+                text = "Send code",
+                onClick = state.onSendSmsCodeClick,
+                enabled = state.isValid && !state.isLoading,
+                isLoading = state.isLoading,
+                modifier = Modifier.semantics { contentDescription = "button - send mfa sms code" },
+            )
+        }
+        if (state.canGoBack) {
+            ProTextButton(
+                title = "Pick a different method",
+                onClick = state.onBackClick,
+                enabled = !state.isLoading,
+                contentDescription = "button - pick a different method",
+            )
+        }
+    }
 }
