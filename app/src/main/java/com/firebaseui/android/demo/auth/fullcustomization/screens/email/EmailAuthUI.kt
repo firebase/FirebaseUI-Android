@@ -45,7 +45,7 @@ fun EmailAuthUI(state: EmailAuthContentState) {
             EmailAuthMode.SignUp -> ProSignUp(state, onBack = state.onGoToSignIn)
             EmailAuthMode.ResetPassword -> ProResetPassword(state, onBack = state.onGoToSignIn)
             EmailAuthMode.EmailLinkSignIn -> ProEmailLink(state, onBack = state.onGoToSignIn)
-            EmailAuthMode.SignIn -> ProSignIn(state, isEmailLinkOffered = false)
+            EmailAuthMode.SignIn -> ProSignIn(state, isEmailLinkOffered = false, isSignUpOffered = false)
         }
         return
     }

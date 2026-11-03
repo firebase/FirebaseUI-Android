@@ -60,7 +60,7 @@ fun LoginStep(
         when (state.mode) {
             EmailAuthMode.ResetPassword -> ProResetPassword(state, onBack = onUseDifferentEmail)
             EmailAuthMode.EmailLinkSignIn -> ProEmailLink(state, onBack = onUseDifferentEmail)
-            else -> ProSignIn(state, isEmailLinkOffered = false, onBack = onUseDifferentEmail)
+            else -> ProSignIn(state, isEmailLinkOffered = false, isSignUpOffered = false, onBack = onUseDifferentEmail)
         }
         return
     }

@@ -118,6 +118,9 @@ fun AuthMethodPickerUI(
                                 isEmailLinkOffered = configuration.providers
                                     .filterIsInstance<AuthProvider.Email>()
                                     .firstOrNull()?.isEmailLinkSignInEnabled == true,
+                                isSignUpOffered = configuration.isNewEmailAccountsAllowed &&
+                                    configuration.providers.filterIsInstance<AuthProvider.Email>()
+                                        .firstOrNull()?.isNewAccountsAllowed == true,
                                 inlineProviders = inlineProviders,
                                 onProviderSelected = onProviderSelected,
                                 onShowOtherMethods = { showOtherMethods = true }

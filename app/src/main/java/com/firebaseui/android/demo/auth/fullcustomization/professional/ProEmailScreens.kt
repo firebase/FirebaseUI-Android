@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -52,6 +53,7 @@ private fun isValidEmail(email: String) = android.util.Patterns.EMAIL_ADDRESS.ma
  * The professional sign-in screen: the providers first, then email and password on the same
  * screen. Creating an account, resetting a password and email-link sign-in are their own screens.
  *
+ * @param isSignUpOffered Hides "Create account" when the configuration doesn't allow new accounts.
  * @param onShowOtherMethods Opens the sheet with the remaining providers; null hides that button.
  * @param onBack Shown only where this screen was pushed over another.
  */
@@ -59,6 +61,7 @@ private fun isValidEmail(email: String) = android.util.Patterns.EMAIL_ADDRESS.ma
 fun ProSignIn(
     state: EmailAuthContentState,
     isEmailLinkOffered: Boolean,
+    isSignUpOffered: Boolean,
     inlineProviders: List<AuthProvider> = emptyList(),
     onProviderSelected: (AuthProvider) -> Unit = {},
     onShowOtherMethods: (() -> Unit)? = null,
@@ -146,13 +149,15 @@ fun ProSignIn(
                 enabled = !state.isLoading,
             )
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        ProPromptLink(
-            prompt = "Don't have an account?",
-            action = "Create account",
-            onClick = state.onGoToSignUp,
-            contentDescription = "button - create account",
-        )
+        if (isSignUpOffered) {
+            Spacer(modifier = Modifier.height(4.dp))
+            ProPromptLink(
+                prompt = "Don't have an account?",
+                action = "Create account",
+                onClick = state.onGoToSignUp,
+                contentDescription = "button - create account",
+            )
+        }
     }
 }
 
@@ -160,7 +165,8 @@ fun ProSignIn(
 @Composable
 fun ProSignUp(state: EmailAuthContentState, onBack: () -> Unit) {
     val passwordsMatch = state.confirmPassword.isNotBlank() && state.confirmPassword == state.password
-    val canSignUp = isValidEmail(state.email) && state.password.isNotBlank() && passwordsMatch && !state.isLoading
+    val canSignUp = state.displayName.isNotBlank() && isValidEmail(state.email) &&
+        state.password.isNotBlank() && passwordsMatch && !state.isLoading
 
     ProPage(
         footer = { ProLegalText(prefix = "By creating an account, you agree to the") },
@@ -170,6 +176,17 @@ fun ProSignUp(state: EmailAuthContentState, onBack: () -> Unit) {
         },
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            FullCustomizationTextField(
+                value = state.displayName,
+                onValueChange = state.onDisplayNameChange,
+                label = "Name",
+                placeholder = "Jane Doe",
+                enabled = !state.isLoading,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "text-field - name" },
+            )
             ProEmailField(state, contentDescription = "text-field - email address display")
             ProPasswordField(
                 value = state.password,
