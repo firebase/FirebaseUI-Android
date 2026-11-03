@@ -62,7 +62,7 @@ dependencies {
 ```
 
 If you're including the `firebase-ui-auth` dependency, there's a little
-[more setup](auth/README.md#configuration) required.
+[more setup](auth/README.md#setup) required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 

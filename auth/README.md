@@ -88,7 +88,7 @@ Ensure your application is configured for use with Firebase. See the [Firebase d
 
 **Minimum Requirements:**
 - Android SDK 23+ (Android 6.0 Marshmallow)
-- Kotlin 2.0+
+- Kotlin 2.3+
 - Jetpack Compose
 - Firebase BoM 34.0.0+
 
@@ -308,7 +308,7 @@ setContent {
         // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
         logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
 
-        // Optional: Enable MFA (default: true)
+        // Optional: show the built-in "Manage MFA" entry on the signed-in screen (default: true)
         isMfaEnabled = true
 
         // Optional: Enable Credential Manager (default: true)
@@ -1200,10 +1200,14 @@ launcher.launch(intent)
 
 ### MFA Configuration
 
-MFA is configured in two places. `isMfaEnabled` on the configuration turns the feature on or off;
-`MfaConfiguration` tunes it, and reaches the library as `FirebaseAuthScreen`'s `mfaConfiguration`
-parameter — it is **not** a property of `authUIConfiguration`, which is the mistake worth avoiding
-here. Both have defaults, so MFA works without either; set them to change the defaults.
+Both MFA settings shape enrollment; neither affects sign-in. A user who already has a second
+factor enrolled is always challenged for it, because Firebase requires it.
+
+`isMfaEnabled` on the configuration shows or hides the built-in "Manage MFA" entry on the
+signed-in screen. `MfaConfiguration` sets which factors can be enrolled and whether the enrollment flow
+can be skipped, and reaches the library as `FirebaseAuthScreen`'s `mfaConfiguration` parameter — it is
+**not** a property of `authUIConfiguration`, which is the mistake worth avoiding here. Both have
+defaults; set them to change the defaults.
 
 ```kotlin
 class MainActivity : ComponentActivity() {
@@ -1217,7 +1221,7 @@ class MainActivity : ComponentActivity() {
                     providers {
                         provider(AuthProvider.Email())
                     }
-                    // Turns the feature on. Defaults to true.
+                    // Shows the "Manage MFA" entry. Defaults to true.
                     isMfaEnabled = true
                 }
 
@@ -1225,7 +1229,7 @@ class MainActivity : ComponentActivity() {
                     // Allowed MFA factors (default: [Sms, Totp])
                     allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
 
-                    // Optional: Require MFA enrollment (default: false)
+                    // Optional: remove the Skip button from enrollment (default: false)
                     requireEnrollment = false,
 
                     // Optional: restrict the SMS enrollment step's country selector, as
@@ -1375,7 +1379,8 @@ FirebaseAuthScreen(
             // The resolver arrives on AuthState.RequiresMfa, not on the exception.
             showMfaChallengePrompt()
         }
-    }
+    },
+    onSignInCancelled = { /* ... */ }
 )
 ```
 
@@ -1500,7 +1505,9 @@ setContent {
 
     FirebaseAuthScreen(
         configuration = configuration,
-        onSignInSuccess = { /* ... */ }
+        onSignInSuccess = { /* ... */ },
+        onSignInFailure = { /* ... */ },
+        onSignInCancelled = { /* ... */ }
     )
 }
 ```
@@ -1527,7 +1534,9 @@ setContent {
         Surface(color = MaterialTheme.colorScheme.background) {
             FirebaseAuthScreen(
                 configuration = configuration,
-                onSignInSuccess = { /* ... */ }
+                onSignInSuccess = { /* ... */ },
+                onSignInFailure = { /* ... */ },
+                onSignInCancelled = { /* ... */ }
             )
         }
     }
@@ -1542,42 +1551,48 @@ Understanding which theme applies is important:
 
 1. **Configuration theme takes precedence:**
    ```kotlin
-   val configuration = authUIConfiguration {
-       context = applicationContext
-       providers { provider(AuthProvider.Email()) }
-       theme = AuthUITheme.Default  // LIGHT theme
-   }
+   setContent {
+       val configuration = authUIConfiguration {
+           context = applicationContext
+           providers { provider(AuthProvider.Email()) }
+           theme = AuthUITheme.Default  // LIGHT theme
+       }
 
-   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
-       FirebaseAuthScreen(configuration, ...)
+       AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+           FirebaseAuthScreen(configuration, ...)
+       }
+       // Result: FirebaseAuthScreen uses LIGHT theme (from configuration)
    }
-   // Result: FirebaseAuthScreen uses LIGHT theme (from configuration)
    ```
 
 2. **Wrapper as fallback:**
    ```kotlin
-   val configuration = authUIConfiguration {
-       context = applicationContext
-       providers { provider(AuthProvider.Email()) }
-       // theme not specified (null)
-   }
+   setContent {
+       val configuration = authUIConfiguration {
+           context = applicationContext
+           providers { provider(AuthProvider.Email()) }
+           // theme not specified (null)
+       }
 
-   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
-       FirebaseAuthScreen(configuration, ...)
+       AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+           FirebaseAuthScreen(configuration, ...)
+       }
+       // Result: FirebaseAuthScreen inherits DARK theme from wrapper
    }
-   // Result: FirebaseAuthScreen inherits DARK theme from wrapper
    ```
 
 3. **Ultimate fallback:**
    ```kotlin
-   val configuration = authUIConfiguration {
-       context = applicationContext
-       providers { provider(AuthProvider.Email()) }
-       // theme not specified (null)
-   }
+   setContent {
+       val configuration = authUIConfiguration {
+           context = applicationContext
+           providers { provider(AuthProvider.Email()) }
+           // theme not specified (null)
+       }
 
-   FirebaseAuthScreen(configuration, ...)  // No wrapper
-   // Result: Uses AuthUITheme.Default (light theme)
+       FirebaseAuthScreen(configuration, ...)  // No wrapper
+       // Result: Uses AuthUITheme.Default (light theme)
+   }
    ```
 
 **Best Practice:** For clarity and consistency, always set `theme` in `authUIConfiguration`. Use the wrapper only if you have additional UI outside `FirebaseAuthScreen`.
@@ -1604,7 +1619,9 @@ fun App() {
 
         FirebaseAuthScreen(
             configuration = configuration,
-            onSignInSuccess = { /* ... */ }
+            onSignInSuccess = { /* ... */ },
+            onSignInFailure = { /* ... */ },
+            onSignInCancelled = { /* ... */ }
         )
     }
 }
@@ -1706,21 +1723,23 @@ setContent {
 **Option 3: Creating custom theme:**
 
 ```kotlin
-val customTheme = AuthUITheme(
-    colorScheme = MaterialTheme.colorScheme,
-    typography = MaterialTheme.typography,
-    shapes = MaterialTheme.shapes,
-    providerButtonShape = RoundedCornerShape(12.dp)
-)
+setContent {
+    val customTheme = AuthUITheme(
+        colorScheme = MaterialTheme.colorScheme,
+        typography = MaterialTheme.typography,
+        shapes = MaterialTheme.shapes,
+        providerButtonShape = RoundedCornerShape(12.dp)
+    )
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Google())
-        provider(AuthProvider.Facebook())
-        provider(AuthProvider.Email())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Google())
+            provider(AuthProvider.Facebook())
+            provider(AuthProvider.Email())
+        }
+        theme = customTheme
     }
-    theme = customTheme
 }
 ```
 
@@ -1824,17 +1843,19 @@ val configuration = authUIConfiguration {
 Override the colors used by the top app bar shown on auth screens:
 
 ```kotlin
-val customTheme = AuthUITheme.Default.copy(
-    topAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = Color(0xFF2E7D32),
-        scrolledContainerColor = Color(0xFF2E7D32),
+setContent {
+    val customTheme = AuthUITheme.Default.copy(
+        topAppBarColors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFF2E7D32),
+            scrolledContainerColor = Color(0xFF2E7D32),
+        )
     )
-)
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers { provider(AuthProvider.Email()) }
-    theme = customTheme
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers { provider(AuthProvider.Email()) }
+        theme = customTheme
+    }
 }
 ```
 
@@ -2012,7 +2033,9 @@ setContent {
         onSignInSuccess = { result ->
             // Anonymous account has been upgraded (if user was anonymous)!
             Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
-        }
+        },
+        onSignInFailure = { /* ... */ },
+        onSignInCancelled = { /* ... */ }
     )
 }
 ```
@@ -2318,17 +2341,13 @@ Button(
 FirebaseUI includes default English strings. To add custom localization:
 
 ```kotlin
-// AuthUIStringProvider is an interface. Most members are `val`s, and a smaller set are `fun`s
-// taking a value to interpolate (passwordTooShort(minimumLength: Int),
-// signedInAs(userIdentifier: String), ...).
-// Only a handful of either have a default, so expect to implement nearly all of them —
-// DefaultAuthUIStringProvider is final and cannot be subclassed or partially overridden.
-// For most apps, translating the library's own string resources is the lighter option.
-class SpanishStringProvider : AuthUIStringProvider {
+// Delegate to the defaults and override only the strings you want to change.
+class SpanishStringProvider(
+    defaults: AuthUIStringProvider,
+) : AuthUIStringProvider by defaults {
     override val signInWithEmail = "Iniciar sesión con correo"
     override val signInWithGoogle = "Iniciar sesión con Google"
     override val invalidEmailAddress = "Correo inválido"
-    // ... every other member of AuthUIStringProvider
 }
 
 val configuration = authUIConfiguration {
@@ -2336,7 +2355,7 @@ val configuration = authUIConfiguration {
     providers {
         provider(AuthProvider.Email())
     }
-    stringProvider = SpanishStringProvider()
+    stringProvider = SpanishStringProvider(DefaultAuthUIStringProvider(applicationContext))
     locale = Locale("es", "ES")
 }
 ```
@@ -2395,6 +2414,7 @@ you only need to show text, the `else` branch covers everything outside those si
 ```kotlin
 FirebaseAuthScreen(
     configuration = configuration,
+    onSignInSuccess = { /* ... */ },
     onSignInFailure = { exception ->
         when (exception) {
             is AuthException.NetworkException -> {
@@ -2490,7 +2510,8 @@ FirebaseAuthScreen(
                 Log.e(TAG, "Auth error", exception)
             }
         }
-    }
+    },
+    onSignInCancelled = { /* ... */ }
 )
 ```
 

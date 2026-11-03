@@ -21,7 +21,7 @@ FirebaseUI Auth provides the following benefits:
 3. Check that your app module meets the minimum requirements:
 
    - Android SDK 23+ (Android 6.0 Marshmallow)
-   - Kotlin 2.0+
+   - Kotlin 2.3+
    - Jetpack Compose, with the Compose compiler plugin applied
    - Firebase BoM 34.0.0+
 
@@ -175,7 +175,8 @@ class MainActivity : ComponentActivity() {
                             // Sign in failed
                         },
                         onSignInCancelled = {
-                            finish()
+                            // The user backed out of one provider; the screen returns to the
+                            // method picker on its own.
                         },
                     )
                 }

@@ -81,7 +81,7 @@ Add provider-specific dependencies only when used. Facebook login needs:
 implementation("com.facebook.android:facebook-login:18.0.3")
 ```
 
-Minimum expectations from the FirebaseUI Auth docs: Android SDK 21+, Kotlin 1.9+, Compose compiler 1.5+, and Firebase Auth 22.0.0+. Respect stricter versions already present in the user repo.
+Minimum expectations from the FirebaseUI Auth docs: Android SDK 23+, Kotlin 2.3+, Jetpack Compose with the Compose compiler plugin applied, and Firebase BoM 34.0.0+. Respect stricter versions already present in the user repo.
 
 ## Predefined Auth Screen Template
 
