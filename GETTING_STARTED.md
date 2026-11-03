@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     // Required only if Facebook login support is required
-    // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
+    // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/releases
     implementation("com.facebook.android:facebook-login:18.3.0")
 }
 ```

@@ -102,16 +102,16 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:10.0.0")
 
     // Required: Firebase Auth
-    implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
     implementation("com.google.firebase:firebase-auth")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 
     // Optional: Facebook Login (if using FacebookAuthProvider)
-    implementation("com.facebook.android:facebook-login:16.3.0")
+    implementation("com.facebook.android:facebook-login:18.3.0")
 }
 ```
 
