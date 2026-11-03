@@ -1,6 +1,5 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.reauth
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -19,11 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebaseui.android.demo.R
+import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 
@@ -62,18 +60,11 @@ fun ReauthEmailStep(state: EmailAuthContentState) {
             .padding(bottom = 24.dp)
             .semantics { contentDescription = "reauth - email password card" },
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.full_customization_mascot),
-            contentDescription = "doggo - cute welcome mascot",
-            modifier = Modifier.size(56.dp),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Confirm it's you",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.primary,
+        ThemeHeader(
+            title = "Confirm it's you",
+            mascot = R.drawable.full_customization_mascot,
+            mascotDescription = "doggo - cute welcome mascot",
+            mascotSize = 56.dp,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
