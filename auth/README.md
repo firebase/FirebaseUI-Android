@@ -283,70 +283,72 @@ val authUI = FirebaseAuthUI.create(app = customApp, auth = customAuth)
 `AuthUIConfiguration` defines all settings for your authentication flow. Use the DSL builder function for easy configuration:
 
 ```kotlin
-val authTheme = AuthUITheme.fromMaterialTheme()   // @Composable — resolve it here, not below
+setContent {
+    val authTheme = AuthUITheme.fromMaterialTheme()   // @Composable — resolve it here, not below
 
-val configuration = authUIConfiguration {
-    // Required: an application Context. Omitting it throws when the block is evaluated.
-    context = applicationContext
+    val configuration = authUIConfiguration {
+        // Required: an application Context. Omitting it throws when the block is evaluated.
+        context = applicationContext
 
-    // Required: Authentication providers
-    providers {
-        provider(AuthProvider.Email())
-        provider(AuthProvider.Google())
-        provider(AuthProvider.Phone())
+        // Required: Authentication providers
+        providers {
+            provider(AuthProvider.Email())
+            provider(AuthProvider.Google())
+            provider(AuthProvider.Phone())
+        }
+
+        // Optional: Theme. AuthUITheme.fromMaterialTheme() and AuthUITheme.Adaptive are
+        // @Composable, so resolve them above the builder and assign the result here.
+        theme = authTheme
+
+        // Optional: Terms of Service and Privacy Policy URLs
+        tosUrl = "https://example.com/terms"
+        privacyPolicyUrl = "https://example.com/privacy"
+
+        // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
+        logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
+
+        // Optional: Enable MFA (default: true)
+        isMfaEnabled = true
+
+        // Optional: Enable Credential Manager (default: true)
+        isCredentialManagerEnabled = true
+
+        // Optional: Allow anonymous user upgrade (default: false)
+        isAnonymousUpgradeEnabled = true
+
+        // Optional: Require display name on sign-up (default: true)
+        isDisplayNameRequired = true
+
+        // Optional: Allow new email accounts (default: true)
+        isNewEmailAccountsAllowed = true
+
+        // Optional: Always show provider choice even with one provider (default: false)
+        isProviderChoiceAlwaysShown = false
+
+        // Optional: Custom string provider for localization
+        stringProvider = MyCustomStringProvider()
+
+        // Optional: Locale override
+        locale = Locale.FRENCH
+
+        // Optional: when a non-anonymous user is already signed in, link the new credential
+        // onto that account instead of switching accounts (default: false)
+        isCredentialLinkingEnabled = false
+
+        // Optional: send password-reset links to your own page rather than the Firebase-hosted
+        // one (default: null)
+        passwordResetActionCodeSettings = actionCodeSettings {
+            url = "https://example.com/reset"
+            handleCodeInApp = true
+            setAndroidPackageName(packageName, true, null)
+        }
+
+        // Optional: resolve an email to its providers with the legacy fetchSignInMethodsForEmail
+        // call. Only useful if email enumeration protection is disabled on your project
+        // (default: false)
+        legacyFetchSignInWithEmail = false
     }
-
-    // Optional: Theme. AuthUITheme.fromMaterialTheme() and AuthUITheme.Adaptive are
-    // @Composable, so resolve them above the builder and assign the result here.
-    theme = authTheme
-
-    // Optional: Terms of Service and Privacy Policy URLs
-    tosUrl = "https://example.com/terms"
-    privacyPolicyUrl = "https://example.com/privacy"
-
-    // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
-    logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
-
-    // Optional: Enable MFA (default: true)
-    isMfaEnabled = true
-
-    // Optional: Enable Credential Manager (default: true)
-    isCredentialManagerEnabled = true
-
-    // Optional: Allow anonymous user upgrade (default: false)
-    isAnonymousUpgradeEnabled = true
-
-    // Optional: Require display name on sign-up (default: true)
-    isDisplayNameRequired = true
-
-    // Optional: Allow new email accounts (default: true)
-    isNewEmailAccountsAllowed = true
-
-    // Optional: Always show provider choice even with one provider (default: false)
-    isProviderChoiceAlwaysShown = false
-
-    // Optional: Custom string provider for localization
-    stringProvider = MyCustomStringProvider()
-
-    // Optional: Locale override
-    locale = Locale.FRENCH
-
-    // Optional: when a non-anonymous user is already signed in, link the new credential
-    // onto that account instead of switching accounts (default: false)
-    isCredentialLinkingEnabled = false
-
-    // Optional: send password-reset links to your own page rather than the Firebase-hosted
-    // one (default: null)
-    passwordResetActionCodeSettings = actionCodeSettings {
-        url = "https://example.com/reset"
-        handleCodeInApp = true
-        setAndroidPackageName(packageName, true, null)
-    }
-
-    // Optional: resolve an email to its providers with the legacy fetchSignInMethodsForEmail
-    // call. Only useful if email enumeration protection is disabled on your project
-    // (default: false)
-    legacyFetchSignInWithEmail = false
 }
 ```
 
@@ -1428,15 +1430,17 @@ val configuration = authUIConfiguration {
 `AuthUITheme.Adaptive` automatically switches between light and dark themes based on the system setting:
 
 ```kotlin
-val adaptiveTheme = AuthUITheme.Adaptive   // @Composable getter — read it outside the builder
+setContent {
+    val adaptiveTheme = AuthUITheme.Adaptive   // @Composable getter — read it outside the builder
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
-        provider(AuthProvider.Google())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Email())
+            provider(AuthProvider.Google())
+        }
+        theme = adaptiveTheme
     }
-    theme = adaptiveTheme
 }
 ```
 
@@ -1483,20 +1487,22 @@ FirebaseUI Auth supports two theming patterns with clear precedence rules:
 The simplest approach is to set the theme only in `authUIConfiguration`:
 
 ```kotlin
-val adaptiveTheme = AuthUITheme.Adaptive
+setContent {
+    val adaptiveTheme = AuthUITheme.Adaptive
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Email())
+        }
+        theme = adaptiveTheme  // Set theme here
     }
-    theme = adaptiveTheme  // Set theme here
-}
 
-FirebaseAuthScreen(
-    configuration = configuration,
-    onSignInSuccess = { /* ... */ }
-)
+    FirebaseAuthScreen(
+        configuration = configuration,
+        onSignInSuccess = { /* ... */ }
+    )
+}
 ```
 
 **When to use:** This is the recommended pattern for most use cases. It's simple and explicit.
@@ -1506,22 +1512,24 @@ FirebaseAuthScreen(
 You can also wrap `FirebaseAuthScreen` with `AuthUITheme`:
 
 ```kotlin
-val adaptiveTheme = AuthUITheme.Adaptive
+setContent {
+    val adaptiveTheme = AuthUITheme.Adaptive
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Email())
+        }
+        theme = adaptiveTheme  // Theme in configuration
     }
-    theme = adaptiveTheme  // Theme in configuration
-}
 
-AuthUITheme(theme = adaptiveTheme) {  // Optional wrapper
-    Surface(color = MaterialTheme.colorScheme.background) {
-        FirebaseAuthScreen(
-            configuration = configuration,
-            onSignInSuccess = { /* ... */ }
-        )
+    AuthUITheme(theme = adaptiveTheme) {  // Optional wrapper
+        Surface(color = MaterialTheme.colorScheme.background) {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                onSignInSuccess = { /* ... */ }
+            )
+        }
     }
 }
 ```
@@ -1605,17 +1613,19 @@ fun App() {
 You can also customize while inheriting:
 
 ```kotlin
-val authTheme = AuthUITheme.fromMaterialTheme(
-    providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
-)
+setContent {
+    val authTheme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
+    )
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Google())
-        provider(AuthProvider.Facebook())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Google())
+            provider(AuthProvider.Facebook())
+        }
+        theme = authTheme
     }
-    theme = authTheme
 }
 ```
 
@@ -1677,17 +1687,19 @@ val configuration = authUIConfiguration {
 **Option 2: Using `fromMaterialTheme()`:**
 
 ```kotlin
-val authTheme = AuthUITheme.fromMaterialTheme(
-    providerButtonShape = RoundedCornerShape(16.dp)
-)
+setContent {
+    val authTheme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(16.dp)
+    )
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Google())
-        provider(AuthProvider.Facebook())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Google())
+            provider(AuthProvider.Facebook())
+        }
+        theme = authTheme
     }
-    theme = authTheme
 }
 ```
 
@@ -1748,25 +1760,27 @@ val configuration = authUIConfiguration {
 **Using `fromMaterialTheme()`:**
 
 ```kotlin
-val customProviderStyles = mapOf(
-    "google.com" to ProviderStyleDefaults.Google.copy(
-        shape = RoundedCornerShape(8.dp),
-        elevation = 4.dp
+setContent {
+    val customProviderStyles = mapOf(
+        "google.com" to ProviderStyleDefaults.Google.copy(
+            shape = RoundedCornerShape(8.dp),
+            elevation = 4.dp
+        )
     )
-)
 
-val authTheme = AuthUITheme.fromMaterialTheme(
-    providerButtonShape = RoundedCornerShape(12.dp),
-    providerStyles = customProviderStyles
-)
+    val authTheme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(12.dp),
+        providerStyles = customProviderStyles
+    )
 
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Google())
-        provider(AuthProvider.Facebook())
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Google())
+            provider(AuthProvider.Facebook())
+        }
+        theme = authTheme
     }
-    theme = authTheme
 }
 ```
 
@@ -1979,26 +1993,28 @@ The demo app's [`fullcustomization`](../app/src/main/java/com/firebaseui/android
 Seamlessly upgrade anonymous users to permanent accounts:
 
 ```kotlin
-// 1. Configure anonymous authentication with upgrade enabled
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Anonymous())
-        provider(AuthProvider.Email())
-        provider(AuthProvider.Google())
+setContent {
+    // 1. Configure anonymous authentication with upgrade enabled
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Anonymous())
+            provider(AuthProvider.Email())
+            provider(AuthProvider.Google())
+        }
+        isAnonymousUpgradeEnabled = true
     }
-    isAnonymousUpgradeEnabled = true
-}
 
-// 2. When user wants to create a permanent account, show auth UI
-// The library automatically upgrades the anonymous account if one exists
-FirebaseAuthScreen(
-    configuration = configuration,
-    onSignInSuccess = { result ->
-        // Anonymous account has been upgraded (if user was anonymous)!
-        Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
-    }
-)
+    // 2. When user wants to create a permanent account, show auth UI
+    // The library automatically upgrades the anonymous account if one exists
+    FirebaseAuthScreen(
+        configuration = configuration,
+        onSignInSuccess = { result ->
+            // Anonymous account has been upgraded (if user was anonymous)!
+            Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
+        }
+    )
+}
 ```
 
 ### Email Link Sign-In
