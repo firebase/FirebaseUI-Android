@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -77,7 +78,9 @@ fun ThemeBackground() {
             Box(modifier = Modifier.fillMaxSize().background(page))
     }
     // The art is drawn for a light page; dark mode washes it back toward the dark one.
-    Box(modifier = Modifier.fillMaxSize().background(style.artScrim))
+    if (style.artScrim != Color.Transparent) {
+        Box(modifier = Modifier.fillMaxSize().background(style.artScrim))
+    }
 }
 
 @Composable
@@ -213,6 +216,7 @@ fun ThemeSwitcher(
                             color = if (isSelected) pill.content else Color.Transparent,
                             shape = RoundedCornerShape(percent = 50),
                         )
+                        .clip(RoundedCornerShape(percent = 50))
                         .selectable(
                             selected = isSelected,
                             role = Role.RadioButton,

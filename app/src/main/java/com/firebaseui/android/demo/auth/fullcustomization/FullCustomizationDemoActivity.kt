@@ -113,15 +113,12 @@ class FullCustomizationDemoActivity : ComponentActivity() {
         }
 
         val preferences = getSharedPreferences(THEME_PREFERENCES, MODE_PRIVATE)
+        val initialTheme = FullCustomizationThemeId.entries.firstOrNull {
+            it.name == preferences.getString(THEME_KEY, null)
+        } ?: FullCustomizationThemeId.Doggo
 
         setContent {
-            var themeId by remember {
-                mutableStateOf(
-                    FullCustomizationThemeId.entries.firstOrNull {
-                        it.name == preferences.getString(THEME_KEY, null)
-                    } ?: FullCustomizationThemeId.Doggo
-                )
-            }
+            var themeId by remember { mutableStateOf(initialTheme) }
             FullCustomizationTheme(themeId = themeId) {
                 CompositionLocalProvider(
                     LocalLegalLinks provides LegalLinks(configuration.tosUrl, configuration.privacyPolicyUrl),
