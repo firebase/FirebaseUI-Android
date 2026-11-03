@@ -1019,8 +1019,10 @@ abstract class AuthException(
             }
         }
 
+        private val NUMBER_PATTERN = Regex("\\d+")
+
         private fun firstNumberIn(text: String): Int? =
-            Regex("\\d+").find(text)?.value?.toIntOrNull()
+            NUMBER_PATTERN.find(text)?.value?.toIntOrNull()
 
         // Finds the [...] content that immediately follows PASSWORD_DOES_NOT_MEET_REQUIREMENTS
         // in both FirebaseException and FirebaseAuthWeakPasswordException messages.
