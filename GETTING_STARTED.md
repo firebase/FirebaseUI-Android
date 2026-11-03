@@ -2,8 +2,6 @@
 
 [FirebaseUI](https://github.com/firebase/firebaseui-android) Auth is a library built on top of the Firebase Authentication SDK that provides drop-in UI flows for use in your app.
 
-Caution: Version 10.x is currently a **beta release**. This means that the functionality might change in backward-incompatible ways or have limited support. A beta release is not subject to any SLA or deprecation policy.
-
 The recommended sign-in flow uses Compose screens. For apps that still use Activities, see the [Existing Activity-based apps](#existing-activity-based-apps) section.
 
 FirebaseUI Auth provides the following benefits:
@@ -43,7 +41,7 @@ android {
 dependencies {
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta05")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0")
 
     // Required: Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:2026.09.00"))
