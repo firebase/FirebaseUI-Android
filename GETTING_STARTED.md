@@ -175,8 +175,8 @@ class MainActivity : ComponentActivity() {
                             // Sign in failed
                         },
                         onSignInCancelled = {
-                            // The user backed out of one provider; the screen returns to the
-                            // method picker on its own.
+                            // The user cancelled one sign-in attempt; the screen resets
+                            // on its own.
                         },
                     )
                 }

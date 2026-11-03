@@ -308,7 +308,7 @@ setContent {
         // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
         logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
 
-        // Optional: show the built-in "Manage MFA" entry on the signed-in screen (default: true)
+        // Optional: enable the built-in "Manage MFA" button on the signed-in screen (default: true)
         isMfaEnabled = true
 
         // Optional: Enable Credential Manager (default: true)
@@ -329,7 +329,8 @@ setContent {
         // Optional: Custom string provider for localization
         stringProvider = MyCustomStringProvider()
 
-        // Optional: Locale override
+        // Optional: Locale override. Applies to the default string provider only, so it has no
+        // effect alongside a custom stringProvider.
         locale = Locale.FRENCH
 
         // Optional: when a non-anonymous user is already signed in, link the new credential
@@ -687,7 +688,7 @@ Enable anonymous authentication to let users use your app without signing in:
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
-        provider(AuthProvider.Anonymous())
+        provider(AuthProvider.Anonymous)
     }
 
     // Enable anonymous user upgrade
@@ -1203,9 +1204,9 @@ launcher.launch(intent)
 Both MFA settings shape enrollment; neither affects sign-in. A user who already has a second
 factor enrolled is always challenged for it, because Firebase requires it.
 
-`isMfaEnabled` on the configuration shows or hides the built-in "Manage MFA" entry on the
-signed-in screen. `MfaConfiguration` sets which factors can be enrolled and whether the enrollment flow
-can be skipped, and reaches the library as `FirebaseAuthScreen`'s `mfaConfiguration` parameter — it is
+`isMfaEnabled` on the configuration enables the built-in "Manage MFA" button on the signed-in
+screen; when false, the button is shown disabled. `MfaConfiguration` sets which factors can be
+enrolled and whether enrollment offers a Skip button, and reaches the library as `FirebaseAuthScreen`'s `mfaConfiguration` parameter — it is
 **not** a property of `authUIConfiguration`, which is the mistake worth avoiding here. Both have
 defaults; set them to change the defaults.
 
@@ -1221,7 +1222,7 @@ class MainActivity : ComponentActivity() {
                     providers {
                         provider(AuthProvider.Email())
                     }
-                    // Shows the "Manage MFA" entry. Defaults to true.
+                    // Enables the "Manage MFA" button. Defaults to true.
                     isMfaEnabled = true
                 }
 
@@ -2019,7 +2020,7 @@ setContent {
     val configuration = authUIConfiguration {
         context = applicationContext
         providers {
-            provider(AuthProvider.Anonymous())
+            provider(AuthProvider.Anonymous)
             provider(AuthProvider.Email())
             provider(AuthProvider.Google())
         }
@@ -2355,8 +2356,9 @@ val configuration = authUIConfiguration {
     providers {
         provider(AuthProvider.Email())
     }
-    stringProvider = SpanishStringProvider(DefaultAuthUIStringProvider(applicationContext))
-    locale = Locale("es", "ES")
+    stringProvider = SpanishStringProvider(
+        DefaultAuthUIStringProvider(applicationContext, Locale("es", "ES"))
+    )
 }
 ```
 
