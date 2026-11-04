@@ -49,6 +49,8 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
+import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -780,6 +782,66 @@ class FirebaseAuthScreenEmailRecoveryTest {
     }
 
     /**
+     * The recovery is gated on an Email provider being configured, not on sign-up being offered:
+     * linking signs in to an account that already exists, so an app that turns off new accounts
+     * still needs the step.
+     */
+    @Test
+    fun `an account that needs linking still recovers to sign-in when sign-up is not offered`() {
+        start(configuration = emailAndPhoneConfiguration(isNewAccountsAllowed = false))
+
+        recoverFrom(accountLinkingRequired(mock(AuthCredential::class.java)))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithText(OTHER_EMAIL).assertIsDisplayed()
+    }
+
+    /**
+     * firebase/FirebaseUI-Android#2550: a provider sign-in hit an existing account, and the
+     * dialog's recovery opened an email step the app never configured, which crashed. Without an
+     * Email provider there is no step to offer, so the dialog offers none.
+     */
+    @Test
+    fun `no recovery is offered for an account that needs linking when no Email provider is configured`() {
+        start(configuration = noEmailConfiguration())
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(
+                AuthState.Error(accountLinkingRequired(mock(AuthCredential::class.java)))
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)
+            .assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertDoesNotExist()
+    }
+
+    /**
+     * `EmailAuthScreen` is public, so a host can route to it with a configuration that has no
+     * Email provider. It renders nothing rather than throwing.
+     */
+    @Test
+    fun `the email screen renders nothing without an Email provider instead of crashing`() {
+        composeTestRule.setContent {
+            EmailAuthScreen(
+                context = applicationContext,
+                configuration = noEmailConfiguration(),
+                authUI = authUI,
+                onSuccess = {},
+                onError = {},
+                onCancel = {},
+                mode = EmailAuthMode.SignIn,
+                onNavigateToMode = { _, _ -> },
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertDoesNotExist()
+    }
+
+    /**
      * The point of the recovery, and the half a landing assertion cannot see: the credential the
      * failure carried has to survive the move and be linked once the password sign-in it asked for
      * succeeds. `EmailAuthScreen` reads it once, on the composition of the step it is given, so a
@@ -929,16 +991,38 @@ class FirebaseAuthScreenEmailRecoveryTest {
         this.transitions = transitions
     }
 
-    private fun emailAndPhoneConfiguration(): AuthUIConfiguration = authUIConfiguration {
+    private fun emailAndPhoneConfiguration(
+        isNewAccountsAllowed: Boolean = true,
+    ): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
         providers {
             provider(
                 AuthProvider.Email(
                     isDisplayNameRequired = false,
+                    isNewAccountsAllowed = isNewAccountsAllowed,
                     emailLinkActionCodeSettings = null,
                     passwordValidationRules = emptyList()
                 )
             )
+            provider(
+                AuthProvider.Phone(
+                    defaultNumber = null,
+                    defaultCountryCode = null,
+                    allowedCountries = null
+                )
+            )
+        }
+        isCredentialManagerEnabled = false
+    }
+
+    /**
+     * Two providers and neither is Email, so the flow opens on the method picker: where a
+     * provider sign-in such as Facebook raises its account-linking failure.
+     */
+    private fun noEmailConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Anonymous)
             provider(
                 AuthProvider.Phone(
                     defaultNumber = null,

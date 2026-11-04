@@ -209,7 +209,10 @@ fun EmailAuthScreen(
     onNotificationConsumed: (() -> Unit)? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
+    // Nothing to render without an Email provider; a host that routes here anyway gets an empty
+    // step rather than a crash.
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+        ?: return
     val stringProvider = LocalAuthUIStringProvider.current
     val coroutineScope = rememberCoroutineScope()
 

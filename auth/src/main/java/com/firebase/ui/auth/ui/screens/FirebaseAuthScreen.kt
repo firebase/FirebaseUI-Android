@@ -93,6 +93,7 @@ import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.emailAuthDestinations
 import com.firebase.ui.auth.ui.screens.email.isEmailLinkSignInOffered
+import com.firebase.ui.auth.ui.screens.email.isEmailProviderConfigured
 import com.firebase.ui.auth.ui.screens.email.isEmailSignUpOffered
 import com.firebase.ui.auth.ui.screens.email.navigateToEmailStep
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
@@ -928,9 +929,16 @@ fun FirebaseAuthScreen(
                             }
 
                             is AuthException.AccountLinkingRequiredException -> {
-                                {
-                                    pendingLinkingCredential.value = exception.credential
-                                    navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
+                                // The only recovery today is the email sign-in step. Without an
+                                // Email provider there is no such step, so offer nothing rather
+                                // than a step this configuration cannot show.
+                                if (configuration.isEmailProviderConfigured()) {
+                                    {
+                                        pendingLinkingCredential.value = exception.credential
+                                        navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
+                                    }
+                                } else {
+                                    null
                                 }
                             }
 
