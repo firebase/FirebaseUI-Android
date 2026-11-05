@@ -24,6 +24,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -47,10 +48,11 @@ import com.firebase.ui.auth.configuration.AuthUITransitions
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
-import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
+import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -819,26 +821,61 @@ class FirebaseAuthScreenEmailRecoveryTest {
     }
 
     /**
-     * `EmailAuthScreen` is public, so a host can route to it with a configuration that has no
-     * Email provider. It renders nothing rather than throwing.
+     * The same crash reached another way: a Google sign-in collision arrives as
+     * `EmailAlreadyInUseException` through `AuthException.from`, and its recovery is the same
+     * email step the configuration cannot show.
      */
     @Test
-    fun `the email screen renders nothing without an Email provider instead of crashing`() {
-        composeTestRule.setContent {
-            EmailAuthScreen(
-                context = applicationContext,
-                configuration = noEmailConfiguration(),
-                authUI = authUI,
-                onSuccess = {},
-                onError = {},
-                onCancel = {},
-                mode = EmailAuthMode.SignIn,
-                onNavigateToMode = { _, _ -> },
+    fun `no recovery is offered for an address already in use when no Email provider is configured`() {
+        start(configuration = noEmailConfiguration())
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(
+                AuthState.Error(
+                    AuthException.EmailAlreadyInUseException(
+                        message = "already in use",
+                        email = TYPED_EMAIL,
+                    )
+                )
             )
         }
         composeTestRule.waitForIdle()
 
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)
+            .assertDoesNotExist()
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertDoesNotExist()
+    }
+
+    /**
+     * `EmailAuthScreen` is public, so a host can route to it with a configuration that has no
+     * Email provider. Rather than throwing, or leaving the user on an empty step, it reports the
+     * misconfiguration and asks the host to leave.
+     */
+    @Test
+    fun `the email screen reports a misconfiguration and leaves without an Email provider`() {
+        val errors = mutableListOf<AuthException>()
+        var cancelled = 0
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                EmailAuthScreen(
+                    context = applicationContext,
+                    configuration = noEmailConfiguration(),
+                    authUI = authUI,
+                    onSuccess = {},
+                    onError = { errors += it },
+                    onCancel = { cancelled++ },
+                    mode = EmailAuthMode.SignIn,
+                    onNavigateToMode = { _, _ -> },
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertDoesNotExist()
+        assertThat(errors).hasSize(1)
+        assertThat(errors.single()).isInstanceOf(AuthException.MisconfigurationException::class.java)
+        assertThat(cancelled).isEqualTo(1)
     }
 
     /**
