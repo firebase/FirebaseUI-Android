@@ -71,7 +71,9 @@ fun SignUpUI(
     onNavigateBack: (() -> Unit)? = null,
     isEmailLocked: Boolean = false,
 ) {
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
+    // Nothing to render without an Email provider.
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+        ?: return
     val context = LocalContext.current
     val stringProvider = LocalAuthUIStringProvider.current
     val displayNameValidator = remember { GeneralFieldValidator(stringProvider) }

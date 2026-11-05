@@ -209,8 +209,21 @@ fun EmailAuthScreen(
     onNotificationConsumed: (() -> Unit)? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+    if (provider == null) {
+        // Nothing to render without an Email provider. Report the misconfiguration and leave the
+        // step, so a host that routes here anyway neither crashes nor strands the user on it.
+        LaunchedEffect(Unit) {
+            onError(
+                AuthException.MisconfigurationException(
+                    message = stringProvider.unknownErrorRecoveryMessage
+                )
+            )
+            onCancel()
+        }
+        return
+    }
     val coroutineScope = rememberCoroutineScope()
 
     val displayNameValue = rememberSaveable { mutableStateOf("") }
