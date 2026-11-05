@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserInfo
@@ -70,6 +72,70 @@ class AuthProviderTest {
         )
 
         provider.validate()
+    }
+
+    @Test
+    fun `email provider project password policy is off by default`() {
+        val provider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = listOf()
+        )
+
+        assertThat(provider.isProjectPasswordPolicyEnabled).isFalse()
+        assertThat(
+            AuthProvider.Email(
+                emailLinkActionCodeSettings = null,
+                passwordValidationRules = listOf(),
+                isProjectPasswordPolicyEnabled = true,
+            ).isProjectPasswordPolicyEnabled
+        ).isTrue()
+    }
+
+    // The exact JVM constructors callers compiled before isProjectPasswordPolicyEnabled link against.
+    @Test
+    fun `email provider keeps the pre-policy constructor for binary compatibility`() {
+        val rules = listOf(PasswordRule.RequireDigit)
+        val provider = AuthProvider.Email::class.java.getConstructor(
+            Boolean::class.javaPrimitiveType,
+            Boolean::class.javaPrimitiveType,
+            Boolean::class.javaPrimitiveType,
+            ActionCodeSettings::class.java,
+            Boolean::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType,
+            List::class.java,
+        ).newInstance(false, true, false, null, false, 9, rules)
+
+        assertThat(provider.isDisplayNameRequired).isFalse()
+        assertThat(provider.isEmailLinkSignInEnabled).isTrue()
+        assertThat(provider.isEmailLinkForceSameDeviceEnabled).isFalse()
+        assertThat(provider.isNewAccountsAllowed).isFalse()
+        assertThat(provider.minimumPasswordLength).isEqualTo(9)
+        assertThat(provider.passwordValidationRules).isEqualTo(rules)
+        assertThat(provider.isProjectPasswordPolicyEnabled).isFalse()
+    }
+
+    @Test
+    fun `email provider keeps the pre-policy default-arguments constructor`() {
+        // Bits 0, 1, 2, 4 and 5: every parameter that had a default was left out at the call site.
+        val defaultsMask = 0b110111
+        val provider = AuthProvider.Email::class.java.getConstructor(
+            Boolean::class.javaPrimitiveType,
+            Boolean::class.javaPrimitiveType,
+            Boolean::class.javaPrimitiveType,
+            ActionCodeSettings::class.java,
+            Boolean::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType,
+            List::class.java,
+            Int::class.javaPrimitiveType,
+            Class.forName("kotlin.jvm.internal.DefaultConstructorMarker"),
+        ).newInstance(false, false, false, null, false, 0, emptyList<PasswordRule>(), defaultsMask, null)
+
+        assertThat(provider.isDisplayNameRequired).isTrue()
+        assertThat(provider.isEmailLinkSignInEnabled).isFalse()
+        assertThat(provider.isEmailLinkForceSameDeviceEnabled).isTrue()
+        assertThat(provider.isNewAccountsAllowed).isTrue()
+        assertThat(provider.minimumPasswordLength).isEqualTo(6)
+        assertThat(provider.isProjectPasswordPolicyEnabled).isFalse()
     }
 
     @Test

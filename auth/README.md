@@ -531,7 +531,11 @@ val emailProvider = AuthProvider.Email(
         PasswordRule.RequireLowercase,
         PasswordRule.RequireDigit,
         PasswordRule.RequireSpecialCharacter
-    )
+    ),
+
+    // Optional: Show the project's password policy as a sign-up checklist (default: false).
+    // Pass false (e.g. !useEmulator) with the Auth emulator, which has no password policy endpoint.
+    isProjectPasswordPolicyEnabled = true
 )
 
 val configuration = authUIConfiguration {
