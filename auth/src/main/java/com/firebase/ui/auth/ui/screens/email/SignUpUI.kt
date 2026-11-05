@@ -33,7 +33,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,8 +46,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.password_policy.PasswordPolicy
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
@@ -76,12 +83,52 @@ fun SignUpUI(
     val stringProvider = LocalAuthUIStringProvider.current
     val displayNameValidator = remember { GeneralFieldValidator(stringProvider) }
     val emailValidator = remember { EmailValidator(stringProvider) }
-    val passwordValidator = remember {
+    // Set on the first edit, so a re-key can tell a cleared field from an untouched one.
+    var passwordEdited by rememberSaveable { mutableStateOf(false) }
+    // Keyed on the inputs it is built from, so a swapped provider keeps the wording in sync.
+    // They are stable while typing, so the validator is not rebuilt per keystroke.
+    val passwordValidator = remember(
+        stringProvider,
+        provider.minimumPasswordLength,
+        provider.passwordValidationRules,
+    ) {
         PasswordValidator(
             stringProvider = stringProvider,
-            rules = provider.passwordValidationRules
-        )
+            // Same order as the submit path: minimumPasswordLength first, then the custom rules.
+            // The validator reports only the first failing rule, so there is one message at most.
+            rules = listOf(PasswordRule.MinimumLength(provider.minimumPasswordLength)) +
+                provider.passwordValidationRules
+        ).also {
+            // A new instance starts without an error, so re-validate typed input to keep it shown.
+            // Only an untouched field stays unseeded, so a re-key adds no error to it.
+            if (password.isNotEmpty() || passwordEdited) it.validate(password)
+        }
     }
+    val passwordPolicySource = LocalPasswordPolicySource.current
+    // Hints only (never part of isFormValid). No source, no policy or OFF: nothing is shown.
+    val passwordPolicy by produceState<PasswordPolicy?>(null, passwordPolicySource, context) {
+        value = passwordPolicySource?.getPolicy(context)
+            ?.takeIf { it.enforcementState == PasswordPolicy.EnforcementState.ENFORCE }
+    }
+    val checklistRequirements = remember(passwordPolicy, password, stringProvider) {
+        passwordPolicy?.let { passwordRequirements(it, password, stringProvider) }
+    }
+    // Only unmet lines: local and policy symbol sets differ, so a met line can share a failing
+    // local rule's label, and blanking it would leave no reason shown. For the same reason the
+    // special character message is never blanked while a local special character rule exists:
+    // the policy may accept a symbol the local rule rejects.
+    val hasLocalSpecialRule =
+        PasswordRule.RequireSpecialCharacter in provider.passwordValidationRules
+    val unmetChecklistLabels =
+        remember(checklistRequirements, hasLocalSpecialRule, stringProvider) {
+            checklistRequirements.orEmpty()
+                .filterNot { it.isMet }
+                .map { it.label }
+                .filterNot {
+                    hasLocalSpecialRule && it == stringProvider.passwordMissingSpecialCharacter
+                }
+                .toSet()
+        }
     val confirmPasswordValidator = remember(password) {
         GeneralFieldValidator(
             stringProvider = stringProvider,
@@ -92,7 +139,13 @@ fun SignUpUI(
         )
     }
 
-    val isFormValid = remember(displayName, email, password, confirmPassword) {
+    val isFormValid = remember(
+        displayName,
+        email,
+        password,
+        confirmPassword,
+        passwordValidator,
+    ) {
         derivedStateOf {
             listOf(
                 !provider.isDisplayNameRequired || displayNameValidator.validate(displayName),
@@ -166,18 +219,26 @@ fun SignUpUI(
                 modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD),
                 value = password,
                 validator = passwordValidator,
+                // A message an unmet checklist line already shows is not repeated. isError still
+                // marks the field, so the error remains in its semantics.
+                errorMessage = "".takeIf { passwordValidator.errorMessage in unmetChecklistLabels },
                 enabled = !isLoading,
                 isSecureTextField = true,
                 label = {
                     Text(stringProvider.passwordHint)
                 },
                 onValueChange = { text ->
+                    passwordEdited = true
                     onPasswordChange(text)
                 },
                 visibilityToggleModifier = Modifier.testTag(
                     FirebaseAuthTestTags.SignUp.PASSWORD_VISIBILITY_TOGGLE
                 )
             )
+            checklistRequirements?.let { requirements ->
+                Spacer(modifier = Modifier.height(8.dp))
+                PasswordRequirementsChecklist(requirements = requirements)
+            }
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
                 modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_FIELD),
