@@ -1,5 +1,6 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.phone.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -29,18 +32,9 @@ import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProPhoneVerification
-import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun PhoneVerificationStep(state: PhoneAuthContentState) {
-    if (isProfessional()) {
-        ProPhoneVerification(state)
-        return
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -56,10 +50,16 @@ fun PhoneVerificationStep(state: PhoneAuthContentState) {
             Spacer(modifier = Modifier.weight(1f))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                ThemeHeader(
-                    title = "Enter your code",
-                    mascot = R.drawable.full_customization_phone_mascot,
-                    mascotDescription = "doggo - cute phone sign-in mascot",
+                Image(
+                    painter = painterResource(id = R.drawable.full_customization_phone_mascot),
+                    contentDescription = "doggo - cute phone sign-in mascot",
+                    modifier = Modifier.size(72.dp),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Enter your code",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -68,7 +68,7 @@ fun PhoneVerificationStep(state: PhoneAuthContentState) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = "phone - verification card" },
-                        color = LocalFullCustomizationStyle.current.cardFill,
+                        color = MaterialTheme.colorScheme.surface,
                         shape = AuthFieldShape,
                     ) {
                         Column(

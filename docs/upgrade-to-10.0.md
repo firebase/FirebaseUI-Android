@@ -1,6 +1,7 @@
 # Migration Guide: FirebaseUI Auth 9.x to 10.x
 
 This guide helps you migrate from FirebaseUI Auth 9.x (View-based) to 10.x (Compose-based).
+Note that 10.x is a beta release.
 
 ## Overview
 
@@ -49,10 +50,10 @@ dependencies {
     // FirebaseUI Auth
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta05")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 }
@@ -516,7 +517,7 @@ val configuration = authUIConfiguration {
 
 ## Checklist
 
-- [ ] Updated dependency to `firebase-ui-auth:10.0.0`
+- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta05`
 - [ ] Migrated to Jetpack Compose
 - [ ] Converted Activities to ComponentActivities with `setContent {}`
 - [ ] Replaced `createSignInIntentBuilder()` with `authUIConfiguration {}`
