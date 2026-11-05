@@ -48,21 +48,21 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:10.0.0-beta05'
+    implementation 'com.firebaseui:firebase-ui-database:10.0.1'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:10.0.0-beta05'
+    implementation 'com.firebaseui:firebase-ui-firestore:10.0.1'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:10.0.0-beta05'
+    implementation 'com.firebaseui:firebase-ui-auth:10.0.1'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:10.0.0-beta05'
+    implementation 'com.firebaseui:firebase-ui-storage:10.0.1'
 }
 ```
 
 If you're including the `firebase-ui-auth` dependency, there's a little
-[more setup](auth/README.md#configuration) required.
+[more setup](auth/README.md#setup) required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 

@@ -2,8 +2,6 @@
 
 [FirebaseUI](https://github.com/firebase/firebaseui-android) Auth is a library built on top of the Firebase Authentication SDK that provides drop-in UI flows for use in your app.
 
-Caution: Version 10.x is currently a **beta release**. This means that the functionality might change in backward-incompatible ways or have limited support. A beta release is not subject to any SLA or deprecation policy.
-
 The recommended sign-in flow uses Compose screens. For apps that still use Activities, see the [Existing Activity-based apps](#existing-activity-based-apps) section.
 
 FirebaseUI Auth provides the following benefits:
@@ -20,17 +18,39 @@ FirebaseUI Auth provides the following benefits:
 
 1. If you haven't already, [add Firebase to your Android project](https://firebase.google.com/docs/android/setup).
 2. In the [Firebase console](https://console.firebase.google.com/), enable the sign-in methods you want to support.
-3. Add FirebaseUI Auth to your app module:
+3. Check that your app module meets the minimum requirements:
+
+   - Android SDK 23+ (Android 6.0 Marshmallow)
+   - Kotlin 2.3+
+   - Jetpack Compose, with the Compose compiler plugin applied
+   - Firebase BoM 34.0.0+
+
+4. Add the Compose compiler plugin and FirebaseUI Auth to your app module:
 
 ```kotlin
+plugins {
+    id("org.jetbrains.kotlin.plugin.compose")
+}
+
+android {
+    buildFeatures {
+        compose = true
+    }
+}
+
 dependencies {
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta05")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.1")
+
+    // Required: Jetpack Compose
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
 
     // Required only if Facebook login support is required
-    // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
-    implementation("com.facebook.android:facebook-android-sdk:8.x")
+    // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/releases
+    implementation("com.facebook.android:facebook-login:18.3.0")
 }
 ```
 
@@ -122,21 +142,29 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyAppTheme {
-                val configuration = authUIConfiguration {
-                    context = applicationContext
-                    theme = AuthUITheme.fromMaterialTheme()
-                    providers {
-                        provider(AuthProvider.Email())
-                        provider(
-                            AuthProvider.Google(
-                                scopes = listOf("email"),
-                                serverClientId = null,
+                // Resolved here: the theme is @Composable, the builder lambda is not.
+                val authTheme = AuthUITheme.fromMaterialTheme()
+
+                val configuration = remember(authTheme) {
+                    authUIConfiguration {
+                        context = applicationContext
+                        theme = authTheme
+                        providers {
+                            provider(AuthProvider.Email())
+                            provider(
+                                AuthProvider.Google(
+                                    scopes = listOf("email"),
+                                    serverClientId = null,
+                                )
                             )
-                        )
+                        }
                     }
                 }
 
-                if (authUI.isSignedIn()) {
+                val authState by remember(authUI) { authUI.authStateFlow() }
+                    .collectAsState(initial = AuthState.Idle)
+
+                if (authState is AuthState.Success) {
                     HomeScreen()
                 } else {
                     FirebaseAuthScreen(
@@ -149,7 +177,8 @@ class MainActivity : ComponentActivity() {
                             // Sign in failed
                         },
                         onSignInCancelled = {
-                            finish()
+                            // The user cancelled one sign-in attempt; the screen resets
+                            // on its own.
                         },
                     )
                 }
@@ -186,16 +215,25 @@ lifecycleScope.launch {
 
 ## Customization
 
-FirebaseUI Auth is customizable, and the simplest way to get started is to set a theme directly in `authUIConfiguration`:
+FirebaseUI Auth is customizable, and the simplest way to get started is to set a theme on `authUIConfiguration`:
 
 ```kotlin
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
-        provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = null))
+@Composable
+fun rememberAuthConfiguration(): AuthUIConfiguration {
+    val appContext = LocalContext.current.applicationContext
+    // Resolved here: the theme is @Composable, the builder lambda is not.
+    val authTheme = AuthUITheme.Adaptive
+
+    return remember(appContext, authTheme) {
+        authUIConfiguration {
+            context = appContext
+            providers {
+                provider(AuthProvider.Email())
+                provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = null))
+            }
+            theme = authTheme
+        }
     }
-    theme = AuthUITheme.Adaptive
 }
 ```
 
@@ -214,30 +252,48 @@ For full theming and customization details, including theme precedence, provider
 If your app still uses Activities and the Activity Result API, you can keep an Activity-based launch flow by using `AuthFlowController`:
 
 ```kotlin
-private val authLauncher = registerForActivityResult(
-    ActivityResultContracts.StartActivityForResult(),
-) { result ->
-    if (result.resultCode == RESULT_OK) {
-        val user = FirebaseAuth.getInstance().currentUser
-        // ...
-    } else {
-        // User cancelled or sign-in failed
+class MainActivity : ComponentActivity() {
+    private lateinit var authController: AuthFlowController
+
+    // A property initializer, so registration happens before the Activity reaches STARTED.
+    private val authLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val user = FirebaseAuth.getInstance().currentUser
+            // ...
+        } else {
+            // User cancelled or sign-in failed
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Email())
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf("email"),
+                        serverClientId = null,
+                    )
+                )
+            }
+        }
+
+        authController = FirebaseAuthUI.getInstance().createAuthFlow(configuration)
+        // Only on first creation: a recreated Activity would otherwise launch a second flow.
+        if (savedInstanceState == null) {
+            authLauncher.launch(authController.createIntent(this))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Required.
+        authController.dispose()
     }
 }
-
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
-        provider(
-            AuthProvider.Google(
-                scopes = listOf("email"),
-                serverClientId = null,
-            )
-        )
-    }
-}
-
-val controller = FirebaseAuthUI.getInstance().createAuthFlow(configuration)
-authLauncher.launch(controller.createIntent(this))
 ```

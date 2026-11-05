@@ -75,7 +75,9 @@ fun SignInEmailLinkUI(
     onNavigateBack: (() -> Unit)? = null,
     isEmailLocked: Boolean = false,
 ) {
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
+    // Nothing to render without an Email provider.
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+        ?: return
     val stringProvider = LocalAuthUIStringProvider.current
     val emailValidator = remember { EmailValidator(stringProvider) }
 
