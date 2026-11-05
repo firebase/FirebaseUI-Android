@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
+import com.firebaseui.android.demo.auth.fullcustomization.theme.ProviderButtonShape
 
 @Composable
 fun SheetProviderButton(
@@ -38,23 +37,28 @@ fun SheetProviderButton(
     modifier: Modifier = Modifier,
 ) {
     val label = providerSheetLabel(provider)
-    val style = providerStyleFor(provider)
-    val theme = LocalFullCustomizationStyle.current
+    val style = when (provider) {
+        is AuthProvider.Google -> ProviderStyleDefaults.Google
+        is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
+        is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
+        is AuthProvider.Github -> ProviderStyleDefaults.Github
+        is AuthProvider.Microsoft -> ProviderStyleDefaults.Microsoft
+        is AuthProvider.Yahoo -> ProviderStyleDefaults.Yahoo
+        is AuthProvider.Apple -> ProviderStyleDefaults.Apple
+        is AuthProvider.Anonymous -> ProviderStyleDefaults.Anonymous
+        else -> ProviderStyleDefaults.Email
+    }
     val backgroundColor = if (provider is AuthProvider.Phone) {
-        theme.phoneProvider.container
+        MaterialTheme.colorScheme.primary
     } else {
         style.backgroundColor
     }
-    val contentColor = when (provider) {
-        is AuthProvider.Google -> Color.Black
-        is AuthProvider.Phone -> theme.phoneProvider.content
-        else -> style.contentColor
-    }
+    val contentColor = if (provider is AuthProvider.Google) Color.Black else style.contentColor
     val hasWhiteBackground = backgroundColor == Color.White
 
     Button(
         onClick = onClick,
-        shape = theme.providerButtonShape,
+        shape = ProviderButtonShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
             contentColor = contentColor,
@@ -96,23 +100,6 @@ fun SheetProviderButton(
         }
     }
 }
-
-private fun providerStyleFor(provider: AuthProvider) = when (provider) {
-    is AuthProvider.Google -> ProviderStyleDefaults.Google
-    is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
-    is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
-    is AuthProvider.Github -> ProviderStyleDefaults.Github
-    is AuthProvider.Microsoft -> ProviderStyleDefaults.Microsoft
-    is AuthProvider.Yahoo -> ProviderStyleDefaults.Yahoo
-    is AuthProvider.Apple -> ProviderStyleDefaults.Apple
-    is AuthProvider.Anonymous -> ProviderStyleDefaults.Anonymous
-    else -> ProviderStyleDefaults.Email
-}
-
-/** The library's brand mark for [provider], or null when it has none (phone). */
-@Composable
-internal fun providerIconPainter(provider: AuthProvider): Painter? =
-    providerStyleFor(provider).icon?.asPainter()
 
 private fun providerSheetLabel(provider: AuthProvider): String = when (provider) {
     is AuthProvider.Google -> "Sign in with Google"

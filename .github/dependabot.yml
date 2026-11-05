@@ -11,11 +11,6 @@ updates:
       semver-patch-days: 7
     labels:
       - 'dependencies'
-    groups:
-      gradle-minor-patch:
-        update-types:
-          - 'minor'
-          - 'patch'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -25,8 +20,3 @@ updates:
       default-days: 7
     labels:
       - 'dependencies'
-    groups:
-      github-actions-minor-patch:
-        update-types:
-          - 'minor'
-          - 'patch'

@@ -1,5 +1,6 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -11,11 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -36,35 +40,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
-import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 import com.firebaseui.android.demo.auth.fullcustomization.common.EmailFieldIcon
 import com.firebaseui.android.demo.auth.fullcustomization.common.FullCustomizationTextField
 import com.firebaseui.android.demo.auth.fullcustomization.common.HardOffsetShadow
-import com.firebaseui.android.demo.auth.fullcustomization.common.ThemeHeader
-import com.firebaseui.android.demo.auth.fullcustomization.common.secondaryCtaColors
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProEmailLink
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProResetPassword
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignIn
-import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
-import com.firebaseui.android.demo.auth.fullcustomization.theme.LocalFullCustomizationStyle
 
 @Composable
 fun LoginStep(
     state: EmailAuthContentState,
     onUseDifferentEmail: () -> Unit,
 ) {
-    if (isProfessional()) {
-        when (state.mode) {
-            EmailAuthMode.ResetPassword -> ProResetPassword(state, onBack = onUseDifferentEmail)
-            EmailAuthMode.EmailLinkSignIn -> ProEmailLink(state, onBack = onUseDifferentEmail)
-            else -> ProSignIn(state, isEmailLinkOffered = false, isSignUpOffered = false, onBack = onUseDifferentEmail)
-        }
-        return
-    }
-
     var passwordVisible by remember { mutableStateOf(false) }
 
     // heightIn(min = maxHeight) centres content when it fits and plain-scrolls when it doesn't.
@@ -83,10 +70,16 @@ fun LoginStep(
             Spacer(modifier = Modifier.weight(1f))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                ThemeHeader(
-                    title = "Login",
-                    mascot = R.drawable.full_customization_mascot,
-                    mascotDescription = "doggo - cute welcome mascot",
+                Image(
+                    painter = painterResource(id = R.drawable.full_customization_mascot),
+                    contentDescription = "doggo - cute welcome mascot",
+                    modifier = Modifier.size(72.dp),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Login",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -95,7 +88,7 @@ fun LoginStep(
                         modifier = Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = "email - login card" },
-                        color = LocalFullCustomizationStyle.current.cardFill,
+                        color = MaterialTheme.colorScheme.surface,
                         shape = AuthFieldShape,
                     ) {
                         Column(
@@ -174,7 +167,10 @@ fun LoginStep(
                     text = if (state.emailSignInLinkSent) "Login link sent!" else "Send login link",
                     onClick = state.onSignInEmailLinkClick,
                     enabled = !state.isLoading,
-                    colors = secondaryCtaColors(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
                     modifier = Modifier.semantics { contentDescription = "button - send login link" },
                 )
 

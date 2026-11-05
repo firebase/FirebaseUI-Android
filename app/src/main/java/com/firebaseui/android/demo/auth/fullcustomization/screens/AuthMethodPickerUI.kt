@@ -29,12 +29,7 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
-import com.firebaseui.android.demo.auth.fullcustomization.DemoNavigator
 import com.firebaseui.android.demo.auth.fullcustomization.common.OtherSignInMethodsSheet
-import com.firebaseui.android.demo.auth.fullcustomization.toMode
-import com.firebaseui.android.demo.auth.fullcustomization.professional.ProSignIn
-import com.firebaseui.android.demo.auth.fullcustomization.professional.isProfessional
-import com.firebaseui.android.demo.auth.fullcustomization.professional.proInlineProviders
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
@@ -49,6 +44,34 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 private data object EmailEntryKey : NavKey
+
+private fun AuthRoute.Email.Step.toMode(): EmailAuthMode = when (this) {
+    is AuthRoute.Email.SignIn -> EmailAuthMode.SignIn
+    is AuthRoute.Email.SignUp -> EmailAuthMode.SignUp
+    is AuthRoute.Email.ResetPassword -> EmailAuthMode.ResetPassword
+    is AuthRoute.Email.EmailLinkSignIn -> EmailAuthMode.EmailLinkSignIn
+}
+
+private fun stepFor(mode: EmailAuthMode, email: String?): AuthRoute.Email.Step = when (mode) {
+    EmailAuthMode.SignIn -> AuthRoute.Email.SignIn(email)
+    EmailAuthMode.SignUp -> AuthRoute.Email.SignUp(email)
+    EmailAuthMode.ResetPassword -> AuthRoute.Email.ResetPassword(email)
+    EmailAuthMode.EmailLinkSignIn -> AuthRoute.Email.EmailLinkSignIn(email)
+}
+
+/**
+ * Navigates to [target], replacing any existing entry of the same step *type* rather than stacking
+ * a duplicate — matching [com.firebase.ui.auth.ui.screens.email.navigateToEmailStep], which the
+ * library keeps `internal` to its own module. Adds before removing, so no single write leaves the
+ * stack without the chooser at its base.
+ */
+private fun MutableList<NavKey>.navigateToStep(target: AuthRoute.Email.Step) {
+    val existing = indexOfFirst { it is AuthRoute.Email.Step && it::class == target::class }
+    add(target)
+    if (existing >= 0) {
+        while (size > existing + 1) removeAt(existing)
+    }
+}
 
 /** Matches the 700ms cross-fade [FirebaseAuthScreen][com.firebase.ui.auth.ui.screens.FirebaseAuthScreen]
  * itself falls back to, so a step switch here looks the same as one at the top level. */
@@ -88,9 +111,6 @@ fun AuthMethodPickerUI(
 ) {
     var showOtherMethods by remember { mutableStateOf(false) }
     val backStack = rememberNavBackStack(EmailEntryKey)
-    val navigator = remember(backStack) { DemoNavigator(backStack) }
-    // Professional shows the common providers on its sign-in screen; the sheet keeps the rest.
-    val inlineProviders = if (isProfessional()) proInlineProviders(otherProviders) else emptyList()
 
     Box(modifier = Modifier.fillMaxSize()) {
         NavDisplay(
@@ -100,35 +120,6 @@ fun AuthMethodPickerUI(
             predictivePopTransitionSpec = EmailStepPredictivePopTransform,
             entryProvider = entryProvider {
                 entry<EmailEntryKey> {
-                    // Professional opens on sign-in itself, email and password together, as the
-                    // iOS demo does; the other modes push from it like the shared steps below.
-                    if (isProfessional()) {
-                        EmailAuthScreen(
-                            context = context,
-                            configuration = configuration,
-                            authUI = authUI,
-                            mode = EmailAuthMode.SignIn,
-                            onNavigateToMode = { mode, email -> navigator.navigate(mode, email) },
-                            onSuccess = onSuccess,
-                            onError = onError,
-                            onCancel = onCancel,
-                        ) { state ->
-                            ProSignIn(
-                                state = state,
-                                isEmailLinkOffered = configuration.providers
-                                    .filterIsInstance<AuthProvider.Email>()
-                                    .firstOrNull()?.isEmailLinkSignInEnabled == true,
-                                isSignUpOffered = configuration.isNewEmailAccountsAllowed &&
-                                    configuration.providers.filterIsInstance<AuthProvider.Email>()
-                                        .firstOrNull()?.isNewAccountsAllowed == true,
-                                inlineProviders = inlineProviders,
-                                onProviderSelected = onProviderSelected,
-                                onShowOtherMethods = { showOtherMethods = true }
-                                    .takeIf { otherProviders.size > inlineProviders.size },
-                            )
-                        }
-                        return@entry
-                    }
                     // No auth operation here, so there is nothing for EmailAuthContentState to own.
                     var email by rememberSaveable { mutableStateOf("") }
                     EmailEntryStep(
@@ -136,10 +127,10 @@ fun AuthMethodPickerUI(
                         onEmailChange = { email = it },
                         isLoading = false,
                         onSignIn = dropUnlessResumed {
-                            navigator.navigate(AuthRoute.Email.SignIn(email))
+                            backStack.navigateToStep(AuthRoute.Email.SignIn(email))
                         },
                         onCreateAccount = dropUnlessResumed {
-                            navigator.navigate(AuthRoute.Email.SignUp(email))
+                            backStack.navigateToStep(AuthRoute.Email.SignUp(email))
                         },
                         onShowOtherMethods = { showOtherMethods = true },
                     )
@@ -163,7 +154,7 @@ fun AuthMethodPickerUI(
 
     if (showOtherMethods) {
         OtherSignInMethodsSheet(
-            otherProviders = otherProviders - inlineProviders.toSet(),
+            otherProviders = otherProviders,
             onProviderSelected = onProviderSelected,
             onDismissRequest = { showOtherMethods = false },
             tosUrl = configuration.tosUrl,
@@ -188,7 +179,6 @@ private fun EmailStep(
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val navigator = remember(backStack) { DemoNavigator(backStack) }
     // Resets rather than pops: from ResetPassword the stack is [chooser, SignIn, ResetPassword].
     val onUseDifferentEmail: () -> Unit = dropUnlessResumed {
         backStack.clear()
@@ -201,7 +191,7 @@ private fun EmailStep(
         authUI = authUI,
         prefillEmail = step.email,
         mode = step.toMode(),
-        onNavigateToMode = { mode, email -> navigator.navigate(mode, email) },
+        onNavigateToMode = { mode, email -> backStack.navigateToStep(stepFor(mode, email)) },
         onSuccess = onSuccess,
         onError = onError,
         onCancel = onCancel,
