@@ -169,8 +169,7 @@ internal suspend fun AuthFlowScope.createOrLinkUserWithEmailAndPassword(
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: email already exists
         val accountLinkingException = AuthException.AccountLinkingRequiredException(
-            message = "An account already exists with this email. " +
-                    "Please sign in with your existing account.",
+            message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
             email = e.email ?: email,
             credential = when {
                 canUpgrade -> e.updatedCredential ?: pendingCredential
@@ -247,8 +246,7 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
                     .also {
                         // Throw AccountLinkingRequiredException after successful validation
                         val accountLinkingException = AuthException.AccountLinkingRequiredException(
-                            message = "An account already exists with this email. " +
-                                    "Please sign in with your existing account to upgrade your anonymous account.",
+                            message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
                             email = email,
                             credential = credentialToValidate,
                             cause = null
@@ -265,8 +263,7 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
                         // Throw AccountLinkingRequiredException after successful validation
                         // Account exists and user is anonymous - needs to link accounts
                         val accountLinkingException = AuthException.AccountLinkingRequiredException(
-                            message = "An account already exists with this email. " +
-                                    "Please sign in with your existing account to upgrade your anonymous account.",
+                            message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
                             email = email,
                             credential = credentialToValidate,
                             cause = null
@@ -276,11 +273,24 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
                     }
             }
         } else {
+            // Refused before signing in at all, rather than undone after.
+            requirePendingLinkAddress(credentialForLinking, email)
+            val isPendingLink = credentialForLinking != null &&
+                    credentialForLinking === pendingAccountLink.value?.credential
             // Normal sign-in
             auth.signInWithEmailAndPassword(email, password).await()
                 .let { result ->
-                    // If there's a credential to link, link it after sign-in
-                    if (credentialForLinking != null) {
+                    if (isPendingLink) {
+                        // The account-linking recovery's credential: linked all or nothing, then
+                        // its profile merged in as a host's own credential's is.
+                        linkPendingAccountCredential(result, EmailAuthProvider.PROVIDER_ID)
+                            .also { linked ->
+                                linked.user?.let { user ->
+                                    mergeProfile(auth, user.displayName, user.photoUrl)
+                                }
+                            }
+                    } else if (credentialForLinking != null) {
+                        // A host's own credential to link, linked after sign-in as before.
                         val linkResult = result.user
                             ?.linkWithCredential(credentialForLinking)
                             ?.await()
@@ -419,6 +429,34 @@ private suspend fun AuthFlowScope.fetchLegacySignInMethods(email: String): List<
     }
 }
 
+/**
+ * The sign-in method, among [candidates], that owns [email] according to the legacy
+ * `fetchSignInMethodsForEmail` lookup, for the account-linking recovery.
+ *
+ * Null when [AuthUIConfiguration.legacyFetchSignInWithEmail] is off, when the lookup comes back
+ * empty (as it always does with email enumeration protection on), or when it names nothing in
+ * [candidates]. Unlike [selectSuggestedLegacySignInMethod], a password account counts: for linking,
+ * the email sign-in step is exactly the way back in.
+ */
+internal suspend fun AuthFlowScope.findAccountOwnerSignInMethod(
+    email: String,
+    candidates: List<AuthProvider>,
+): String? {
+    if (!config.legacyFetchSignInWithEmail) {
+        return null
+    }
+
+    val emailProvider = candidates.filterIsInstance<AuthProvider.Email>().firstOrNull()
+    val candidateIds = candidates.map { it.providerId }.toSet()
+    return fetchLegacySignInMethods(email).firstOrNull { signInMethod ->
+        when (signInMethod) {
+            EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD -> emailProvider != null
+            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> emailProvider?.isEmailLinkSignInEnabled == true
+            else -> signInMethod in candidateIds
+        }
+    }
+}
+
 private fun SignInMethodQueryResult?.toSignInMethods(): List<String> =
     this?.signInMethods?.filter { it.isNotBlank() } ?: emptyList()
 
@@ -440,7 +478,7 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
         val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
-            signInOrReauth(credential)
+            signInOrReauth(credential)?.let { linkPendingAccountCredential(it, provider?.providerId) }
         }
         // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
         // Reconstruct success state from the now-reauthenticated current user.
@@ -480,9 +518,7 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
         }
 
         val accountLinkingException = AuthException.AccountLinkingRequiredException(
-            message = "An account already exists with the email ${email ?: ""}. " +
-                    "Please sign in with your existing account to link " +
-                    "your ${provider?.providerName ?: "this provider"} account.",
+            message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
             email = email,
             credential = credentialForException,
             cause = e
@@ -527,6 +563,7 @@ internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
 ) {
     try {
         emit(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
+        requirePendingLinkAddress(credentialForLinking, email)
 
         // Get anonymousUserId if can upgrade anonymously else default to empty string.
         // NOTE: check for empty string instead of null to validate anonymous user ID matches
@@ -672,7 +709,7 @@ internal suspend fun AuthFlowScope.signInWithEmailLink(
 
         val result = if (storedCredentialForLink == null) {
             // Normal Flow: Just sign in with email link
-            handleEmailLinkNormalFlow(emailLinkCredential)
+            handleEmailLinkNormalFlow(emailLinkCredential, provider)
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
             handleEmailLinkCredentialLinkingFlow(
@@ -746,8 +783,11 @@ private suspend fun AuthFlowScope.handleDifferentDeviceErrorFlow(
 
 private suspend fun AuthFlowScope.handleEmailLinkNormalFlow(
     emailLinkCredential: AuthCredential,
+    provider: AuthProvider.Email,
 ): AuthResult? {
-    return signInAndLinkWithCredential(emailLinkCredential)
+    // Passing the provider is what lets an email-link sign-in finish the account-linking
+    // recovery when the account it names is an email-link one.
+    return signInAndLinkWithCredential(emailLinkCredential, provider)
 }
 
 private suspend fun AuthFlowScope.handleEmailLinkCredentialLinkingFlow(
@@ -773,8 +813,7 @@ private suspend fun AuthFlowScope.handleEmailLinkCredentialLinkingFlow(
             .also { result ->
                 // If safe link succeeds, throw AccountLinkingRequiredException for UI to handle
                 val accountLinkingException = AuthException.AccountLinkingRequiredException(
-                    message = "An account already exists with this email. " +
-                            "Please sign in with your existing account to upgrade your anonymous account.",
+                    message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
                     email = email,
                     credential = storedCredentialForLink,
                     cause = null

@@ -76,6 +76,15 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.SignInMethodQueryResult
+import com.google.firebase.auth.FacebookAuthCredential
+import com.google.firebase.auth.FacebookAuthProvider
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
+import org.mockito.kotlin.eq
+import kotlinx.coroutines.runBlocking
+import androidx.credentials.CredentialManager
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -879,6 +888,231 @@ class FirebaseAuthScreenEmailRecoveryTest {
     }
 
     /**
+     * firebase/FirebaseUI-Android#2550, the half the crash guard left: a Facebook sign-in hit an
+     * account Google created. With Google the only other provider that can hold the account, the
+     * recovery opens it, and the Facebook credential is linked to the account the user signs in
+     * to before the flow reports success. The copy of the Facebook credential the collision saved
+     * for a later email-link sign-in is then forgotten, so that sign-in cannot try to link it again.
+     */
+    @Test
+    fun `an account that needs linking opens the lone other provider and links the credential`() {
+        runBlocking {
+            EmailLinkPersistenceManager.default.saveEmail(applicationContext, OTHER_EMAIL, "session", null)
+            EmailLinkPersistenceManager.default.saveCredentialForLinking(
+                applicationContext,
+                providerType = "facebook.com",
+                idToken = null,
+                accessToken = "facebook-access-token",
+            )
+        }
+        val facebookCredential = facebookCredential()
+        val googleCredential = mock(AuthCredential::class.java)
+        val credentialManager = mock(AuthProvider.Google.CredentialManagerProvider::class.java)
+        runBlocking {
+            `when`(
+                credentialManager.getGoogleCredential(
+                    context = any(),
+                    credentialManager = any<CredentialManager>(),
+                    serverClientId = eq(GOOGLE_CLIENT_ID),
+                    filterByAuthorizedAccounts = any(),
+                    autoSelectEnabled = any(),
+                )
+            ).thenReturn(
+                AuthProvider.Google.GoogleSignInResult(
+                    credential = googleCredential,
+                    idToken = "google-id-token",
+                    displayName = null,
+                    photoUrl = null,
+                )
+            )
+        }
+        authUI.testCredentialManagerProvider = credentialManager
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithCredential(googleCredential))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        start(configuration = googleAndAnonymousConfiguration())
+
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        verify(owner.user).linkWithCredential(facebookCredential)
+        composeTestRule.onNodeWithTag(AUTHENTICATED_TAG).assertIsDisplayed()
+        val saved = runBlocking {
+            EmailLinkPersistenceManager.default.retrieveSessionRecord(applicationContext)
+        }
+        assertThat(saved?.email).isEqualTo(OTHER_EMAIL)
+        assertThat(saved?.credentialForLinking).isNull()
+    }
+
+    /**
+     * Without the opt-in lookup nothing says which provider owns the address, so with several
+     * candidates the recovery offers the method picker. Whichever the user then signs in with
+     * carries the credential: here the email step, reached from the picker rather than from the
+     * recovery itself.
+     */
+    @Test
+    fun `with several other providers the recovery offers the picker and the chosen sign-in links`() {
+        val facebookCredential = facebookCredential()
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        start(configuration = emailAndGoogleConfiguration())
+
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertDoesNotExist()
+
+        composeTestRule.onNodeWithText(stringProvider.signInWithEmail).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD)
+            .performTextInput(OTHER_EMAIL)
+        signInWithPassword()
+
+        verify(owner.user).linkWithCredential(facebookCredential)
+    }
+
+    /**
+     * Upgrading an anonymous user is a collision with the user already signed in, which only the
+     * email step's own handling resolves; the provider routing is for a signed-out flow.
+     */
+    @Test
+    fun `an anonymous upgrade that needs linking still recovers to the email step`() {
+        start(configuration = emailAndGoogleConfiguration())
+        val anonymous = mock(FirebaseUser::class.java)
+        `when`(anonymous.isAnonymous).thenReturn(true)
+        `when`(mockAuth.currentUser).thenReturn(anonymous)
+
+        recoverFrom(accountLinkingRequired(facebookCredential()))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithText(OTHER_EMAIL).assertIsDisplayed()
+    }
+
+    /**
+     * "Sign up" on the recovery's own email step, with the address already taken, raises the
+     * linking error again but with no credential of its own. That must not drop the one pending:
+     * signing in afterwards still links it.
+     */
+    @Test
+    fun `a linking error with no credential keeps the link already pending`() {
+        val facebookCredential = facebookCredential()
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        start(configuration = emailAndPhoneConfiguration())
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        recoverFrom(
+            AuthException.AccountLinkingRequiredException(
+                message = "an account already exists with this address",
+                email = OTHER_EMAIL,
+                credential = null,
+            )
+        )
+        signInWithPassword()
+
+        verify(owner.user).linkWithCredential(facebookCredential)
+    }
+
+    /** Without the address there is nothing to hold the owner's account to. */
+    @Test
+    fun `no provider recovery is offered when the collision names no address`() {
+        start(configuration = emailAndGoogleConfiguration())
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(
+                AuthState.Error(
+                    AuthException.AccountLinkingRequiredException(
+                        message = "an account already exists",
+                        email = null,
+                        credential = facebookCredential(),
+                    )
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)
+            .assertDoesNotExist()
+    }
+
+    /**
+     * The owner's sign-in opens UI outside the app, and the Activity can be recreated meanwhile.
+     * The pending link has to come back with it, or the owner signs in and nothing is linked.
+     */
+    @Test
+    fun `the pending link survives an Activity recreation`() {
+        // A real credential: saving the state parcels it, which a mock cannot do.
+        val facebookCredential = FacebookAuthProvider.getCredential("facebook-access-token")
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        val restorationTester = StateRestorationTester(composeTestRule)
+        restorationTester.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+            )
+        }
+        composeTestRule.waitForIdle()
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        restorationTester.emulateSavedInstanceStateRestore()
+        composeTestRule.waitForIdle()
+        signInWithPassword()
+
+        // Parcelled and restored, so an equal credential rather than the same instance.
+        verify(owner.user).linkWithCredential(
+            org.mockito.kotlin.argThat { this is FacebookAuthCredential && provider == "facebook.com" }
+        )
+    }
+
+    /**
+     * The opt-in lookup is a network call. Until it answers, the picker underneath must not take
+     * another tap, or a second sign-in would race the one the lookup is about to start.
+     */
+    @Test
+    fun `the owner lookup blocks the screen until it answers`() {
+        val lookup = TaskCompletionSource<SignInMethodQueryResult>()
+        `when`(mockAuth.fetchSignInMethodsForEmail(OTHER_EMAIL)).thenReturn(lookup.task)
+        start(configuration = emailAndGoogleConfiguration(legacyLookup = true))
+
+        recoverFrom(accountLinkingRequired(facebookCredential()))
+
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertIsDisplayed()
+
+        val methods = mock(SignInMethodQueryResult::class.java)
+        `when`(methods.signInMethods).thenReturn(listOf(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD))
+        composeTestRule.runOnIdle { lookup.setResult(methods) }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+    }
+
+    /** Nothing else can hold the account, so there is no sign-in to send the user to. */
+    @Test
+    fun `no recovery is offered when the colliding provider is the only one that can hold the account`() {
+        start(configuration = githubAndPhoneConfiguration())
+        val githubCredential = mock(AuthCredential::class.java)
+        `when`(githubCredential.provider).thenReturn("github.com")
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Error(accountLinkingRequired(githubCredential)))
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)
+            .assertDoesNotExist()
+    }
+
+    /**
      * The point of the recovery, and the half a landing assertion cannot see: the credential the
      * failure carried has to survive the move and be linked once the password sign-in it asked for
      * succeeds. `EmailAuthScreen` reads it once, on the composition of the step it is given, so a
@@ -889,6 +1123,8 @@ class FirebaseAuthScreenEmailRecoveryTest {
     fun `signing in after an account-linking recovery links the credential the failure carried`() {
         val credential = mock(AuthCredential::class.java)
         val signedInUser = mock(FirebaseUser::class.java)
+        // The account the recovery named: the link is held to its address.
+        `when`(signedInUser.email).thenReturn(OTHER_EMAIL)
         val signInResult = mock(AuthResult::class.java)
         `when`(signInResult.user).thenReturn(signedInUser)
         `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
@@ -1094,6 +1330,75 @@ class FirebaseAuthScreenEmailRecoveryTest {
         "${initialState.authRoute()?.let { it::class.simpleName }}->" +
                 "${targetState.authRoute()?.let { it::class.simpleName }}"
 
+    /** A credential from a Facebook sign-in, which is what Firebase does not trust an address from. */
+    private fun facebookCredential(): AuthCredential = mock(AuthCredential::class.java).also {
+        `when`(it.provider).thenReturn("facebook.com")
+    }
+
+    private class AccountOwner(val user: FirebaseUser, val signIn: AuthResult)
+
+    /** The existing account at [OTHER_EMAIL], which accepts the pending credential. */
+    private fun accountOwner(): AccountOwner {
+        val user = mock(FirebaseUser::class.java)
+        `when`(user.uid).thenReturn("owner-uid")
+        `when`(user.email).thenReturn(OTHER_EMAIL)
+        `when`(user.isEmailVerified).thenReturn(true)
+        val signIn = mock(AuthResult::class.java)
+        `when`(signIn.user).thenReturn(user)
+        val linked = mock(AuthResult::class.java)
+        `when`(linked.user).thenReturn(user)
+        `when`(user.linkWithCredential(any())).thenReturn(Tasks.forResult(linked))
+        return AccountOwner(user, signIn)
+    }
+
+    private fun googleProvider() = AuthProvider.Google(
+        scopes = emptyList(),
+        serverClientId = GOOGLE_CLIENT_ID,
+    )
+
+    /** Google is the only provider besides one that cannot hold an address. */
+    private fun googleAndAnonymousConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(googleProvider())
+            provider(AuthProvider.Anonymous)
+        }
+        isCredentialManagerEnabled = false
+    }
+
+    private fun emailAndGoogleConfiguration(
+        legacyLookup: Boolean = false,
+    ): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(
+                AuthProvider.Email(
+                    isDisplayNameRequired = false,
+                    emailLinkActionCodeSettings = null,
+                    passwordValidationRules = emptyList()
+                )
+            )
+            provider(googleProvider())
+        }
+        isCredentialManagerEnabled = false
+        legacyFetchSignInWithEmail = legacyLookup
+    }
+
+    private fun githubAndPhoneConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(AuthProvider.Github(customParameters = emptyMap()))
+            provider(
+                AuthProvider.Phone(
+                    defaultNumber = null,
+                    defaultCountryCode = null,
+                    allowedCountries = null
+                )
+            )
+        }
+        isCredentialManagerEnabled = false
+    }
+
     private fun accountLinkingRequired(credential: AuthCredential) =
         AuthException.AccountLinkingRequiredException(
             message = "an account already exists with this address",
@@ -1199,6 +1504,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
         const val OTHER_EMAIL = "someone.else@example.com"
         const val AUTHENTICATED_TAG = "recovery_test_authenticated"
         const val PASSWORD = "correct-horse-battery"
+        const val GOOGLE_CLIENT_ID = "test-client-id"
         const val EMAIL_LINK = "https://example.com/finish?oobCode=abc&mode=signIn"
     }
 }

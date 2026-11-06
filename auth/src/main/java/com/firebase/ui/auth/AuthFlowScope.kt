@@ -15,12 +15,15 @@
 package com.firebase.ui.auth
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -47,6 +50,12 @@ internal class AuthFlowScope(
      */
     val state: State<AuthState>,
     private val sink: AuthStateSink,
+    /**
+     * A credential whose sign-in hit an existing account, waiting to be linked once the user signs
+     * in to that account. Shared with the screen hosting the flow, which sets it from the
+     * account-linking recovery and clears it when the flow ends.
+     */
+    val pendingAccountLink: MutableState<PendingAccountLink?> = mutableStateOf(null),
 ) {
     fun emit(state: AuthState) = sink.emit(state)
 
@@ -64,6 +73,21 @@ internal class AuthFlowScope(
         }
     }
 }
+
+/**
+ * A credential to link once the user has signed in to the account that already owns [email].
+ *
+ * @property credential The credential whose own sign-in collided with the existing account
+ * @property email The address of the existing account, when Firebase reported it. The account the
+ * user then signs in to must have this address, or the credential would be linked to someone else.
+ * @property ownerProviderIds The providers the recovery offered for signing in to that account. A
+ * sign-in through any other provider is the user going another way, not the recovery finishing.
+ */
+internal data class PendingAccountLink(
+    val credential: AuthCredential,
+    val email: String?,
+    val ownerProviderIds: Set<String>,
+)
 
 /**
  * What a signed-in [user] means as an [AuthState]: the single source of truth for whether they
@@ -107,6 +131,7 @@ internal fun hostAuthFlowScope(
     authUI: FirebaseAuthUI,
     configuration: AuthUIConfiguration,
     state: State<AuthState>,
+    pendingAccountLink: MutableState<PendingAccountLink?> = mutableStateOf(null),
 ): AuthFlowScope = AuthFlowScope(
     auth = authUI.auth,
     config = configuration,
@@ -114,4 +139,5 @@ internal fun hostAuthFlowScope(
     loginManagerProvider = authUI.testLoginManagerProvider,
     state = state,
     sink = { authUI.updateAuthState(it) },
+    pendingAccountLink = pendingAccountLink,
 )
