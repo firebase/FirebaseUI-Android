@@ -50,6 +50,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -73,6 +74,7 @@ import com.firebase.ui.auth.configuration.DefaultAuthContentTransform
 import com.firebase.ui.auth.configuration.DefaultAuthPredictivePopContentTransform
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.firebase.ui.auth.configuration.auth_provider.findAccountOwnerSignInMethod
 import com.firebase.ui.auth.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberGoogleSignInHandler
@@ -329,6 +331,19 @@ fun FirebaseAuthScreen(
 
     LaunchedEffect(authState) {
         lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
+    }
+
+    // A collided Facebook or Google sign-in saved its credential for a later email-link sign-in.
+    // Once the recovery's link ends, whether linked another way or given up, that copy must go,
+    // or the next email-link sign-in on this device would try to link it.
+    LaunchedEffect(pendingAccountLink) {
+        var previous: PendingAccountLink? = null
+        snapshotFlow { pendingAccountLink.value }.collect { current ->
+            if (previous != null && current == null) {
+                EmailLinkPersistenceManager.clearCredentialForLinking(context)
+            }
+            previous = current
+        }
     }
 
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
@@ -923,8 +938,13 @@ fun FirebaseAuthScreen(
                 if (credential == null || authUI.auth.currentUser != null) {
                     return if (configuration.isEmailProviderConfigured()) {
                         { _ ->
-                            pendingAccountLink.value =
-                                credential?.let { PendingAccountLink(it, exception.email) }
+                            pendingAccountLink.value = credential?.let {
+                                PendingAccountLink(
+                                    credential = it,
+                                    email = exception.email,
+                                    ownerProviderIds = setOf(Provider.EMAIL.id),
+                                )
+                            }
                             navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
                         }
                     } else {
@@ -942,7 +962,11 @@ fun FirebaseAuthScreen(
                 if (owners.isEmpty()) return null
 
                 return { _ ->
-                    pendingAccountLink.value = PendingAccountLink(credential, exception.email)
+                    pendingAccountLink.value = PendingAccountLink(
+                        credential = credential,
+                        email = exception.email,
+                        ownerProviderIds = owners.map { it.providerId }.toSet(),
+                    )
                     coroutineScope.launch {
                         val ownerSignInMethod = exception.email?.let { email ->
                             hostScope.findAccountOwnerSignInMethod(email, owners)

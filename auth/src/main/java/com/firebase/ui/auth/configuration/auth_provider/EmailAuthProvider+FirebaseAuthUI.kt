@@ -273,26 +273,18 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
                     }
             }
         } else {
-            // The account-linking recovery prefills the address it named, but the field stays
-            // editable. Linking to an account at another address would attach the credential to
-            // someone else, so refuse before signing in at all.
-            val pending = pendingAccountLink.value
-            if (credentialForLinking != null &&
-                credentialForLinking === pending?.credential &&
-                pending.email != null &&
-                !pending.email.equals(email, ignoreCase = true)
-            ) {
-                throw AuthException.AccountLinkingRequiredException(
-                    message = config.stringProvider.errorUserMismatch,
-                    email = pending.email,
-                    credential = pending.credential,
-                )
-            }
+            // Refused before signing in at all, rather than undone after.
+            requirePendingLinkAddress(credentialForLinking, email)
+            val isPendingLink = credentialForLinking != null &&
+                    credentialForLinking === pendingAccountLink.value?.credential
             // Normal sign-in
             auth.signInWithEmailAndPassword(email, password).await()
                 .let { result ->
-                    // If there's a credential to link, link it after sign-in
-                    if (credentialForLinking != null) {
+                    if (isPendingLink) {
+                        // The account-linking recovery's credential: linked all or nothing.
+                        linkPendingAccountCredential(result, EmailAuthProvider.PROVIDER_ID)
+                    } else if (credentialForLinking != null) {
+                        // A host's own credential to link, linked after sign-in as before.
                         val linkResult = result.user
                             ?.linkWithCredential(credentialForLinking)
                             ?.await()
@@ -480,7 +472,7 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
         val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
-            signInOrReauth(credential)?.let { linkPendingAccountCredential(it) }
+            signInOrReauth(credential)?.let { linkPendingAccountCredential(it, provider?.providerId) }
         }
         // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
         // Reconstruct success state from the now-reauthenticated current user.
@@ -565,6 +557,7 @@ internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
 ) {
     try {
         emit(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
+        requirePendingLinkAddress(credentialForLinking, email)
 
         // Get anonymousUserId if can upgrade anonymously else default to empty string.
         // NOTE: check for empty string instead of null to validate anonymous user ID matches

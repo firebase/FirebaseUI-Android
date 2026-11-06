@@ -77,6 +77,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import org.mockito.kotlin.eq
 import kotlinx.coroutines.runBlocking
 import androidx.credentials.CredentialManager
@@ -886,10 +887,20 @@ class FirebaseAuthScreenEmailRecoveryTest {
      * firebase/FirebaseUI-Android#2550, the half the crash guard left: a Facebook sign-in hit an
      * account Google created. With Google the only other provider that can hold the account, the
      * recovery opens it, and the Facebook credential is linked to the account the user signs in
-     * to before the flow reports success.
+     * to before the flow reports success. The copy of the Facebook credential the collision saved
+     * for a later email-link sign-in is then forgotten, so that sign-in cannot try to link it again.
      */
     @Test
     fun `an account that needs linking opens the lone other provider and links the credential`() {
+        runBlocking {
+            EmailLinkPersistenceManager.default.saveEmail(applicationContext, OTHER_EMAIL, "session", null)
+            EmailLinkPersistenceManager.default.saveCredentialForLinking(
+                applicationContext,
+                providerType = "facebook.com",
+                idToken = null,
+                accessToken = "facebook-access-token",
+            )
+        }
         val facebookCredential = facebookCredential()
         val googleCredential = mock(AuthCredential::class.java)
         val credentialManager = mock(AuthProvider.Google.CredentialManagerProvider::class.java)
@@ -921,6 +932,11 @@ class FirebaseAuthScreenEmailRecoveryTest {
 
         verify(owner.user).linkWithCredential(facebookCredential)
         composeTestRule.onNodeWithTag(AUTHENTICATED_TAG).assertIsDisplayed()
+        val saved = runBlocking {
+            EmailLinkPersistenceManager.default.retrieveSessionRecord(applicationContext)
+        }
+        assertThat(saved?.email).isEqualTo(OTHER_EMAIL)
+        assertThat(saved?.credentialForLinking).isNull()
     }
 
     /**
@@ -997,6 +1013,8 @@ class FirebaseAuthScreenEmailRecoveryTest {
     fun `signing in after an account-linking recovery links the credential the failure carried`() {
         val credential = mock(AuthCredential::class.java)
         val signedInUser = mock(FirebaseUser::class.java)
+        // The account the recovery named: the link is held to its address.
+        `when`(signedInUser.email).thenReturn(OTHER_EMAIL)
         val signInResult = mock(AuthResult::class.java)
         `when`(signInResult.user).thenReturn(signedInUser)
         `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))

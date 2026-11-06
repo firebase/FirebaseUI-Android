@@ -126,7 +126,7 @@ internal suspend fun AuthFlowScope.signInWithProvider(
         val authResult = if (isAnonymousUpgrade || config.isReauthenticationMode) {
             signInResult
         } else {
-            signInResult?.let { linkPendingAccountCredential(it) }
+            signInResult?.let { linkPendingAccountCredential(it, provider.providerId) }
         }
 
         // Extract OAuth credential and complete sign-in

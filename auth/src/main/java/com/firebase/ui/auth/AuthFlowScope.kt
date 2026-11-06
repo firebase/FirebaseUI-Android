@@ -80,10 +80,13 @@ internal class AuthFlowScope(
  * @property credential The credential whose own sign-in collided with the existing account
  * @property email The address of the existing account, when Firebase reported it. The account the
  * user then signs in to must have this address, or the credential would be linked to someone else.
+ * @property ownerProviderIds The providers the recovery offered for signing in to that account. A
+ * sign-in through any other provider is the user going another way, not the recovery finishing.
  */
 internal data class PendingAccountLink(
     val credential: AuthCredential,
     val email: String?,
+    val ownerProviderIds: Set<String>,
 )
 
 /**

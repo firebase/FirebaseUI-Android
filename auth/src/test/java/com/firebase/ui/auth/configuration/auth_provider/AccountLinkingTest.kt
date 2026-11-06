@@ -32,6 +32,8 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseOptions
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.AdditionalUserInfo
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider
@@ -43,6 +45,7 @@ import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.SignInMethodQueryResult
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertThrows
@@ -114,7 +117,7 @@ class AccountLinkingTest {
             `when`(user.linkWithCredential(pendingCredential)).thenReturn(Tasks.forResult(linked))
             val scope = scopeWithPendingLink()
 
-            val result = scope.linkPendingAccountCredential(signIn)
+            val result = scope.linkPendingAccountCredential(signIn, GOOGLE)
 
             assertThat(result).isSameInstanceAs(linked)
             assertThat(scope.pendingAccountLink.value).isNull()
@@ -128,7 +131,7 @@ class AccountLinkingTest {
         `when`(user.linkWithCredential(pendingCredential))
             .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
 
-        scopeWithPendingLink().linkPendingAccountCredential(signIn)
+        scopeWithPendingLink().linkPendingAccountCredential(signIn, GOOGLE)
 
         verify(user).linkWithCredential(pendingCredential)
     }
@@ -144,7 +147,7 @@ class AccountLinkingTest {
         val scope = scopeWithPendingLink()
 
         val error = assertThrows(AuthException.AccountLinkingRequiredException::class.java) {
-            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn) }
+            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn, GOOGLE) }
         }
 
         assertThat(error.message).isEqualTo(stringProvider.errorUserMismatch)
@@ -165,7 +168,7 @@ class AccountLinkingTest {
         val scope = scopeWithPendingLink()
 
         assertThrows(AuthException.NetworkException::class.java) {
-            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn) }
+            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn, GOOGLE) }
         }
 
         assertThat(scope.pendingAccountLink.value).isNull()
@@ -190,7 +193,7 @@ class AccountLinkingTest {
         val scope = scopeWithPendingLink()
 
         val error = assertThrows(AuthException.UnknownException::class.java) {
-            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn) }
+            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn, GOOGLE) }
         }
 
         assertThat(error.message).isEqualTo(stringProvider.unknownErrorRecoveryMessage)
@@ -202,8 +205,78 @@ class AccountLinkingTest {
         val (signIn, user) = signedInAs(OWNER_EMAIL)
         val scope = FirebaseAuthUI.create(firebaseApp, mockAuth).recordingScope(config(), mutableListOf())
 
-        assertThat(scope.linkPendingAccountCredential(signIn)).isSameInstanceAs(signIn)
+        assertThat(scope.linkPendingAccountCredential(signIn, GOOGLE)).isSameInstanceAs(signIn)
         verify(user, never()).linkWithCredential(any())
+    }
+
+    /**
+     * The method picker the recovery leaves the user on still shows phone, which cannot hold the
+     * address. Signing in with it is the user going another way: it must not be refused, and the
+     * link the recovery was holding is dropped rather than left to block every sign-in after.
+     */
+    @Test
+    fun `a sign-in through a provider the recovery did not offer drops the link and stands`() =
+        runTest {
+            val (signIn, user) = signedInAs(null)
+            val scope = scopeWithPendingLink()
+
+            assertThat(scope.linkPendingAccountCredential(signIn, "phone"))
+                .isSameInstanceAs(signIn)
+
+            assertThat(scope.pendingAccountLink.value).isNull()
+            verify(user, never()).linkWithCredential(any())
+            verify(mockAuth, never()).signOut()
+        }
+
+    /**
+     * A Google or OAuth account at another address may have no Firebase user yet, so signing in
+     * with it creates one. Undoing the sign-in must not leave that empty account behind.
+     */
+    @Test
+    fun `a different account the sign-in only just created is deleted, not left behind`() =
+        runTest {
+            val (signIn, user) = signedInAs("someone-else@example.com")
+            val info = mock(AdditionalUserInfo::class.java)
+            `when`(info.isNewUser).thenReturn(true)
+            `when`(signIn.additionalUserInfo).thenReturn(info)
+            `when`(user.delete()).thenReturn(Tasks.forResult(null))
+            val scope = scopeWithPendingLink()
+
+            assertThrows(AuthException.AccountLinkingRequiredException::class.java) {
+                kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn, GOOGLE) }
+            }
+
+            verify(user).delete()
+            verify(mockAuth).signOut()
+        }
+
+    /** An existing account at another address is only signed out of, never deleted. */
+    @Test
+    fun `a different account that already existed is signed out of, not deleted`() = runTest {
+        val (signIn, user) = signedInAs("someone-else@example.com")
+        val scope = scopeWithPendingLink()
+
+        assertThrows(AuthException.AccountLinkingRequiredException::class.java) {
+            kotlinx.coroutines.runBlocking { scope.linkPendingAccountCredential(signIn, GOOGLE) }
+        }
+
+        verify(user, never()).delete()
+        verify(mockAuth).signOut()
+    }
+
+    /** Cancelled mid-link, the sign-in is undone like any other failed link. */
+    @Test
+    fun `a link that is cancelled signs back out`() = runTest {
+        val (signIn, user) = signedInAs(OWNER_EMAIL)
+        `when`(user.linkWithCredential(pendingCredential)).thenReturn(TaskCompletionSource<AuthResult>().task)
+        val scope = scopeWithPendingLink()
+
+        val job = launch { scope.linkPendingAccountCredential(signIn, GOOGLE) }
+        testScheduler.advanceUntilIdle()
+        job.cancel()
+        job.join()
+
+        verify(mockAuth).signOut()
     }
 
     /** A reauthentication proves who the user is; it is never the account-linking recovery. */
@@ -212,7 +285,7 @@ class AccountLinkingTest {
         val (signIn, user) = signedInAs(OWNER_EMAIL)
         val scope = scopeWithPendingLink(config(isReauthenticationMode = true))
 
-        assertThat(scope.linkPendingAccountCredential(signIn)).isSameInstanceAs(signIn)
+        assertThat(scope.linkPendingAccountCredential(signIn, GOOGLE)).isSameInstanceAs(signIn)
         verify(user, never()).linkWithCredential(any())
     }
 
@@ -251,7 +324,7 @@ class AccountLinkingTest {
         `when`(user.linkWithCredential(pendingCredential)).thenReturn(Tasks.forResult(linked))
         val instance = FirebaseAuthUI.create(firebaseApp, mockAuth)
         val scope = instance.flowScope(config())
-        scope.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL)
+        scope.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL, OWNER_PROVIDERS)
 
         scope.signInWithGoogle(
             context = applicationContext,
@@ -280,7 +353,7 @@ class AccountLinkingTest {
         val github = AuthProvider.Github(customParameters = emptyMap())
         val instance = FirebaseAuthUI.create(firebaseApp, mockAuth)
         val scope = instance.flowScope(config(github))
-        scope.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL)
+        scope.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL, OWNER_PROVIDERS)
 
         scope.signInWithProvider(applicationContext, mock(Activity::class.java), github)
 
@@ -333,6 +406,52 @@ class AccountLinkingTest {
         )
 
         verify(user).linkWithCredential(pendingCredential)
+    }
+
+    /**
+     * The email step is the recovery's way back in for a password account, so it gets the same
+     * all-or-nothing link as the provider flows: a failed link must not leave the user signed in.
+     */
+    @Test
+    fun `the email step signs back out when the recovery's link fails`() = runTest {
+        val (signIn, user) = signedInAs(OWNER_EMAIL)
+        `when`(mockAuth.signInWithEmailAndPassword(OWNER_EMAIL, PASSWORD)).thenReturn(Tasks.forResult(signIn))
+        `when`(user.linkWithCredential(pendingCredential))
+            .thenReturn(Tasks.forException(FirebaseNetworkException("offline")))
+        val scope = scopeWithPendingLink(config(credentialManager = false))
+
+        assertThrows(AuthException.NetworkException::class.java) {
+            kotlinx.coroutines.runBlocking {
+                scope.signInWithEmailAndPassword(
+                    context = applicationContext,
+                    email = OWNER_EMAIL,
+                    password = PASSWORD,
+                    credentialForLinking = pendingCredential,
+                )
+            }
+        }
+
+        verify(mockAuth).signOut()
+    }
+
+    /** The email-link step's address is just as editable, and the link would land on it. */
+    @Test
+    fun `the email-link step refuses to send to an address other than the account's`() = runTest {
+        val scope = scopeWithPendingLink()
+
+        val error = assertThrows(AuthException.AccountLinkingRequiredException::class.java) {
+            kotlinx.coroutines.runBlocking {
+                scope.sendSignInLinkToEmail(
+                    context = applicationContext,
+                    provider = emailProvider,
+                    email = "someone-else@example.com",
+                    credentialForLinking = pendingCredential,
+                )
+            }
+        }
+
+        assertThat(error.message).isEqualTo(stringProvider.errorUserMismatch)
+        verify(mockAuth, never()).sendSignInLinkToEmail(any(), any())
     }
 
     /**
@@ -461,9 +580,9 @@ class AccountLinkingTest {
     private fun scopeWithPendingLink(configuration: AuthUIConfiguration = config()) =
         FirebaseAuthUI.create(firebaseApp, mockAuth)
             .recordingScope(configuration, mutableListOf())
-            .also { it.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL) }
+            .also { it.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL, OWNER_PROVIDERS) }
 
-    private fun signedInAs(email: String): Pair<AuthResult, FirebaseUser> {
+    private fun signedInAs(email: String?): Pair<AuthResult, FirebaseUser> {
         val user = mock(FirebaseUser::class.java)
         `when`(user.email).thenReturn(email)
         `when`(user.uid).thenReturn("owner-uid")
@@ -480,6 +599,8 @@ class AccountLinkingTest {
 
     private companion object {
         const val OWNER_EMAIL = "owner@example.com"
+        const val GOOGLE = "google.com"
+        val OWNER_PROVIDERS = setOf("password", GOOGLE, "github.com")
         const val PASSWORD = "correct-horse-battery"
     }
 }

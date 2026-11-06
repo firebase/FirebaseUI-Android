@@ -45,6 +45,23 @@ object EmailLinkPersistenceManager {
      * Default instance.
      */
     internal val default: PersistenceManager = DefaultPersistenceManager()
+
+    /**
+     * Forgets a provider credential saved by [PersistenceManager.saveCredentialForLinking],
+     * leaving any email-link session in place.
+     *
+     * A provider sign-in that collides saves its credential so a later email-link sign-in can link
+     * it. Once the account-linking recovery has linked that credential another way, or the flow
+     * has given up on it, the saved copy must go: otherwise the next email-link sign-in on this
+     * device, by anyone, tries to link it.
+     */
+    internal suspend fun clearCredentialForLinking(context: Context) {
+        context.dataStore.edit { prefs ->
+            prefs.remove(AuthProvider.Email.KEY_PROVIDER)
+            prefs.remove(AuthProvider.Email.KEY_IDP_TOKEN)
+            prefs.remove(AuthProvider.Email.KEY_IDP_SECRET)
+        }
+    }
     
     /**
      * The default implementation of [PersistenceManager] that uses DataStore.
