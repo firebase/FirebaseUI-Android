@@ -51,6 +51,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -125,6 +126,7 @@ import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
@@ -205,7 +207,12 @@ fun FirebaseAuthScreen(
     val hostStateHolder = rememberUpdatedState(rawAuthState)
     // Shared with the provider flows, which link it once the user signs in to the account that
     // owns the address. Cleared wherever the flow ends.
-    val pendingAccountLink = remember { mutableStateOf<PendingAccountLink?>(null) }
+    // Saveable: the owner's sign-in opens UI outside the app (Credential Manager, Facebook, a
+    // browser), and an Activity recreated meanwhile must still have the link to finish.
+    val pendingAccountLink = rememberSaveable(stateSaver = PendingAccountLinkSaver) {
+        mutableStateOf<PendingAccountLink?>(null)
+    }
+    val isLookingUpAccountOwner = remember { mutableStateOf(false) }
     val hostScope = remember(authUI, configuration, hostStateHolder) {
         hostAuthFlowScope(authUI, configuration, hostStateHolder, pendingAccountLink)
     }
@@ -956,7 +963,8 @@ fun FirebaseAuthScreen(
 
                 // Without the address there is nothing to hold the owner's account to, so any
                 // account the user signed in to would get the credential.
-                if (exception.email.isNullOrEmpty()) return null
+                val ownerEmail = exception.email
+                if (ownerEmail.isNullOrEmpty()) return null
 
                 // Providers that can hold the existing account: not the one that just collided,
                 // and not phone or anonymous sign-in, which have no address to match.
@@ -974,8 +982,17 @@ fun FirebaseAuthScreen(
                         ownerProviderIds = owners.map { it.providerId }.toSet(),
                     )
                     coroutineScope.launch {
-                        val ownerSignInMethod = exception.email?.let { email ->
-                            hostScope.findAccountOwnerSignInMethod(email, owners)
+                        // Shown as loading so no other sign-in can start while the lookup runs.
+                        // Not the shared Loading state: the Idle after it would end the link.
+                        val ownerSignInMethod = if (configuration.legacyFetchSignInWithEmail) {
+                            isLookingUpAccountOwner.value = true
+                            try {
+                                hostScope.findAccountOwnerSignInMethod(ownerEmail, owners)
+                            } finally {
+                                isLookingUpAccountOwner.value = false
+                            }
+                        } else {
+                            null
                         }
                         val lone = owners.singleOrNull()
                         when {
@@ -1082,6 +1099,8 @@ fun FirebaseAuthScreen(
                     authState is AuthState.Reauthentication.Authenticating
             if (isLoading && !reauthSlotActive) {
                 LoadingDialog(loadingMessage ?: stringProvider.progressDialogLoading)
+            } else if (isLookingUpAccountOwner.value) {
+                LoadingDialog(stringProvider.progressDialogLoading)
             }
 
         }
@@ -1095,6 +1114,31 @@ fun FirebaseAuthScreen(
  * Returns an [AuthRoute] rather than an [AuthRoute.Destination], because a single-provider
  * configuration names a *flow*; [toKey] is what resolves it to the step to actually push.
  */
+/**
+ * Saves a [PendingAccountLink] across Activity recreation. Firebase's [AuthCredential] is
+ * Parcelable, so the three fields go into the saved state as they are.
+ */
+private val PendingAccountLinkSaver = listSaver<PendingAccountLink?, Any?>(
+    save = { link ->
+        if (link == null) {
+            emptyList()
+        } else {
+            listOf(link.credential, link.email, ArrayList(link.ownerProviderIds))
+        }
+    },
+    restore = { saved ->
+        if (saved.isEmpty()) {
+            null
+        } else {
+            PendingAccountLink(
+                credential = saved[0] as AuthCredential,
+                email = saved[1] as String?,
+                ownerProviderIds = (saved[2] as List<*>).map { it as String }.toSet(),
+            )
+        }
+    },
+)
+
 internal fun getStartRoute(configuration: AuthUIConfiguration): AuthRoute {
     if (configuration.isProviderChoiceAlwaysShown || configuration.providers.size != 1) {
         return AuthRoute.MethodPicker

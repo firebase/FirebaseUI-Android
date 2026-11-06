@@ -77,6 +77,10 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.SignInMethodQueryResult
+import com.google.firebase.auth.FacebookAuthCredential
+import com.google.firebase.auth.FacebookAuthProvider
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import org.mockito.kotlin.eq
 import kotlinx.coroutines.runBlocking
@@ -1034,6 +1038,63 @@ class FirebaseAuthScreenEmailRecoveryTest {
             .assertDoesNotExist()
     }
 
+    /**
+     * The owner's sign-in opens UI outside the app, and the Activity can be recreated meanwhile.
+     * The pending link has to come back with it, or the owner signs in and nothing is linked.
+     */
+    @Test
+    fun `the pending link survives an Activity recreation`() {
+        // A real credential: saving the state parcels it, which a mock cannot do.
+        val facebookCredential = FacebookAuthProvider.getCredential("facebook-access-token")
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        val restorationTester = StateRestorationTester(composeTestRule)
+        restorationTester.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+            )
+        }
+        composeTestRule.waitForIdle()
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        restorationTester.emulateSavedInstanceStateRestore()
+        composeTestRule.waitForIdle()
+        signInWithPassword()
+
+        // Parcelled and restored, so an equal credential rather than the same instance.
+        verify(owner.user).linkWithCredential(
+            org.mockito.kotlin.argThat { this is FacebookAuthCredential && provider == "facebook.com" }
+        )
+    }
+
+    /**
+     * The opt-in lookup is a network call. Until it answers, the picker underneath must not take
+     * another tap, or a second sign-in would race the one the lookup is about to start.
+     */
+    @Test
+    fun `the owner lookup blocks the screen until it answers`() {
+        val lookup = TaskCompletionSource<SignInMethodQueryResult>()
+        `when`(mockAuth.fetchSignInMethodsForEmail(OTHER_EMAIL)).thenReturn(lookup.task)
+        start(configuration = emailAndGoogleConfiguration(legacyLookup = true))
+
+        recoverFrom(accountLinkingRequired(facebookCredential()))
+
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertIsDisplayed()
+
+        val methods = mock(SignInMethodQueryResult::class.java)
+        `when`(methods.signInMethods).thenReturn(listOf(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD))
+        composeTestRule.runOnIdle { lookup.setResult(methods) }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+    }
+
     /** Nothing else can hold the account, so there is no sign-in to send the user to. */
     @Test
     fun `no recovery is offered when the colliding provider is the only one that can hold the account`() {
@@ -1305,7 +1366,9 @@ class FirebaseAuthScreenEmailRecoveryTest {
         isCredentialManagerEnabled = false
     }
 
-    private fun emailAndGoogleConfiguration(): AuthUIConfiguration = authUIConfiguration {
+    private fun emailAndGoogleConfiguration(
+        legacyLookup: Boolean = false,
+    ): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
         providers {
             provider(
@@ -1318,6 +1381,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
             provider(googleProvider())
         }
         isCredentialManagerEnabled = false
+        legacyFetchSignInWithEmail = legacyLookup
     }
 
     private fun githubAndPhoneConfiguration(): AuthUIConfiguration = authUIConfiguration {

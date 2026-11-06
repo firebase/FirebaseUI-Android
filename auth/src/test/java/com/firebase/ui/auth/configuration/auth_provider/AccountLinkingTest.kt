@@ -430,6 +430,47 @@ class AccountLinkingTest {
         )
     }
 
+    /**
+     * After a wrong pick, auto-select would hand back the same Google account every time. While a
+     * link is pending the chooser is always shown, whatever the provider is configured to do.
+     */
+    @Test
+    fun `Google auto-select is off while a link is pending`() = runTest {
+        val credentialManager = mock(AuthProvider.Google.CredentialManagerProvider::class.java)
+        `when`(
+            credentialManager.getGoogleCredential(
+                context = any(),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = any(),
+                filterByAuthorizedAccounts = any(),
+                autoSelectEnabled = any(),
+            )
+        ).thenThrow(RuntimeException("stop after the request"))
+        val autoSelecting = AuthProvider.Google(
+            scopes = emptyList(),
+            serverClientId = "test-client-id",
+            autoSelectEnabled = true,
+        )
+        val scope = FirebaseAuthUI.create(firebaseApp, mockAuth).flowScope(config())
+        scope.pendingAccountLink.value = PendingAccountLink(pendingCredential, OWNER_EMAIL, OWNER_PROVIDERS)
+
+        runCatching {
+            scope.signInWithGoogle(
+                context = applicationContext,
+                provider = autoSelecting,
+                credentialManagerProvider = credentialManager,
+            )
+        }
+
+        verify(credentialManager).getGoogleCredential(
+            context = any(),
+            credentialManager = any<CredentialManager>(),
+            serverClientId = any(),
+            filterByAuthorizedAccounts = any(),
+            autoSelectEnabled = eq(false),
+        )
+    }
+
     /** OAuth providers sign in through Firebase's own activity flow, not the shared credential path. */
     @Test
     fun `an OAuth sign-in during the recovery links before it reports success`() = runTest {
