@@ -59,6 +59,7 @@ import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,9 +109,12 @@ fun SignUpUI(
     }
     val passwordPolicySource = LocalPasswordPolicySource.current
     // Hints only (never part of isFormValid). No source, no policy or OFF: nothing is shown.
+    // Re-read on each revision, so a refetch after a server rejection updates the checklist.
     val passwordPolicy by produceState<PasswordPolicy?>(null, passwordPolicySource, context) {
-        value = passwordPolicySource?.getPolicy(context)
-            ?.takeIf { it.enforcementState == PasswordPolicy.EnforcementState.ENFORCE }
+        passwordPolicySource?.revision?.collectLatest {
+            value = passwordPolicySource.getPolicy(context)
+                ?.takeIf { it.enforcementState == PasswordPolicy.EnforcementState.ENFORCE }
+        }
     }
     val checklistRequirements = remember(passwordPolicy, password, stringProvider) {
         passwordPolicy?.let { passwordRequirements(it, password, stringProvider) }

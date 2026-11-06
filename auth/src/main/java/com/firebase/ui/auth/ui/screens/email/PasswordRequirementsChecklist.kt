@@ -39,10 +39,15 @@ import com.firebase.ui.auth.configuration.password_policy.PasswordPolicy
 import com.firebase.ui.auth.configuration.password_policy.PasswordPolicyRepository
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /** Supplies the project password policy to [SignUpUI]. Must return `null` rather than throw. */
 internal fun interface PasswordPolicySource {
     suspend fun getPolicy(context: Context): PasswordPolicy?
+
+    /** Emits on collection and again whenever [getPolicy] may return a newer policy. */
+    val revision: Flow<Int> get() = flowOf(0)
 }
 
 /**
@@ -52,8 +57,13 @@ internal fun interface PasswordPolicySource {
 internal val LocalPasswordPolicySource = staticCompositionLocalOf<PasswordPolicySource?> { null }
 
 /** A [PasswordPolicySource] for [auth]'s app and tenant, cached by this repository. */
-internal fun PasswordPolicyRepository.sourceFor(auth: FirebaseAuth) =
-    PasswordPolicySource { context -> getPolicy(context, auth) }
+internal fun PasswordPolicyRepository.sourceFor(auth: FirebaseAuth): PasswordPolicySource {
+    val repository = this
+    return object : PasswordPolicySource {
+        override suspend fun getPolicy(context: Context) = repository.getPolicy(context, auth)
+        override val revision: Flow<Int> = repository.revision(auth)
+    }
+}
 
 /** One checklist line. [symbols] is set only on the special character line. */
 internal data class PasswordRequirement(

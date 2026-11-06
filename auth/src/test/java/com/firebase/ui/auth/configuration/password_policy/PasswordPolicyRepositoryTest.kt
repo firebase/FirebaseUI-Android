@@ -343,6 +343,21 @@ class PasswordPolicyRepositoryTest {
         assertThat(http.requests).hasSize(1)
     }
 
+    @Test
+    fun `refetch bumps only its own key's revision`() = runTest {
+        val repo = repository()
+        val tenantA = auth(tenantId = "tenant-a")
+        val tenantB = auth(tenantId = "tenant-b")
+        repo.getPolicy(context, tenantA)
+        repo.getPolicy(context, tenantB)
+
+        repo.refetchIfCached(context, tenantA)
+
+        assertThat(repo.revision(tenantA).value).isEqualTo(1)
+        assertThat(repo.revision(tenantB).value).isEqualTo(0)
+        assertThat(repo.revision(auth(appName = "other")).value).isEqualTo(0)
+    }
+
     private companion object {
         const val API_KEY = "AIzaFakeKeyForTests123"
         const val CERT = "0123456789ABCDEF0123456789ABCDEF01234567"
