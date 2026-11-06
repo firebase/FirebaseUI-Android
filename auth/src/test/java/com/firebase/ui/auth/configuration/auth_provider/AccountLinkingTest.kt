@@ -27,6 +27,9 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.flowScope
 import com.firebase.ui.auth.recordingScope
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.util.MockPersistenceManager
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -277,6 +280,94 @@ class AccountLinkingTest {
         job.join()
 
         verify(mockAuth).signOut()
+    }
+
+    /** Cancelled while undoing a mismatch, the user must still not stay on the wrong account. */
+    @Test
+    fun `a mismatch cancelled while deleting the new account still signs out`() = runTest {
+        val (signIn, user) = signedInAs("someone-else@example.com")
+        val info = mock(AdditionalUserInfo::class.java)
+        `when`(info.isNewUser).thenReturn(true)
+        `when`(signIn.additionalUserInfo).thenReturn(info)
+        val deletion = TaskCompletionSource<Void>()
+        `when`(user.delete()).thenReturn(deletion.task)
+        val scope = scopeWithPendingLink()
+
+        // The mismatch error still follows once the undo finishes; it is not what is under test.
+        val job = launch { runCatching { scope.linkPendingAccountCredential(signIn, GOOGLE) } }
+        testScheduler.advanceUntilIdle()
+        job.cancel()
+        deletion.setResult(null)
+        job.join()
+
+        verify(mockAuth).signOut()
+    }
+
+    /**
+     * Where the link resolves, the copy of the credential a collided sign-in saved for a later
+     * email-link sign-in goes too. Not left to the screen: a host may dispose it on success.
+     */
+    @Test
+    fun `a finished link forgets the credential saved for email-link sign-in`() = runTest {
+        `when`(mockAuth.app).thenReturn(firebaseApp)
+        val saved = EmailLinkPersistenceManager.default
+        saved.saveEmail(applicationContext, OWNER_EMAIL, "session", null)
+        saved.saveCredentialForLinking(applicationContext, "facebook.com", null, "facebook-token")
+        val (signIn, user) = signedInAs(OWNER_EMAIL)
+        `when`(user.linkWithCredential(pendingCredential))
+            .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
+
+        scopeWithPendingLink().linkPendingAccountCredential(signIn, GOOGLE)
+
+        val record = saved.retrieveSessionRecord(applicationContext)
+        assertThat(record?.email).isEqualTo(OWNER_EMAIL)
+        assertThat(record?.credentialForLinking).isNull()
+    }
+
+    /**
+     * When the account is an email-link one, finishing that sign-in is the recovery's way back in,
+     * so it must count as the Email provider rather than as a sign-in the recovery did not offer.
+     */
+    @Test
+    fun `an email-link sign-in finishes the recovery's link`() = runTest {
+        val (signIn, user) = signedInAs(OWNER_EMAIL)
+        `when`(mockAuth.isSignInWithEmailLink(any())).thenReturn(true)
+        `when`(mockAuth.signInWithCredential(any())).thenReturn(Tasks.forResult(signIn))
+        `when`(user.linkWithCredential(pendingCredential))
+            .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
+        val linkProvider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList(),
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(linkProvider) }
+        }
+        val persistence = MockPersistenceManager().apply {
+            setSessionRecord(
+                EmailLinkPersistenceManager.SessionRecord(
+                    sessionId = "session123",
+                    email = OWNER_EMAIL,
+                    anonymousUserId = null,
+                    credentialForLinking = null,
+                )
+            )
+        }
+
+        scopeWithPendingLink(configuration).signInWithEmailLink(
+            context = applicationContext,
+            provider = linkProvider,
+            email = OWNER_EMAIL,
+            emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn" +
+                    "&oobCode=code&continueUrl=https://example.com?ui_sid=session123",
+            persistenceManager = persistence,
+        )
+
+        verify(user).linkWithCredential(pendingCredential)
     }
 
     /** A reauthentication proves who the user is; it is never the account-linking recovery. */

@@ -16,6 +16,7 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthFlowScope
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.CancellationException
@@ -53,23 +54,25 @@ internal suspend fun AuthFlowScope.linkPendingAccountCredential(
     val pending = pendingAccountLink.value ?: return result
     if (config.isReauthenticationMode) return result
     if (providerId == null || providerId !in pending.ownerProviderIds) {
-        pendingAccountLink.value = null
+        forgetPendingLink()
         return result
     }
     val user = result.user ?: return result
 
     val expectedEmail = pending.email
     if (expectedEmail != null && !expectedEmail.equals(user.email, ignoreCase = true)) {
-        if (result.additionalUserInfo?.isNewUser == true) {
-            try {
-                user.delete().await()
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                // Signing out below still undoes the sign-in; only the empty account remains.
+        // Undone even if the flow is cancelled meanwhile: stopping halfway would leave the user
+        // signed in to the wrong account.
+        withContext(NonCancellable) {
+            if (result.additionalUserInfo?.isNewUser == true) {
+                try {
+                    user.delete().await()
+                } catch (e: Exception) {
+                    // Signing out below still undoes the sign-in; only the empty account remains.
+                }
             }
+            auth.signOut()
         }
-        auth.signOut()
         throw pendingLinkMismatch()
     }
 
@@ -79,8 +82,8 @@ internal suspend fun AuthFlowScope.linkPendingAccountCredential(
         withContext(NonCancellable) { auth.signOut() }
         throw e
     } catch (e: Exception) {
-        pendingAccountLink.value = null
         auth.signOut()
+        forgetPendingLink()
         throw when (val mapped = AuthException.from(e, config.stringProvider)) {
             // Firebase reports some link failures as a collision, but there is no further account
             // to recover to: offering the linking recovery again would loop.
@@ -92,8 +95,24 @@ internal suspend fun AuthFlowScope.linkPendingAccountCredential(
             else -> mapped
         }
     }
-    pendingAccountLink.value = null
+    forgetPendingLink()
     return linked
+}
+
+/**
+ * Ends the pending link, and forgets the copy of its credential a collided Facebook or Google
+ * sign-in saved for a later email-link sign-in. Done here, where the link resolves, rather than by
+ * the screen observing it: a host may dispose the screen as soon as the sign-in succeeds.
+ */
+private suspend fun AuthFlowScope.forgetPendingLink() {
+    pendingAccountLink.value = null
+    withContext(NonCancellable) {
+        try {
+            EmailLinkPersistenceManager.clearCredentialForLinking(auth.app.applicationContext)
+        } catch (e: Exception) {
+            // Best effort: the screen also clears it when the pending link ends.
+        }
+    }
 }
 
 /**

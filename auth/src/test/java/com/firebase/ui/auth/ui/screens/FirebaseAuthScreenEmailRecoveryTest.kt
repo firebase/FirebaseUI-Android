@@ -985,6 +985,55 @@ class FirebaseAuthScreenEmailRecoveryTest {
         composeTestRule.onNodeWithText(OTHER_EMAIL).assertIsDisplayed()
     }
 
+    /**
+     * "Sign up" on the recovery's own email step, with the address already taken, raises the
+     * linking error again but with no credential of its own. That must not drop the one pending:
+     * signing in afterwards still links it.
+     */
+    @Test
+    fun `a linking error with no credential keeps the link already pending`() {
+        val facebookCredential = facebookCredential()
+        val owner = accountOwner()
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(owner.signIn))
+        start(configuration = emailAndPhoneConfiguration())
+        recoverFrom(accountLinkingRequired(facebookCredential))
+
+        recoverFrom(
+            AuthException.AccountLinkingRequiredException(
+                message = "an account already exists with this address",
+                email = OTHER_EMAIL,
+                credential = null,
+            )
+        )
+        signInWithPassword()
+
+        verify(owner.user).linkWithCredential(facebookCredential)
+    }
+
+    /** Without the address there is nothing to hold the owner's account to. */
+    @Test
+    fun `no provider recovery is offered when the collision names no address`() {
+        start(configuration = emailAndGoogleConfiguration())
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(
+                AuthState.Error(
+                    AuthException.AccountLinkingRequiredException(
+                        message = "an account already exists",
+                        email = null,
+                        credential = facebookCredential(),
+                    )
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)
+            .assertDoesNotExist()
+    }
+
     /** Nothing else can hold the account, so there is no sign-in to send the user to. */
     @Test
     fun `no recovery is offered when the colliding provider is the only one that can hold the account`() {

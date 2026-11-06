@@ -938,9 +938,11 @@ fun FirebaseAuthScreen(
                 if (credential == null || authUI.auth.currentUser != null) {
                     return if (configuration.isEmailProviderConfigured()) {
                         { _ ->
-                            pendingAccountLink.value = credential?.let {
-                                PendingAccountLink(
-                                    credential = it,
+                            // No credential (such as "Sign up" tried on the recovery's own email
+                            // step) is no reason to drop the link that is already pending.
+                            if (credential != null) {
+                                pendingAccountLink.value = PendingAccountLink(
+                                    credential = credential,
                                     email = exception.email,
                                     ownerProviderIds = setOf(Provider.EMAIL.id),
                                 )
@@ -951,6 +953,10 @@ fun FirebaseAuthScreen(
                         null
                     }
                 }
+
+                // Without the address there is nothing to hold the owner's account to, so any
+                // account the user signed in to would get the credential.
+                if (exception.email.isNullOrEmpty()) return null
 
                 // Providers that can hold the existing account: not the one that just collided,
                 // and not phone or anonymous sign-in, which have no address to match.

@@ -281,8 +281,14 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
             auth.signInWithEmailAndPassword(email, password).await()
                 .let { result ->
                     if (isPendingLink) {
-                        // The account-linking recovery's credential: linked all or nothing.
+                        // The account-linking recovery's credential: linked all or nothing, then
+                        // its profile merged in as a host's own credential's is.
                         linkPendingAccountCredential(result, EmailAuthProvider.PROVIDER_ID)
+                            .also { linked ->
+                                linked.user?.let { user ->
+                                    mergeProfile(auth, user.displayName, user.photoUrl)
+                                }
+                            }
                     } else if (credentialForLinking != null) {
                         // A host's own credential to link, linked after sign-in as before.
                         val linkResult = result.user
@@ -703,7 +709,7 @@ internal suspend fun AuthFlowScope.signInWithEmailLink(
 
         val result = if (storedCredentialForLink == null) {
             // Normal Flow: Just sign in with email link
-            handleEmailLinkNormalFlow(emailLinkCredential)
+            handleEmailLinkNormalFlow(emailLinkCredential, provider)
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
             handleEmailLinkCredentialLinkingFlow(
@@ -777,8 +783,11 @@ private suspend fun AuthFlowScope.handleDifferentDeviceErrorFlow(
 
 private suspend fun AuthFlowScope.handleEmailLinkNormalFlow(
     emailLinkCredential: AuthCredential,
+    provider: AuthProvider.Email,
 ): AuthResult? {
-    return signInAndLinkWithCredential(emailLinkCredential)
+    // Passing the provider is what lets an email-link sign-in finish the account-linking
+    // recovery when the account it names is an email-link one.
+    return signInAndLinkWithCredential(emailLinkCredential, provider)
 }
 
 private suspend fun AuthFlowScope.handleEmailLinkCredentialLinkingFlow(
