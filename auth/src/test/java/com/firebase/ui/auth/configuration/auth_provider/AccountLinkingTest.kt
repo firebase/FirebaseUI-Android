@@ -291,6 +291,73 @@ class AccountLinkingTest {
         )
     }
 
+    /**
+     * The email step the recovery opens is prefilled with the account's address, but the field is
+     * editable. Signing in at another address would link the credential to someone else, so it is
+     * refused before any sign-in happens.
+     */
+    @Test
+    fun `the email step refuses an address other than the account's before signing in`() = runTest {
+        val scope = scopeWithPendingLink()
+
+        val error = assertThrows(AuthException.AccountLinkingRequiredException::class.java) {
+            kotlinx.coroutines.runBlocking {
+                scope.signInWithEmailAndPassword(
+                    context = applicationContext,
+                    email = "someone-else@example.com",
+                    password = PASSWORD,
+                    credentialForLinking = pendingCredential,
+                )
+            }
+        }
+
+        assertThat(error.message).isEqualTo(stringProvider.errorUserMismatch)
+        assertThat(error.email).isEqualTo(OWNER_EMAIL)
+        assertThat(error.credential).isSameInstanceAs(pendingCredential)
+        verify(mockAuth, never()).signInWithEmailAndPassword(any(), any())
+    }
+
+    @Test
+    fun `the email step links when the address is the account's, whatever its case`() = runTest {
+        val typed = OWNER_EMAIL.uppercase()
+        val (signIn, user) = signedInAs(OWNER_EMAIL)
+        `when`(mockAuth.signInWithEmailAndPassword(typed, PASSWORD)).thenReturn(Tasks.forResult(signIn))
+        `when`(user.linkWithCredential(pendingCredential))
+            .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
+
+        scopeWithPendingLink(config(credentialManager = false)).signInWithEmailAndPassword(
+            context = applicationContext,
+            email = typed,
+            password = PASSWORD,
+            credentialForLinking = pendingCredential,
+        )
+
+        verify(user).linkWithCredential(pendingCredential)
+    }
+
+    /**
+     * `EmailAuthScreen` is public, and a host composing it directly may pass a credential of its
+     * own. That is not the recovery's, so there is no address to hold it to.
+     */
+    @Test
+    fun `a host's own credential to link is not held to the recovery's address`() = runTest {
+        val hostCredential = mock(AuthCredential::class.java)
+        val (signIn, user) = signedInAs("host-user@example.com")
+        `when`(mockAuth.signInWithEmailAndPassword("host-user@example.com", PASSWORD))
+            .thenReturn(Tasks.forResult(signIn))
+        `when`(user.linkWithCredential(hostCredential))
+            .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
+
+        scopeWithPendingLink(config(credentialManager = false)).signInWithEmailAndPassword(
+            context = applicationContext,
+            email = "host-user@example.com",
+            password = PASSWORD,
+            credentialForLinking = hostCredential,
+        )
+
+        verify(user).linkWithCredential(hostCredential)
+    }
+
     // =============================================================================================
     // findAccountOwnerSignInMethod
     // =============================================================================================
@@ -378,6 +445,7 @@ class AccountLinkingTest {
         vararg extra: AuthProvider,
         legacyLookup: Boolean = false,
         isReauthenticationMode: Boolean = false,
+        credentialManager: Boolean = true,
     ): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
         providers {
@@ -387,6 +455,7 @@ class AccountLinkingTest {
         }
         legacyFetchSignInWithEmail = legacyLookup
         this.isReauthenticationMode = isReauthenticationMode
+        isCredentialManagerEnabled = credentialManager
     }
 
     private fun scopeWithPendingLink(configuration: AuthUIConfiguration = config()) =
@@ -411,5 +480,6 @@ class AccountLinkingTest {
 
     private companion object {
         const val OWNER_EMAIL = "owner@example.com"
+        const val PASSWORD = "correct-horse-battery"
     }
 }

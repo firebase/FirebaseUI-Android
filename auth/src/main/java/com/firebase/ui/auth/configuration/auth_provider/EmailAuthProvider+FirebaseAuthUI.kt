@@ -273,6 +273,21 @@ internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
                     }
             }
         } else {
+            // The account-linking recovery prefills the address it named, but the field stays
+            // editable. Linking to an account at another address would attach the credential to
+            // someone else, so refuse before signing in at all.
+            val pending = pendingAccountLink.value
+            if (credentialForLinking != null &&
+                credentialForLinking === pending?.credential &&
+                pending.email != null &&
+                !pending.email.equals(email, ignoreCase = true)
+            ) {
+                throw AuthException.AccountLinkingRequiredException(
+                    message = config.stringProvider.errorUserMismatch,
+                    email = pending.email,
+                    credential = pending.credential,
+                )
+            }
             // Normal sign-in
             auth.signInWithEmailAndPassword(email, password).await()
                 .let { result ->
