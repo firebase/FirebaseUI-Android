@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.screens
 
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.LocalAuthFlowScope
+import com.firebase.ui.auth.PendingAccountLink
 import com.firebase.ui.auth.hostAuthFlowScope
 import android.util.Log
 import androidx.activity.compose.LocalActivity
@@ -72,6 +73,7 @@ import com.firebase.ui.auth.configuration.DefaultAuthContentTransform
 import com.firebase.ui.auth.configuration.DefaultAuthPredictivePopContentTransform
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.findAccountOwnerSignInMethod
 import com.firebase.ui.auth.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberGoogleSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberOAuthSignInHandler
@@ -121,7 +123,6 @@ import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
@@ -200,13 +201,15 @@ fun FirebaseAuthScreen(
     val reauthState = reauthFlowState.phase
     val pendingReauth by authUI.pendingReauth.collectAsState()
     val hostStateHolder = rememberUpdatedState(rawAuthState)
+    // Shared with the provider flows, which link it once the user signs in to the account that
+    // owns the address. Cleared wherever the flow ends.
+    val pendingAccountLink = remember { mutableStateOf<PendingAccountLink?>(null) }
     val hostScope = remember(authUI, configuration, hostStateHolder) {
-        hostAuthFlowScope(authUI, configuration, hostStateHolder)
+        hostAuthFlowScope(authUI, configuration, hostStateHolder, pendingAccountLink)
     }
     val authState = rawAuthState
     val dialogController = rememberTopLevelDialogController { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
-    val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState(mfaConfiguration.allowedCountries)
     val phoneAuthFlowState = rememberPhoneAuthFlowState(configuration)
@@ -450,13 +453,13 @@ fun FirebaseAuthScreen(
                     authUI = authUI,
                     content = emailContent,
                     prefillEmail = { reauthPrefillEmail },
-                    credentialForLinking = { pendingLinkingCredential.value },
+                    credentialForLinking = { pendingAccountLink.value?.credential },
                     emailLinkFromDifferentDevice = { emailLinkFromDifferentDevice.value },
                     onEmailTyped = { typedEmail.value = it },
-                    onSuccess = { pendingLinkingCredential.value = null },
+                    onSuccess = { pendingAccountLink.value = null },
                     onError = { exception -> onSignInFailure(exception) },
                     onCancel = {
-                        pendingLinkingCredential.value = null
+                        pendingAccountLink.value = null
                         if (!skipsMethodPicker && !backStack.popOrNull()) {
                             backStack.resetBackStackTo(AuthRoute.MethodPicker)
                         }
@@ -491,7 +494,7 @@ fun FirebaseAuthScreen(
                                     } catch (e: Exception) {
                                         onSignInFailure(AuthException.from(e, stringProvider))
                                     } finally {
-                                        pendingLinkingCredential.value = null
+                                        pendingAccountLink.value = null
                                         pendingResolver.value = null
                                     }
                                 }
@@ -675,7 +678,7 @@ fun FirebaseAuthScreen(
                 when (state) {
                     is AuthState.Success -> {
                         pendingResolver.value = null
-                        pendingLinkingCredential.value = null
+                        pendingAccountLink.value = null
 
                         state.result?.let { result ->
                             if (state.user.uid != lastSuccessfulUserId.value) {
@@ -703,7 +706,7 @@ fun FirebaseAuthScreen(
                     is AuthState.RequiresProfileCompletion,
                         -> {
                         pendingResolver.value = null
-                        pendingLinkingCredential.value = null
+                        pendingAccountLink.value = null
                         // authUserState drops the result on these, so an exchange cannot be told
                         // from a re-asserted session here — the confirmation wins either way.
                         if (!ownsConfirmation && currentKey != AuthRoute.Success) {
@@ -722,7 +725,7 @@ fun FirebaseAuthScreen(
                     is AuthState.Cancelled -> {
                         clearReauthPresentation()
                         pendingResolver.value = null
-                        pendingLinkingCredential.value = null
+                        pendingAccountLink.value = null
                         lastSuccessfulUserId.value = null
                         typedEmail.value = null
                         if (!currentKey.isAt(startRoute)) {
@@ -740,7 +743,7 @@ fun FirebaseAuthScreen(
                         pendingReauth?.request?.decline()
                         if (activity !is FirebaseAuthActivity) {
                             pendingResolver.value = null
-                            pendingLinkingCredential.value = null
+                            pendingAccountLink.value = null
                             lastSuccessfulUserId.value = null
                             typedEmail.value = null
                             authUI.updateAuthState(AuthState.Idle)
@@ -751,7 +754,7 @@ fun FirebaseAuthScreen(
                         if (previous != null && !previous.isNotification) {
                             clearReauthPresentation()
                             pendingResolver.value = null
-                            pendingLinkingCredential.value = null
+                            pendingAccountLink.value = null
                             lastSuccessfulUserId.value = null
                             typedEmail.value = null
                             // Number entry is a real position in the flow, so a retraction
@@ -901,6 +904,69 @@ fun FirebaseAuthScreen(
                     AuthRoute.Email.SignIn()
                 }
 
+            /**
+             * Where the account-linking dialog sends the user: to sign in to the account that
+             * already owns the address, so the credential that collided with it can be linked.
+             *
+             * The owner comes from the opt-in legacy lookup when it can name one. With email
+             * enumeration protection on it never can, so a lone remaining provider is opened
+             * directly and several are offered on the method picker; whichever the user signs in
+             * with links the credential, provided the account has the same address.
+             */
+            fun accountLinkingRecovery(
+                exception: AuthException.AccountLinkingRequiredException,
+            ): ((AuthException) -> Unit)? {
+                val credential = exception.credential
+                // Upgrading an anonymous user, or linking to a signed-in one: the collision is
+                // with the user already signed in, which only the email step's own handling
+                // resolves. Likewise with no credential there is nothing to carry anywhere else.
+                if (credential == null || authUI.auth.currentUser != null) {
+                    return if (configuration.isEmailProviderConfigured()) {
+                        { _ ->
+                            pendingAccountLink.value =
+                                credential?.let { PendingAccountLink(it, exception.email) }
+                            navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
+                        }
+                    } else {
+                        null
+                    }
+                }
+
+                // Providers that can hold the existing account: not the one that just collided,
+                // and not phone or anonymous sign-in, which have no address to match.
+                val owners = configuration.providers.filter { provider ->
+                    provider !is AuthProvider.Phone &&
+                            provider !is AuthProvider.Anonymous &&
+                            provider.providerId != credential.provider
+                }
+                if (owners.isEmpty()) return null
+
+                return { _ ->
+                    pendingAccountLink.value = PendingAccountLink(credential, exception.email)
+                    coroutineScope.launch {
+                        val ownerSignInMethod = exception.email?.let { email ->
+                            hostScope.findAccountOwnerSignInMethod(email, owners)
+                        }
+                        val lone = owners.singleOrNull()
+                        when {
+                            ownerSignInMethod == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD ->
+                                navigateToEmailStep(emailLinkRecoveryStep, exception.email)
+
+                            ownerSignInMethod == EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD ||
+                                    (ownerSignInMethod == null && lone is AuthProvider.Email) ->
+                                navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
+
+                            ownerSignInMethod != null -> continueWithProvider(ownerSignInMethod)
+
+                            lone != null -> onProviderSelected(lone)
+
+                            !backStack.lastOrNull().isAt(AuthRoute.MethodPicker) ->
+                                backStack.resetBackStackTo(AuthRoute.MethodPicker)
+                        }
+                    }
+                }
+            }
+
             val errorState = authState as? AuthState.Error
             if (errorState != null) {
                 LaunchedEffect(errorState) {
@@ -935,16 +1001,8 @@ fun FirebaseAuthScreen(
                                 }
                             }
 
-                            is AuthException.AccountLinkingRequiredException -> {
-                                if (configuration.isEmailProviderConfigured()) {
-                                    {
-                                        pendingLinkingCredential.value = exception.credential
-                                        navigateToEmailStep(AuthRoute.Email.SignIn(), exception.email)
-                                    }
-                                } else {
-                                    null
-                                }
-                            }
+                            is AuthException.AccountLinkingRequiredException ->
+                                accountLinkingRecovery(exception)
 
                             is AuthException.EmailLinkPromptForEmailException -> {
                                 {

@@ -107,9 +107,11 @@ internal suspend fun AuthFlowScope.signInWithProvider(
             return
         }
 
+        // Decided before signing in: an upgrade leaves the user no longer anonymous.
+        val isAnonymousUpgrade = canUpgradeAnonymous(config, auth)
         // Determine if we should upgrade anonymous user, reauthenticate, or do normal sign-in
-        val authResult = when {
-            canUpgradeAnonymous(config, auth) ->
+        val signInResult = when {
+            isAnonymousUpgrade ->
                 auth.currentUser?.startActivityForLinkWithProvider(activity, oauthProvider)?.await()
             config.isReauthenticationMode -> {
                 val currentUser = auth.currentUser
@@ -119,9 +121,16 @@ internal suspend fun AuthFlowScope.signInWithProvider(
             else ->
                 auth.startActivityForSignInWithProvider(activity, oauthProvider).await()
         }
+        // A plain sign-in may be finishing the account-linking recovery; an upgrade or a
+        // reauthentication has nothing pending to link.
+        val authResult = if (isAnonymousUpgrade || config.isReauthenticationMode) {
+            signInResult
+        } else {
+            signInResult?.let { linkPendingAccountCredential(it) }
+        }
 
         // Extract OAuth credential and complete sign-in
-        val credential = authResult?.credential as? OAuthCredential
+        val credential = signInResult?.credential as? OAuthCredential
         if (credential != null) {
             // The user is already signed in via startActivityForSignInWithProvider/startActivityForLinkWithProvider
 
@@ -169,9 +178,7 @@ internal suspend fun AuthFlowScope.signInWithProvider(
         val credential = e.updatedCredential
 
         val accountLinkingException = AuthException.AccountLinkingRequiredException(
-            message = "An account already exists with the email ${email ?: ""}. " +
-                    "Please sign in with your existing account to link " +
-                    "your ${provider.providerName} account.",
+            message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
             email = email,
             credential = credential,
             cause = e
