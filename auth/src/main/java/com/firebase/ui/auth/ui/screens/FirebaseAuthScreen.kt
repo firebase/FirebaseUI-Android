@@ -1108,13 +1108,6 @@ fun FirebaseAuthScreen(
 }
 
 /**
- * Where the flow starts, from the configuration alone: a single email or phone provider opens
- * that flow directly, anything else opens the method picker.
- *
- * Returns an [AuthRoute] rather than an [AuthRoute.Destination], because a single-provider
- * configuration names a *flow*; [toKey] is what resolves it to the step to actually push.
- */
-/**
  * Saves a [PendingAccountLink] across Activity recreation. Firebase's [AuthCredential] is
  * Parcelable, so the three fields go into the saved state as they are.
  */
@@ -1139,6 +1132,13 @@ private val PendingAccountLinkSaver = listSaver<PendingAccountLink?, Any?>(
     },
 )
 
+/**
+ * Where the flow starts, from the configuration alone: a single email or phone provider opens
+ * that flow directly, anything else opens the method picker.
+ *
+ * Returns an [AuthRoute] rather than an [AuthRoute.Destination], because a single-provider
+ * configuration names a *flow*; [toKey] is what resolves it to the step to actually push.
+ */
 internal fun getStartRoute(configuration: AuthUIConfiguration): AuthRoute {
     if (configuration.isProviderChoiceAlwaysShown || configuration.providers.size != 1) {
         return AuthRoute.MethodPicker
