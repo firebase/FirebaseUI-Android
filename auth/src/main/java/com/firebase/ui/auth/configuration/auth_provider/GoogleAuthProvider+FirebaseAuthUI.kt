@@ -77,6 +77,10 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
             }
         }
 
+        // While the account-linking recovery waits on the account that owns an address, always
+        // show the chooser: auto-select would pick the same account again after a wrong pick.
+        val autoSelectEnabled = provider.autoSelectEnabled && pendingAccountLink.value == null
+
         // Try with configured filterByAuthorizedAccounts setting
         // If default (true), fallback to false if no authorized accounts found
         // See: https://developer.android.com/identity/sign-in/credential-manager-siwg#siwg-button
@@ -88,7 +92,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
                     credentialManager = CredentialManager.create(context),
                     serverClientId = provider.serverClientId!!,
                     filterByAuthorizedAccounts = true,
-                    autoSelectEnabled = provider.autoSelectEnabled
+                    autoSelectEnabled = autoSelectEnabled
                 )
             } catch (e: NoCredentialException) {
                 // No authorized accounts found, try again with all accounts for sign-up flow
@@ -99,7 +103,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
                         credentialManager = CredentialManager.create(context),
                         serverClientId = provider.serverClientId!!,
                         filterByAuthorizedAccounts = false,
-                        autoSelectEnabled = provider.autoSelectEnabled
+                        autoSelectEnabled = autoSelectEnabled
                     )
                 } catch (fallbackException: NoCredentialException) {
                     // Credential Manager doesn't distinguish "no account on device" from
@@ -131,7 +135,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
                 credentialManager = CredentialManager.create(context),
                 serverClientId = provider.serverClientId!!,
                 filterByAuthorizedAccounts = false,
-                autoSelectEnabled = provider.autoSelectEnabled
+                autoSelectEnabled = autoSelectEnabled
             )
         }
         idTokenFromResult = result.idToken
@@ -160,14 +164,17 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
             android.util.Log.w("GoogleAuthProvider", "Failed to save sign-in preference", e)
         }
     } catch (e: AuthException.AccountLinkingRequiredException) {
-        // Account collision occurred - save Facebook credential for linking after email link sign-in
-        // This happens when a user tries to sign in with Facebook but an email link account exists
-        EmailLinkPersistenceManager.default.saveCredentialForLinking(
-            context = context,
-            providerType = provider.providerId,
-            idToken = idTokenFromResult,
-            accessToken = null
-        )
+        // Account collision occurred - save the Google credential for linking after email link
+        // sign-in. Not when the collision is the account-linking recovery refusing the account
+        // the user picked: this Google account is not the one waiting to be linked.
+        if (!isPendingLinkMismatch(e)) {
+            EmailLinkPersistenceManager.default.saveCredentialForLinking(
+                context = context,
+                providerType = provider.providerId,
+                idToken = idTokenFromResult,
+                accessToken = null
+            )
+        }
 
         // Re-throw to let UI handle the account linking flow
         emit(AuthState.Error(e))

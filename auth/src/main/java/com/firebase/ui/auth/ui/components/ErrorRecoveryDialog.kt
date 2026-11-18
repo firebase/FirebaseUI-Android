@@ -190,7 +190,8 @@ internal fun getRecoveryMessage(
         is AuthException.MfaRequiredException ->
             error.message?.takeIf { it.isNotBlank() } ?: stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> {
-            // Use the custom message which includes email and provider details
+            // The library raises this with translated copy; a host's own exception may carry
+            // its own message.
             error.message?.takeIf { it.isNotBlank() }
                 ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
