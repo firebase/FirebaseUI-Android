@@ -20,18 +20,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -207,5 +219,175 @@ class SignUpUITest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.invalidEmailAddress).assertExists()
+    }
+
+    private fun setSignUpContent(provider: AuthProvider.Email) {
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                var email by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                var confirmPassword by remember { mutableStateOf("") }
+
+                SignUpUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    displayName = "",
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    onDisplayNameChange = { },
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onConfirmPasswordChange = { confirmPassword = it },
+                    onSignUpClick = { }
+                )
+            }
+        }
+        composeTestRule.onNodeWithText(stringProvider.emailHint)
+            .performTextInput("test@example.com")
+    }
+
+    private fun enterPasswords(password: String) {
+        composeTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performTextReplacement(password)
+        composeTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performTextReplacement(password)
+        composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun `live password validation honours minimumPasswordLength`() {
+        setSignUpContent(
+            AuthProvider.Email(
+                isDisplayNameRequired = false,
+                emailLinkActionCodeSettings = null,
+                minimumPasswordLength = 10,
+                passwordValidationRules = emptyList()
+            )
+        )
+
+        // The submit path rejects this password, so the live validator must too.
+        enterPasswords("short123")
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON)
+            .assertIsNotEnabled()
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(10)).assertExists()
+
+        enterPasswords("long123456")
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON)
+            .assertIsEnabled()
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(10)).assertDoesNotExist()
+    }
+
+    @Test
+    fun `minimumPasswordLength and a custom length rule surface a single message`() {
+        setSignUpContent(
+            AuthProvider.Email(
+                isDisplayNameRequired = false,
+                emailLinkActionCodeSettings = null,
+                minimumPasswordLength = 10,
+                passwordValidationRules = listOf(PasswordRule.MinimumLength(12))
+            )
+        )
+
+        // Checked in the submit path's order, so minimumPasswordLength reports first and alone.
+        enterPasswords("short123")
+        composeTestRule.onAllNodesWithText(stringProvider.passwordTooShort(10))
+            .assertCountEquals(1)
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(12)).assertDoesNotExist()
+
+        enterPasswords("long123456")
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(10)).assertDoesNotExist()
+        composeTestRule.onAllNodesWithText(stringProvider.passwordTooShort(12))
+            .assertCountEquals(1)
+    }
+
+    // A fresh MinimumLength instance has no equals, so each call re-keys the password validator.
+    private fun equivalentConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(
+                AuthProvider.Email(
+                    isDisplayNameRequired = false,
+                    emailLinkActionCodeSettings = null,
+                    minimumPasswordLength = 6,
+                    passwordValidationRules = listOf(PasswordRule.MinimumLength(12))
+                )
+            )
+        }
+    }
+
+    private fun setSwappableContent(): (AuthUIConfiguration) -> Unit {
+        var configuration by mutableStateOf(equivalentConfiguration())
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                var password by remember { mutableStateOf("") }
+                SignUpUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    displayName = "",
+                    email = "",
+                    password = password,
+                    confirmPassword = "",
+                    onDisplayNameChange = { },
+                    onEmailChange = { },
+                    onPasswordChange = { password = it },
+                    onConfirmPasswordChange = { },
+                    onSignUpClick = { }
+                )
+            }
+        }
+        return { configuration = it }
+    }
+
+    private val isInError = SemanticsMatcher.keyIsDefined(SemanticsProperties.Error)
+
+    @Test
+    fun `password error survives an equivalent configuration swap`() {
+        val swap = setSwappableContent()
+        composeTestRule.onNodeWithText(stringProvider.passwordHint).performTextInput("short1")
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD).assert(isInError)
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(12)).assertExists()
+
+        swap(equivalentConfiguration())
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD).assert(isInError)
+        composeTestRule.onNodeWithText(stringProvider.passwordTooShort(12)).assertExists()
+    }
+
+    @Test
+    fun `cleared password error survives an equivalent configuration swap`() {
+        val swap = setSwappableContent()
+        composeTestRule.onNodeWithText(stringProvider.passwordHint).performTextInput("short1")
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD)
+            .performTextClearance()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD).assert(isInError)
+        composeTestRule.onNodeWithText(stringProvider.invalidPassword).assertExists()
+
+        // The field is empty again, so only the edit history tells it apart from an untouched one.
+        swap(equivalentConfiguration())
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD).assert(isInError)
+        composeTestRule.onNodeWithText(stringProvider.invalidPassword).assertExists()
+    }
+
+    @Test
+    fun `untouched password field gains no error from a configuration swap`() {
+        val swap = setSwappableContent()
+        composeTestRule.waitForIdle()
+
+        swap(equivalentConfiguration())
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD)
+            .assert(!isInError)
+        composeTestRule.onNodeWithText(stringProvider.invalidPassword).assertDoesNotExist()
     }
 }
