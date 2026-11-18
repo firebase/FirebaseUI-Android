@@ -18,6 +18,7 @@ import com.firebase.ui.auth.rememberAuthFlowScope
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -239,6 +240,20 @@ fun EmailAuthScreen(
     val isEmailLinkSignInOffered = configuration.isEmailLinkSignInOffered()
 
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
+    // Remembered: a new source per recomposition would restart the checklist's fetch. Keyed on the
+    // tenant the source is bound to; tenantId is not Compose state, so a tenant change is picked up
+    // on the screen's next recomposition.
+    val passwordPolicySource = remember(
+        authUI,
+        authUI.auth.tenantId,
+        provider.isProjectPasswordPolicyEnabled,
+    ) {
+        if (provider.isProjectPasswordPolicyEnabled) {
+            authUI.passwordPolicyRepository.sourceFor(authUI.auth)
+        } else {
+            null
+        }
+    }
     // Under a reauthentication request this is that request's phase, not the host's state.
     val authState by authFlowScope.state
     val isLoading = authState is AuthState.Loading ||
@@ -388,6 +403,13 @@ fun EmailAuthScreen(
                     )
                 } catch (e: Exception) {
                     onError(AuthException.from(e, stringProvider))
+                    // JS SDK parity: a rejection may mean the policy changed, so the checklist
+                    // re-reads it. No-op unless a policy is cached.
+                    if (passwordPolicySource != null &&
+                        e is AuthException.PasswordPolicyViolationException
+                    ) {
+                        authUI.passwordPolicyRepository.refetchIfCached(context, authUI.auth)
+                    }
                 }
             }
         },
@@ -411,14 +433,17 @@ fun EmailAuthScreen(
         onGoToEmailLinkSignIn = { goToMode(EmailAuthMode.EmailLinkSignIn) },
     )
 
-    if (content != null) {
-        content(state)
-    } else {
-        DefaultEmailAuthContent(
-            configuration = configuration,
-            state = state,
-            onCancel = onCancel
-        )
+    // Null when the flag is off, so SignUpUI fetches nothing.
+    CompositionLocalProvider(LocalPasswordPolicySource provides passwordPolicySource) {
+        if (content != null) {
+            content(state)
+        } else {
+            DefaultEmailAuthContent(
+                configuration = configuration,
+                state = state,
+                onCancel = onCancel
+            )
+        }
     }
 }
 

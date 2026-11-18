@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -134,6 +138,14 @@ internal class PasswordPolicyRepository(
 
     private val cache = ConcurrentHashMap<Key, Entry>()
     private val locks = ConcurrentHashMap<Key, Mutex>()
+    private val revisions = ConcurrentHashMap<Key, MutableStateFlow<Int>>()
+
+    /**
+     * Incremented each time [refetchIfCached] stores a new policy for [auth]'s app and tenant, so
+     * readers of that key can re-read. Other keys are unaffected.
+     */
+    fun revision(auth: FirebaseAuth): StateFlow<Int> =
+        revisionFor(Key(auth.app.name, auth.tenantId)).asStateFlow()
 
     /** Returns the cached policy for [auth], fetching it if absent or a failure has expired. */
     suspend fun getPolicy(context: Context, auth: FirebaseAuth): PasswordPolicy? {
@@ -156,11 +168,17 @@ internal class PasswordPolicyRepository(
         val key = Key(auth.app.name, auth.tenantId)
         return lockFor(key).withLock {
             val previous = (cache[key] as? Entry.Fetched)?.policy ?: return@withLock null
-            fetch(context, auth)?.also { cache[key] = Entry.Fetched(it) } ?: previous
+            fetch(context, auth)?.also {
+                cache[key] = Entry.Fetched(it)
+                revisionFor(key).update { revision -> revision + 1 }
+            } ?: previous
         }
     }
 
     private fun lockFor(key: Key): Mutex = locks.getOrPut(key) { Mutex() }
+
+    private fun revisionFor(key: Key): MutableStateFlow<Int> =
+        revisions.getOrPut(key) { MutableStateFlow(0) }
 
     private suspend fun fetchAndStore(
         context: Context,

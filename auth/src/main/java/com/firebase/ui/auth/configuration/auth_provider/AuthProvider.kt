@@ -156,7 +156,41 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>,
+
+        /**
+         * Fetches the project's password policy and shows its requirements as a live checklist on
+         * sign-up. Hints only: the server still enforces the policy. Defaults to false when
+         * omitted, via the overload without this parameter.
+         *
+         * The Auth emulator does not serve the policy, so pass `!useEmulator` when you call
+         * `FirebaseAuth.useEmulator`.
+         */
+        val isProjectPasswordPolicyEnabled: Boolean,
     ) : AuthProvider(providerId = Provider.EMAIL.id, providerName = Provider.EMAIL.providerName) {
+
+        /**
+         * Creates an email provider with [isProjectPasswordPolicyEnabled] set to false. Kept as a
+         * plain overload so existing Kotlin and Java callers still compile and link.
+         */
+        constructor(
+            isDisplayNameRequired: Boolean = true,
+            isEmailLinkSignInEnabled: Boolean = false,
+            isEmailLinkForceSameDeviceEnabled: Boolean = true,
+            emailLinkActionCodeSettings: ActionCodeSettings?,
+            isNewAccountsAllowed: Boolean = true,
+            minimumPasswordLength: Int = 6,
+            passwordValidationRules: List<PasswordRule>,
+        ) : this(
+            isDisplayNameRequired = isDisplayNameRequired,
+            isEmailLinkSignInEnabled = isEmailLinkSignInEnabled,
+            isEmailLinkForceSameDeviceEnabled = isEmailLinkForceSameDeviceEnabled,
+            emailLinkActionCodeSettings = emailLinkActionCodeSettings,
+            isNewAccountsAllowed = isNewAccountsAllowed,
+            minimumPasswordLength = minimumPasswordLength,
+            passwordValidationRules = passwordValidationRules,
+            isProjectPasswordPolicyEnabled = false,
+        )
+
         companion object {
             const val SESSION_ID_LENGTH = 10
             val KEY_EMAIL = stringPreferencesKey("com.firebase.ui.auth.data.client.email")

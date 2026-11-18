@@ -24,6 +24,7 @@ import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
+import com.firebase.ui.auth.configuration.password_policy.PasswordPolicyRepository
 import com.firebase.ui.auth.ui.screens.reauth.toReauthConfiguration
 import com.firebase.ui.auth.util.ProviderAvailability
 import com.google.firebase.Firebase
@@ -100,6 +101,16 @@ class FirebaseAuthUI private constructor(
     @Volatile
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal var testLoginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null
+
+    /** Replaces [passwordPolicyRepository]; read once, on its first use. */
+    @Volatile
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    internal var testPasswordPolicyRepository: PasswordPolicyRepository? = null
+
+    /** One per instance, so the fetched policy outlives the sign-up screen. */
+    internal val passwordPolicyRepository: PasswordPolicyRepository by lazy {
+        testPasswordPolicyRepository ?: PasswordPolicyRepository()
+    }
 
     /**
      * Checks whether a user is currently signed in.

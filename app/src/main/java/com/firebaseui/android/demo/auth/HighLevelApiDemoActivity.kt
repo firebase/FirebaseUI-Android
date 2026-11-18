@@ -66,6 +66,7 @@ import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
+import com.firebaseui.android.demo.MainActivity
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.utils.EMAIL_LINK_ORIGIN_PARAM
 import com.google.firebase.auth.actionCodeSettings
@@ -154,6 +155,8 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                                 PasswordRule.RequireLowercase,
                                 PasswordRule.RequireUppercase,
                             ),
+                            // The Auth emulator does not serve the password policy.
+                            isProjectPasswordPolicyEnabled = !MainActivity.USE_AUTH_EMULATOR,
                         )
                     )
                     provider(
