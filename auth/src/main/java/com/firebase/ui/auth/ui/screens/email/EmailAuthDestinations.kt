@@ -228,6 +228,13 @@ internal fun AuthUIConfiguration.isEmailStepOffered(step: AuthRoute.Email.Step):
     }
 
 /**
+ * Whether the configuration includes an [AuthProvider.Email] at all. A recovery that would move
+ * the user into an email step asks this first: without one there is no email step to show.
+ */
+internal fun AuthUIConfiguration.isEmailProviderConfigured(): Boolean =
+    providers.any { it is AuthProvider.Email }
+
+/**
  * Whether the email flow may offer account creation. False while reauthenticating — proving an
  * existing identity can never end in a new account — and whenever the configuration or the email
  * provider itself disables new accounts.

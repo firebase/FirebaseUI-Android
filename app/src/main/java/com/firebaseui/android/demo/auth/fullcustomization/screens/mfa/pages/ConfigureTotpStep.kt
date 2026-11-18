@@ -1,6 +1,5 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.pages
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.AuthFieldShape
+import com.firebaseui.android.demo.auth.fullcustomization.common.themeFieldBorder
 import com.firebaseui.android.demo.auth.fullcustomization.common.AuthPage
 import com.firebaseui.android.demo.auth.fullcustomization.common.CtaButton
 
@@ -43,11 +42,7 @@ fun ConfigureTotpStep(state: MfaEnrollmentContentState) {
                     size = 200.dp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outlineVariant,
-                            shape = AuthFieldShape,
-                        )
+                        .themeFieldBorder()
                         .padding(12.dp)
                         .semantics { contentDescription = "mfa - totp qr code" },
                 )

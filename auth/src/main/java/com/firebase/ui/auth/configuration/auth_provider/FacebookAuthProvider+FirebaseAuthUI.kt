@@ -190,13 +190,17 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
         }
     } catch (e: AuthException.AccountLinkingRequiredException) {
         // Account collision occurred - save Facebook credential for linking after email link sign-in
-        // This happens when a user tries to sign in with Facebook but an email link account exists
-        EmailLinkPersistenceManager.default.saveCredentialForLinking(
-            context = context,
-            providerType = provider.providerId,
-            idToken = null,
-            accessToken = accessToken.token
-        )
+        // This happens when a user tries to sign in with Facebook but an email link account exists.
+        // Not when the collision is the account-linking recovery refusing the account the user
+        // picked: this Facebook account is not the one waiting to be linked.
+        if (!isPendingLinkMismatch(e)) {
+            EmailLinkPersistenceManager.default.saveCredentialForLinking(
+                context = context,
+                providerType = provider.providerId,
+                idToken = null,
+                accessToken = accessToken.token
+            )
+        }
 
         // Re-throw to let UI handle the account linking flow
         emit(AuthState.Error(e))

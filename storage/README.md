@@ -28,10 +28,10 @@ If you're not already using Glide in your application, add the following depende
 to your `app/build.gradle` file:
 
 ```groovy
-// Find the latest Glide releases here: https://goo.gl/LpksbR
-implementation 'com.github.bumptech.glide:glide:4.x'
+// Find the latest Glide releases here: https://github.com/bumptech/glide/releases
+implementation 'com.github.bumptech.glide:glide:5.0.9'
 // If you're using Kotlin (and therefore, kapt), use kapt instead of annotationProcessor
-annotationProcessor 'com.github.bumptech.glide:compiler:4.x'
+annotationProcessor 'com.github.bumptech.glide:compiler:5.0.9'
 ```
 
 To load an image from a `StorageReference`, first register an `AppGlideModule`:
